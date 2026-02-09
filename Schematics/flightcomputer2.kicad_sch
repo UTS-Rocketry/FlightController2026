@@ -29,7 +29,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "untitled.kicad_sch"
+		(property "Sheetfile" "Pyro.kicad_sch"
 			(at 24.13 130.1246 0)
 			(effects
 				(font

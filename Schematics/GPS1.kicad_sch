@@ -550,23 +550,13 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 73.66) (xy 107.95 73.66)
+			(xy 107.95 73.66) (xy 127 73.66)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
 		(uuid "dc01e462-e5a2-4874-a9d6-0349fd732027")
-	)
-	(wire
-		(pts
-			(xy 127 73.66) (xy 119.38 73.66)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "dcda2831-2302-44a0-93c2-c79aa440b59a")
 	)
 	(global_label "GPS1_RX"
 		(shape input)
