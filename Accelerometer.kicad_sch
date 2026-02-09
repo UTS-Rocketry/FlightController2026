@@ -1,0 +1,18 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "ea639d29-2c73-4c8b-a3dd-8cee8a2742d3")
+	(paper "A4")
+	(lib_symbols)
+	(text "H3LIS100DLTR"
+		(exclude_from_sim no)
+		(at 159.258 88.9 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "cebeccd9-17fa-4140-9433-673d5c63e8c2")
+	)
+)

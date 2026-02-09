@@ -1,0 +1,18 @@
+(kicad_sch
+	(version 20250114)
+	(generator "eeschema")
+	(generator_version "9.0")
+	(uuid "0c20a7c7-fb93-4b9b-8f27-16fa7c71b78e")
+	(paper "A4")
+	(lib_symbols)
+	(text "LSM6DS3TR-C\n"
+		(exclude_from_sim no)
+		(at 140.716 91.948 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "73a9af2c-be31-430c-a6ec-ccd82f1b1691")
+	)
+)
