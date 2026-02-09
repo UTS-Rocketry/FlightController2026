@@ -518,16 +518,6 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "switch tx rx between the gps and the fc\n"
-		(exclude_from_sim no)
-		(at 100.076 51.562 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "115e3ebe-2a9c-4070-873d-bd37b3a3f65b")
-	)
 	(wire
 		(pts
 			(xy 118.11 76.2) (xy 107.95 76.2)
