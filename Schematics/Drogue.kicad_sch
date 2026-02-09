@@ -1339,7 +1339,7 @@
 		)
 		(uuid "f8827c00-aff7-40bf-a4d0-9f237cc75a4d")
 	)
-	(hierarchical_label "DrougeACDMonitor"
+	(hierarchical_label "DrougeACD"
 		(shape input)
 		(at 160.02 73.66 0)
 		(effects

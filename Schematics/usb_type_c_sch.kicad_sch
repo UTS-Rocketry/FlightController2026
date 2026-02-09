@@ -1594,26 +1594,6 @@
 			(embedded_fonts no)
 		)
 	)
-	(text "\n"
-		(exclude_from_sim no)
-		(at 157.226 37.338 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "5306c34d-afb1-4d28-8435-c1a6701f57ba")
-	)
-	(text "mc-121 for the ubs-c recepticale\n"
-		(exclude_from_sim no)
-		(at 178.816 37.338 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "a0f8683c-7f9a-418e-a3b4-e1ba34025f27")
-	)
 	(junction
 		(at 129.54 71.12)
 		(diameter 0)
