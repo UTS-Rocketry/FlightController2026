@@ -299,7 +299,7 @@
 		)
 	)
 	(sheet
-		(at 26.67 142.24)
+		(at 24.13 139.7)
 		(size 27.94 45.72)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -315,7 +315,7 @@
 		)
 		(uuid "845ef161-5bd7-4496-b5c2-e65e4f30444a")
 		(property "Sheetname" "Accelerometer"
-			(at 26.67 141.5284 0)
+			(at 24.13 138.9884 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -324,7 +324,7 @@
 			)
 		)
 		(property "Sheetfile" "Accelerometer.kicad_sch"
-			(at 26.67 188.5446 0)
+			(at 24.13 186.0046 0)
 			(effects
 				(font
 					(size 1.27 1.27)
