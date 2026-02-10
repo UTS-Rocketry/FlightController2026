@@ -973,7 +973,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1960f3c9-2cad-4f17-9504-f041f0549de9")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR067"
 			(at 118.11 106.68 0)
 			(effects
 				(font
@@ -1024,7 +1024,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR010")
+					(reference "#PWR067")
 					(unit 1)
 				)
 			)
@@ -1040,7 +1040,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "583a6051-e829-45eb-aa05-6012d4a5424d")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR072"
 			(at 151.13 114.3 0)
 			(effects
 				(font
@@ -1091,7 +1091,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR015")
+					(reference "#PWR072")
 					(unit 1)
 				)
 			)
@@ -1107,7 +1107,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6e891801-77e9-4dbd-89a3-129176778392")
-		(property "Reference" "#PWR022"
+		(property "Reference" "#PWR069"
 			(at 135.89 87.63 0)
 			(effects
 				(font
@@ -1158,7 +1158,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR022")
+					(reference "#PWR069")
 					(unit 1)
 				)
 			)
@@ -1174,7 +1174,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "7b9fa356-18c4-4309-aaeb-a6d37c33e7a5")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR071"
 			(at 149.86 128.27 0)
 			(effects
 				(font
@@ -1224,7 +1224,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR016")
+					(reference "#PWR071")
 					(unit 1)
 				)
 			)
@@ -1240,7 +1240,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "80dac007-2ea9-4153-a7c0-28fbcee639fb")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR068"
 			(at 116.84 120.65 0)
 			(effects
 				(font
@@ -1290,7 +1290,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR011")
+					(reference "#PWR068")
 					(unit 1)
 				)
 			)
@@ -1305,8 +1305,8 @@
 		(on_board yes)
 		(dnp no)
 		(uuid "8d3d1ca2-0148-4ff5-b200-ca9f685b4d1d")
-		(property "Reference" "U2"
-			(at 125.476 92.964 0)
+		(property "Reference" "U4"
+			(at 120.904 92.71 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1314,8 +1314,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "~"
-			(at 125.476 95.504 0)
+		(property "Value" "LSM6DS3TR-C"
+			(at 114.554 94.996 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1323,7 +1323,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "myFootprints:LGA-14-2.5X3MM"
 			(at 139.7 113.03 0)
 			(effects
 				(font
@@ -1342,6 +1342,33 @@
 			)
 		)
 		(property "Description" ""
+			(at 139.7 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C967633"
+			(at 139.7 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" ""
+			(at 139.7 113.03 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
 			(at 139.7 113.03 0)
 			(effects
 				(font
@@ -1395,7 +1422,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "U2")
+					(reference "U4")
 					(unit 1)
 				)
 			)
@@ -1411,7 +1438,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c8a26a3b-f9ba-48c5-a9fc-e105df4705f1")
-		(property "Reference" "C3"
+		(property "Reference" "C22"
 			(at 120.65 109.2199 0)
 			(effects
 				(font
@@ -1420,7 +1447,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "0.1f"
+		(property "Value" "100nf"
 			(at 120.65 111.7599 0)
 			(effects
 				(font
@@ -1429,7 +1456,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 117.8052 114.3 0)
 			(effects
 				(font
@@ -1456,6 +1483,33 @@
 				(hide yes)
 			)
 		)
+		(property "Sim.Device" ""
+			(at 116.84 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 116.84 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C49678"
+			(at 116.84 110.49 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "33a3b4a3-815f-4ce0-a455-b5ccb57fd091")
 		)
@@ -1465,7 +1519,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "C3")
+					(reference "C22")
 					(unit 1)
 				)
 			)
@@ -1481,7 +1535,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "eab68814-b161-47de-9012-a48377241770")
-		(property "Reference" "C11"
+		(property "Reference" "C23"
 			(at 153.67 116.8399 0)
 			(effects
 				(font
@@ -1490,7 +1544,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "0.1f"
+		(property "Value" "100nf"
 			(at 153.67 119.3799 0)
 			(effects
 				(font
@@ -1499,7 +1553,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 150.8252 121.92 0)
 			(effects
 				(font
@@ -1526,6 +1580,33 @@
 				(hide yes)
 			)
 		)
+		(property "Sim.Device" ""
+			(at 149.86 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 149.86 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C49678"
+			(at 149.86 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "ef1efe92-632a-4aec-ac2b-2901db5a1900")
 		)
@@ -1535,7 +1616,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "C11")
+					(reference "C23")
 					(unit 1)
 				)
 			)
@@ -1551,7 +1632,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ee39cb22-2be8-4880-9464-55eba7e8a437")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR073"
 			(at 170.18 104.14 0)
 			(effects
 				(font
@@ -1602,7 +1683,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR09")
+					(reference "#PWR073")
 					(unit 1)
 				)
 			)
@@ -1618,7 +1699,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f751afa9-9605-4a8a-820b-ad5ec31e7f3a")
-		(property "Reference" "#PWR021"
+		(property "Reference" "#PWR070"
 			(at 139.7 124.46 0)
 			(effects
 				(font
@@ -1668,7 +1749,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/baf5f864-5fa3-4fb9-89f7-279135a67e52"
-					(reference "#PWR021")
+					(reference "#PWR070")
 					(unit 1)
 				)
 			)

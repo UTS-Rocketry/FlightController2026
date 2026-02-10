@@ -270,7 +270,7 @@
 	)
 	(text "2mm pitch pin header for the lora\n"
 		(exclude_from_sim no)
-		(at 119.126 65.532 0)
+		(at 123.19 75.692 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -280,7 +280,7 @@
 	)
 	(text "change to horizontal\n"
 		(exclude_from_sim no)
-		(at 119.126 69.342 0)
+		(at 123.19 79.502 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -308,7 +308,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "51f57517-5368-40cb-9446-669dd3961689")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR057"
 			(at 137.16 91.44 0)
 			(effects
 				(font
@@ -359,7 +359,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/97ae08f8-7044-40a2-9385-378b47d6b9a1"
-					(reference "#PWR014")
+					(reference "#PWR057")
 					(unit 1)
 				)
 			)
@@ -375,7 +375,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "72b0d6dd-b61a-4b70-92a9-40aec78737c9")
-		(property "Reference" "J4"
+		(property "Reference" "J7"
 			(at 120.1304 85.09 0)
 			(effects
 				(font
@@ -418,6 +418,33 @@
 				(hide yes)
 			)
 		)
+		(property "Sim.Device" ""
+			(at 120.65 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 120.65 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C3172376"
+			(at 120.65 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "a31b3f17-8942-4718-a706-9a17f65b840f")
 		)
@@ -427,7 +454,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/97ae08f8-7044-40a2-9385-378b47d6b9a1"
-					(reference "J4")
+					(reference "J7")
 					(unit 1)
 				)
 			)

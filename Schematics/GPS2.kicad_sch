@@ -624,7 +624,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1c166c00-b78f-4a91-aaaa-c0bd9b831615")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR056"
 			(at 123.19 69.85 0)
 			(effects
 				(font
@@ -675,7 +675,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/9d9c275c-2a03-42ca-b9d6-2448b2e4b2af"
-					(reference "#PWR018")
+					(reference "#PWR056")
 					(unit 1)
 				)
 			)
@@ -691,7 +691,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4f298957-552b-47c9-b861-1cc507f56fc1")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR055"
 			(at 113.03 67.31 0)
 			(effects
 				(font
@@ -742,7 +742,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/9d9c275c-2a03-42ca-b9d6-2448b2e4b2af"
-					(reference "#PWR017")
+					(reference "#PWR055")
 					(unit 1)
 				)
 			)
@@ -758,7 +758,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bbbf8955-634a-437a-8a35-ea884aafae40")
-		(property "Reference" "J5"
+		(property "Reference" "J6"
 			(at 112.395 62.23 0)
 			(effects
 				(font
@@ -801,6 +801,33 @@
 				(hide yes)
 			)
 		)
+		(property "Sim.Device" ""
+			(at 111.76 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 111.76 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C157991"
+			(at 111.76 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "28ca7c27-14c5-425a-a2b3-a3104263b4bf")
 		)
@@ -819,7 +846,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/9d9c275c-2a03-42ca-b9d6-2448b2e4b2af"
-					(reference "J5")
+					(reference "J6")
 					(unit 1)
 				)
 			)

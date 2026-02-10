@@ -651,6 +651,16 @@
 	)
 	(wire
 		(pts
+			(xy 110.49 77.47) (xy 110.49 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "3ab3ab26-86ea-432f-bd83-ec3eb3a97374")
+	)
+	(wire
+		(pts
 			(xy 128.27 81.28) (xy 128.27 86.36)
 		)
 		(stroke
@@ -671,7 +681,7 @@
 	)
 	(wire
 		(pts
-			(xy 110.49 83.82) (xy 110.49 86.36)
+			(xy 110.49 85.09) (xy 110.49 86.36)
 		)
 		(stroke
 			(width 0)
@@ -698,6 +708,16 @@
 			(type default)
 		)
 		(uuid "6c98dbbf-4d91-46b1-a436-a608879d59f3")
+	)
+	(wire
+		(pts
+			(xy 100.33 77.47) (xy 100.33 76.2)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6e872e21-ea41-424d-89ae-00bc1bd219d6")
 	)
 	(wire
 		(pts
@@ -761,7 +781,7 @@
 	)
 	(wire
 		(pts
-			(xy 100.33 83.82) (xy 100.33 86.36)
+			(xy 100.33 85.09) (xy 100.33 86.36)
 		)
 		(stroke
 			(width 0)
@@ -821,7 +841,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "18909112-0198-4374-afcd-96f3dd37e396")
-		(property "Reference" "#PWR071"
+		(property "Reference" "#PWR065"
 			(at 96.52 92.71 0)
 			(effects
 				(font
@@ -871,7 +891,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "#PWR071")
+					(reference "#PWR065")
 					(unit 1)
 				)
 			)
@@ -879,16 +899,15 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 100.33 80.01 0)
+		(at 100.33 81.28 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "1b0199ce-a9ed-4c19-8eaa-74c875efeb43")
-		(property "Reference" "C2"
-			(at 104.14 78.7399 0)
+		(property "Reference" "C19"
+			(at 104.14 80.0099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -896,8 +915,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 104.14 81.2799 0)
+		(property "Value" "100nf"
+			(at 102.108 83.82 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -905,8 +924,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 101.2952 83.82 0)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+			(at 101.2952 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -915,7 +934,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 100.33 80.01 0)
+			(at 100.33 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -924,7 +943,34 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 100.33 80.01 0)
+			(at 100.33 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" ""
+			(at 100.33 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 100.33 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C49678"
+			(at 100.33 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -941,7 +987,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "C2")
+					(reference "C19")
 					(unit 1)
 				)
 			)
@@ -957,7 +1003,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4aabbc64-29bd-4cfa-b984-1c72a5f14338")
-		(property "Reference" "#PWR072"
+		(property "Reference" "#PWR064"
 			(at 96.52 80.01 0)
 			(effects
 				(font
@@ -1007,7 +1053,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "#PWR072")
+					(reference "#PWR064")
 					(unit 1)
 				)
 			)
@@ -1031,7 +1077,7 @@
 				)
 			)
 		)
-		(property "Value" "U"
+		(property "Value" "MPL3115A2R1"
 			(at 141.605 72.39 0)
 			(effects
 				(font
@@ -1039,7 +1085,7 @@
 				)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "myFootprints:PSON80P300X300X100-8N"
 			(at 137.16 82.55 0)
 			(effects
 				(font
@@ -1058,6 +1104,33 @@
 			)
 		)
 		(property "Description" ""
+			(at 137.16 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" ""
+			(at 137.16 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 137.16 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C54429"
 			(at 137.16 82.55 0)
 			(effects
 				(font
@@ -1101,16 +1174,15 @@
 	)
 	(symbol
 		(lib_id "Device:C")
-		(at 110.49 80.01 0)
+		(at 110.49 81.28 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "adbf755c-ba61-4a07-9908-d047a8eee8ac")
-		(property "Reference" "C25"
-			(at 114.3 78.7399 0)
+		(property "Reference" "C20"
+			(at 114.3 80.0099 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1118,8 +1190,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 114.3 81.2799 0)
+		(property "Value" "100nf"
+			(at 111.252 84.074 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1127,8 +1199,8 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
-			(at 111.4552 83.82 0)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+			(at 111.4552 85.09 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1137,7 +1209,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 110.49 80.01 0)
+			(at 110.49 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1146,7 +1218,34 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 110.49 80.01 0)
+			(at 110.49 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Device" ""
+			(at 110.49 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 110.49 81.28 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C49678"
+			(at 110.49 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1163,7 +1262,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "C25")
+					(reference "C20")
 					(unit 1)
 				)
 			)
@@ -1179,7 +1278,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "b83913b5-364b-4ac2-85a6-626236db4293")
-		(property "Reference" "#PWR073"
+		(property "Reference" "#PWR066"
 			(at 132.08 82.55 0)
 			(effects
 				(font
@@ -1229,7 +1328,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "#PWR073")
+					(reference "#PWR066")
 					(unit 1)
 				)
 			)
@@ -1243,9 +1342,8 @@
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "ee55a962-3252-4f45-8e86-12453fc006cd")
-		(property "Reference" "C26"
+		(property "Reference" "C21"
 			(at 123.19 81.2799 0)
 			(effects
 				(font
@@ -1254,8 +1352,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "C"
-			(at 123.19 83.8199 0)
+		(property "Value" "100nf"
+			(at 121.92 84.328 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1263,7 +1361,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 120.3452 86.36 0)
 			(effects
 				(font
@@ -1290,6 +1388,33 @@
 				(hide yes)
 			)
 		)
+		(property "Sim.Device" ""
+			(at 119.38 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Sim.Type" ""
+			(at 119.38 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C49678"
+			(at 119.38 82.55 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "eb3c2b0b-619a-44d0-96a6-5606516ecdca")
 		)
@@ -1299,7 +1424,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "C26")
+					(reference "C21")
 					(unit 1)
 				)
 			)
