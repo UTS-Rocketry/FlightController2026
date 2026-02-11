@@ -881,24 +881,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 137.16 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 137.16 102.87 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "24c63c32-358e-421b-a3d8-01ceded41778")
 		)

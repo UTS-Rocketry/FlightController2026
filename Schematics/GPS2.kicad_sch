@@ -801,24 +801,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 111.76 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 111.76 72.39 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C157991"
 			(at 111.76 72.39 0)
 			(effects

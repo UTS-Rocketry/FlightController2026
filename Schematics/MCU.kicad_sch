@@ -5391,24 +5391,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 157.48 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 157.48 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C28323"
 			(at 157.48 60.96 0)
 			(effects
@@ -5750,24 +5732,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 40.64 138.43 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 40.64 138.43 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C96346"
 			(at 40.64 138.43 90)
 			(effects
@@ -5837,24 +5801,6 @@
 			)
 		)
 		(property "Description" "Push button switch, generic, symbol, four pins"
-			(at 40.64 101.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 40.64 101.6 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 40.64 101.6 0)
 			(effects
 				(font
@@ -6079,24 +6025,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 40.64 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 40.64 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C49393646"
 			(at 40.64 127 0)
 			(effects
@@ -6241,24 +6169,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 116.84 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 116.84 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 116.84 40.64 0)
 			(effects
 				(font
@@ -6413,24 +6323,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 241.3 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 241.3 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C585350"
 			(at 241.3 52.07 0)
 			(effects
@@ -6532,24 +6424,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 49.53 157.48 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 49.53 157.48 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C95781"
 			(at 49.53 157.48 90)
 			(effects
@@ -6619,33 +6493,6 @@
 			)
 		)
 		(property "Description" "Light emitting diode"
-			(at 39.37 157.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Pins" "1=K 2=A"
-			(at 39.37 157.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 39.37 157.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 39.37 157.48 0)
 			(effects
 				(font
@@ -6731,24 +6578,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 66.04 180.34 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 66.04 180.34 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C17630"
 			(at 66.04 180.34 90)
 			(effects
@@ -6827,24 +6656,6 @@
 			)
 		)
 		(property "LCSC Part" "C19723344"
-			(at 226.06 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 226.06 96.52 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 226.06 96.52 0)
 			(effects
 				(font
@@ -6987,24 +6798,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 157.48 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 157.48 50.8 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 157.48 50.8 0)
 			(effects
 				(font
@@ -7355,24 +7148,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 43.18 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 43.18 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C2827321"
 			(at 43.18 180.34 0)
 			(effects
@@ -7450,24 +7225,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 129.54 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 129.54 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 129.54 40.64 0)
 			(effects
 				(font
@@ -7885,24 +7642,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 138.43 26.67 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 138.43 26.67 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C85840"
 			(at 138.43 26.67 90)
 			(effects
@@ -8182,24 +7921,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 157.48 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 157.48 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C49678"
 			(at 157.48 40.64 0)
 			(effects
@@ -8346,24 +8067,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 53.34 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 53.34 95.25 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C49678"
 			(at 53.34 95.25 0)
 			(effects
@@ -8432,24 +8135,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 146.05 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 146.05 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 146.05 30.48 0)
 			(effects
 				(font
@@ -8536,24 +8221,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 96.52 154.94 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 96.52 154.94 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C19110"
 			(at 96.52 154.94 0)
 			(effects
@@ -8625,24 +8292,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 121.92 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 121.92 52.07 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 121.92 52.07 0)
 			(effects
 				(font
@@ -8787,24 +8436,6 @@
 		)
 		(property "Description" "Resistor"
 			(at 40.64 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 40.64 88.9 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 40.64 88.9 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -8958,24 +8589,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 109.22 154.94 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 109.22 154.94 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C19110"
 			(at 109.22 154.94 0)
 			(effects
@@ -9047,24 +8660,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 172.72 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 172.72 60.96 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 172.72 60.96 0)
 			(effects
 				(font
@@ -9149,24 +8744,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 132.08 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 132.08 30.48 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C28323"
 			(at 132.08 30.48 0)
 			(effects
@@ -9239,24 +8816,6 @@
 			)
 		)
 		(property "Description" "STMicroelectronics Arm Cortex-M4 MCU, 1024KB flash, 192KB RAM, 168 MHz, 1.8-3.6V, 51 GPIO, LQFP64"
-			(at 140.97 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 140.97 118.11 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 140.97 118.11 0)
 			(effects
 				(font
@@ -9670,24 +9229,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 232.41 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 232.41 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "354e57ad-6f8d-41f8-b289-a07d46fd29cb")
 		)
@@ -9833,24 +9374,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 219.71 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 219.71 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "2"
 			(uuid "32904682-cd4d-4ae1-b7e3-894bbd95ba27")
 		)
@@ -9980,24 +9503,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 26.67 180.34 0)
 			(effects
 				(font
@@ -10210,24 +9715,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 121.92 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 121.92 63.5 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 121.92 63.5 0)
 			(effects
 				(font
