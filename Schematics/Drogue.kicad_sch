@@ -1145,24 +1145,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 156.21 91.44 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 156.21 91.44 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C2930170"
 			(at 156.21 91.44 90)
 			(effects
@@ -1236,24 +1218,6 @@
 			)
 		)
 		(property "Description" "60A Id, 100V Vds, OptiMOS N-Channel Power MOSFET, 9.8mOhm Ron, Qg (typ) 22.0nC, PG-TDSON-8"
-			(at 138.43 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 138.43 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 138.43 97.79 0)
 			(effects
 				(font
@@ -1350,24 +1314,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 125.73 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 125.73 97.79 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C17408"
 			(at 125.73 97.79 0)
 			(effects
@@ -1439,24 +1385,6 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 133.35 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 133.35 104.14 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 133.35 104.14 0)
 			(effects
 				(font
@@ -1676,24 +1604,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 165.1 91.44 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 165.1 91.44 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C84376"
 			(at 165.1 91.44 90)
 			(effects
@@ -1837,24 +1747,6 @@
 			)
 		)
 		(property "LCSC Part" "C17644051"
-			(at 140.97 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 140.97 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 140.97 82.55 0)
 			(effects
 				(font

@@ -1498,24 +1498,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 161.29 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 161.29 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "6db0a5a5-b9f2-4a1f-af1a-dee379c9208f")
 		)
@@ -1595,24 +1577,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 198.12 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 198.12 85.09 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "b0a40897-64ce-44b6-9ccc-373baba11b46")
 		)
@@ -1674,33 +1638,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 101.6 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "lcsc" "C6565120"
-			(at 101.6 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 101.6 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 101.6 90.17 0)
 			(effects
 				(font
@@ -1788,33 +1725,6 @@
 				(hide yes)
 			)
 		)
-		(property "lcsc" "C4353191"
-			(at 156.21 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 156.21 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 156.21 90.17 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C269726"
 			(at 156.21 90.17 0)
 			(effects
@@ -1886,33 +1796,6 @@
 			)
 		)
 		(property "Description" "CAN Bus Transceivers, 3.3V, 1Mbps, Low-Power capabilities, SOIC-8"
-			(at 140.97 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "lcsc" "C12084"
-			(at 140.97 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 140.97 88.9 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 140.97 88.9 0)
 			(effects
 				(font
@@ -2152,24 +2035,6 @@
 			)
 		)
 		(property "LCSC Part" "C17644051"
-			(at 198.12 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 198.12 93.98 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 198.12 93.98 0)
 			(effects
 				(font

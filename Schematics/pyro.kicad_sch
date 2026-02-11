@@ -1070,24 +1070,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 134.62 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 134.62 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C84376"
 			(at 134.62 82.55 0)
 			(effects
@@ -1239,24 +1221,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 115.57 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 115.57 77.47 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(pin "1"
 			(uuid "54421d70-10ed-4c40-a699-284dea6040c1")
 		)
@@ -1319,24 +1283,6 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 124.46 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 124.46 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 124.46 82.55 0)
 			(effects
 				(font
@@ -1490,24 +1436,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 109.22 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 109.22 99.06 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C84376"
 			(at 109.22 99.06 0)
 			(effects
@@ -1645,24 +1573,6 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 101.6 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 101.6 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 101.6 92.71 0)
 			(effects
 				(font
@@ -1810,24 +1720,6 @@
 			)
 		)
 		(property "Description" "60A Id, 100V Vds, OptiMOS N-Channel Power MOSFET, 9.8mOhm Ron, Qg (typ) 22.0nC, PG-TDSON-8"
-			(at 114.3 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 114.3 92.71 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 114.3 92.71 0)
 			(effects
 				(font

@@ -951,24 +951,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 100.33 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 100.33 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C49678"
 			(at 100.33 81.28 0)
 			(effects
@@ -1112,24 +1094,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 137.16 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 137.16 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C54429"
 			(at 137.16 82.55 0)
 			(effects
@@ -1218,24 +1182,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 110.49 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 110.49 81.28 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 110.49 81.28 0)
 			(effects
 				(font
@@ -1380,24 +1326,6 @@
 			)
 		)
 		(property "Description" "Unpolarized capacitor"
-			(at 119.38 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 119.38 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 119.38 82.55 0)
 			(effects
 				(font

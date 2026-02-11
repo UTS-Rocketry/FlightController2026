@@ -2039,24 +2039,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 107.95 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 107.95 82.55 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C49566391"
 			(at 107.95 82.55 0)
 			(effects
@@ -2214,66 +2196,6 @@
 				(hide yes)
 			)
 		)
-		(property "MF" "UMW"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MOUSER_PRICE-STOCK" "https://www.mouser.com/Search/Refine.aspx?Keyword=947-SRV05-4.TCT"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "DESCRIPTION" "Semtech SRV05-4.TCT, Uni-Directional TVS Diode Array, 300W, 6-Pin SOT-23"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "MOUSER_PART_NUMBER" "947-SRV05-4.TCT"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Price" "None"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Package" "None"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
 		(property "Check_prices" "https://www.snapeda.com/parts/SRV05-4.TCT/UMW/view-part/?ref=eda"
 			(at 162.56 73.66 0)
 			(effects
@@ -2304,26 +2226,6 @@
 				(hide yes)
 			)
 		)
-		(property "MP" "SRV05-4.TCT"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Description_1" "ESD Suppressors / TVS Diodes SOT-23 5V 4DIODE Low Capacitance"
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify bottom)
-				(hide yes)
-			)
-		)
 		(property "Availability" "In Stock"
 			(at 162.56 73.66 0)
 			(effects
@@ -2341,24 +2243,6 @@
 					(size 1.27 1.27)
 				)
 				(justify bottom)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 162.56 73.66 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
 				(hide yes)
 			)
 		)
@@ -2578,24 +2462,6 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 186.69 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 186.69 66.04 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 186.69 66.04 0)
 			(effects
 				(font
@@ -2873,24 +2739,6 @@
 			)
 		)
 		(property "Description" "Resistor"
-			(at 175.26 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Device" ""
-			(at 175.26 68.58 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
 			(at 175.26 68.58 0)
 			(effects
 				(font

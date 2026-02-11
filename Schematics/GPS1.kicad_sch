@@ -734,24 +734,6 @@
 				(hide yes)
 			)
 		)
-		(property "Sim.Device" ""
-			(at 102.87 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Sim.Type" ""
-			(at 102.87 71.12 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
 		(property "LCSC Part" "C157991"
 			(at 102.87 71.12 0)
 			(effects
