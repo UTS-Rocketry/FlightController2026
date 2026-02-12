@@ -148,23 +148,23 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "MPL3115A2R1"
-				(at 4.318 -6.858 0)
+			(property "Reference" "U"
+				(at 4.445 12.7 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Value" ""
-				(at 0 0 0)
+			(property "Value" "MPL3115A2R1"
+				(at 4.445 10.16 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
 				)
 			)
-			(property "Footprint" ""
+			(property "Footprint" "myFootprints:PSON80P300X300X100-8N"
 				(at 0 0 0)
 				(effects
 					(font
@@ -183,6 +183,15 @@
 				)
 			)
 			(property "Description" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "LCSC Part" "C54429"
 				(at 0 0 0)
 				(effects
 					(font
@@ -580,12 +589,6 @@
 		)
 	)
 	(junction
-		(at 96.52 86.36)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "18c965bb-b3a1-4692-89c5-b0429866fb71")
-	)
-	(junction
 		(at 100.33 76.2)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -608,12 +611,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "674f737a-fdd3-466a-98c1-effc0a7619f8")
-	)
-	(junction
-		(at 96.52 76.2)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "6909401c-a573-4402-8e75-000267b65f01")
 	)
 	(junction
 		(at 119.38 86.36)
@@ -728,16 +725,6 @@
 			(type default)
 		)
 		(uuid "92130466-0fa4-49a7-99bc-54e3889db004")
-	)
-	(wire
-		(pts
-			(xy 96.52 86.36) (xy 96.52 76.2)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "aeae6ba8-1cef-462c-a522-187a307221f9")
 	)
 	(wire
 		(pts
@@ -1051,7 +1038,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "82a7ad41-a8bb-4c9e-b838-47e361533664")
-		(property "Reference" "MPL3115A2R1"
+		(property "Reference" "U"
 			(at 141.605 69.85 0)
 			(effects
 				(font
@@ -1130,7 +1117,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4fd02220-789e-446c-b98b-396c4e06173f"
-					(reference "MPL3115A2R1")
+					(reference "U")
 					(unit 1)
 				)
 			)

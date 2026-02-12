@@ -665,6 +665,12 @@
           "label": "MP",
           "name": "MP",
           "show": false
+        },
+        {
+          "group_by": false,
+          "label": "LCSC",
+          "name": "LCSC",
+          "show": false
         }
       ],
       "filter_string": "",
@@ -745,11 +751,7 @@
     ],
     [
       "48dec4ea-003d-4181-8fc8-af0c53e2850d",
-      "GPS1"
-    ],
-    [
-      "9d9c275c-2a03-42ca-b9d6-2448b2e4b2af",
-      "GPS2"
+      "GPS"
     ],
     [
       "97ae08f8-7044-40a2-9385-378b47d6b9a1",

@@ -6,8 +6,8 @@
 	(paper "A4")
 	(lib_symbols)
 	(sheet
-		(at 24.13 87.63)
-		(size 30.48 41.91)
+		(at 72.39 82.55)
+		(size 33.02 12.7)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -21,7 +21,7 @@
 		)
 		(uuid "00a4b53a-09dd-45fe-9668-74427c57713f")
 		(property "Sheetname" "Pyro"
-			(at 24.13 86.868 0)
+			(at 72.39 81.788 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -30,7 +30,7 @@
 			)
 		)
 		(property "Sheetfile" "Pyro.kicad_sch"
-			(at 24.13 130.1246 0)
+			(at 72.136 96.266 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -47,8 +47,8 @@
 		)
 	)
 	(sheet
-		(at 162.56 22.86)
-		(size 39.37 46.99)
+		(at 203.2 53.34)
+		(size 30.48 17.78)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -63,7 +63,7 @@
 		)
 		(uuid "105f27ec-5fab-44f4-a683-69b23a7486f0")
 		(property "Sheetname" "usb_type_c"
-			(at 162.56 22.1484 0)
+			(at 203.2 52.6284 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -72,7 +72,7 @@
 			)
 		)
 		(property "Sheetfile" "usb_type_c_sch.kicad_sch"
-			(at 162.56 70.4346 0)
+			(at 203.2 71.7046 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -89,8 +89,8 @@
 		)
 	)
 	(sheet
-		(at 68.58 21.59)
-		(size 36.83 48.26)
+		(at 125.73 29.21)
+		(size 49.53 99.06)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -105,7 +105,7 @@
 		)
 		(uuid "2415024d-c1fa-457e-8c6b-d01152b96a1d")
 		(property "Sheetname" "MCU"
-			(at 68.58 20.8784 0)
+			(at 125.73 28.4984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -114,7 +114,7 @@
 			)
 		)
 		(property "Sheetfile" "MCU.kicad_sch"
-			(at 68.58 70.4346 0)
+			(at 125.73 128.8546 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -131,8 +131,8 @@
 		)
 	)
 	(sheet
-		(at 96.52 86.36)
-		(size 30.48 44.45)
+		(at 203.2 34.29)
+		(size 30.48 13.97)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -146,8 +146,8 @@
 			(color 0 0 0 0.0000)
 		)
 		(uuid "48dec4ea-003d-4181-8fc8-af0c53e2850d")
-		(property "Sheetname" "GPS1"
-			(at 96.52 85.6484 0)
+		(property "Sheetname" "GPS"
+			(at 203.2 33.5784 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -156,7 +156,7 @@
 			)
 		)
 		(property "Sheetfile" "GPS1.kicad_sch"
-			(at 96.52 131.3946 0)
+			(at 203.2 48.8446 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -173,8 +173,8 @@
 		)
 	)
 	(sheet
-		(at 58.42 87.63)
-		(size 30.48 41.91)
+		(at 73.66 57.15)
+		(size 31.75 19.05)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -189,7 +189,7 @@
 		)
 		(uuid "49edfe84-9da0-4fce-8baf-f24126c92814")
 		(property "Sheetname" "Drogue"
-			(at 58.42 86.9184 0)
+			(at 73.66 56.4384 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -198,7 +198,7 @@
 			)
 		)
 		(property "Sheetfile" "Drogue.kicad_sch"
-			(at 58.42 130.1246 0)
+			(at 73.66 76.7846 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -215,8 +215,8 @@
 		)
 	)
 	(sheet
-		(at 208.28 86.36)
-		(size 24.13 44.45)
+		(at 203.2 130.81)
+		(size 30.48 19.05)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -231,7 +231,7 @@
 		)
 		(uuid "4fd02220-789e-446c-b98b-396c4e06173f")
 		(property "Sheetname" "Barometer"
-			(at 208.28 85.6484 0)
+			(at 203.2 130.0984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -240,7 +240,7 @@
 			)
 		)
 		(property "Sheetfile" "Barometer.kicad_sch"
-			(at 208.28 131.3946 0)
+			(at 203.2 150.4446 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -257,8 +257,8 @@
 		)
 	)
 	(sheet
-		(at 110.49 22.86)
-		(size 40.64 46.99)
+		(at 123.19 140.97)
+		(size 52.07 15.24)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -273,7 +273,7 @@
 		)
 		(uuid "83b93a99-cc2b-4131-8387-83d6bf066ab3")
 		(property "Sheetname" "Can_transceiver"
-			(at 110.49 22.1484 0)
+			(at 123.19 140.2584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -282,7 +282,7 @@
 			)
 		)
 		(property "Sheetfile" "Can_transceiver.kicad_sch"
-			(at 110.49 70.4346 0)
+			(at 123.19 156.7946 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -299,8 +299,8 @@
 		)
 	)
 	(sheet
-		(at 24.13 139.7)
-		(size 27.94 45.72)
+		(at 73.66 121.92)
+		(size 33.02 17.78)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -315,7 +315,7 @@
 		)
 		(uuid "845ef161-5bd7-4496-b5c2-e65e4f30444a")
 		(property "Sheetname" "Accelerometer"
-			(at 24.13 138.9884 0)
+			(at 73.66 121.2084 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -324,7 +324,7 @@
 			)
 		)
 		(property "Sheetfile" "Accelerometer.kicad_sch"
-			(at 24.13 186.0046 0)
+			(at 73.66 140.2846 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -341,8 +341,8 @@
 		)
 	)
 	(sheet
-		(at 170.18 86.36)
-		(size 30.48 44.45)
+		(at 72.39 100.33)
+		(size 33.02 15.24)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -357,7 +357,7 @@
 		)
 		(uuid "97ae08f8-7044-40a2-9385-378b47d6b9a1")
 		(property "Sheetname" "LoRa"
-			(at 170.18 85.6484 0)
+			(at 72.39 99.6184 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -366,7 +366,7 @@
 			)
 		)
 		(property "Sheetfile" "LoRa.kicad_sch"
-			(at 170.18 131.3946 0)
+			(at 72.39 116.1546 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -383,50 +383,8 @@
 		)
 	)
 	(sheet
-		(at 132.08 86.36)
-		(size 29.21 44.45)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(stroke
-			(width 0.1524)
-			(type solid)
-		)
-		(fill
-			(color 0 0 0 0.0000)
-		)
-		(uuid "9d9c275c-2a03-42ca-b9d6-2448b2e4b2af")
-		(property "Sheetname" "GPS2"
-			(at 132.08 85.6484 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left bottom)
-			)
-		)
-		(property "Sheetfile" "GPS2.kicad_sch"
-			(at 132.08 131.3946 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left top)
-			)
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
-					(page "9")
-				)
-			)
-		)
-	)
-	(sheet
-		(at 24.13 21.59)
-		(size 39.37 48.26)
+		(at 73.66 29.21)
+		(size 31.75 21.59)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -441,7 +399,7 @@
 		)
 		(uuid "ba4deb13-717a-43bb-a60d-abfd8de92de6")
 		(property "Sheetname" "Power"
-			(at 24.13 20.8784 0)
+			(at 73.66 28.4984 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -450,7 +408,7 @@
 			)
 		)
 		(property "Sheetfile" "power.kicad_sch"
-			(at 24.13 70.4346 0)
+			(at 73.66 51.3846 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -467,8 +425,8 @@
 		)
 	)
 	(sheet
-		(at 240.03 86.36)
-		(size 26.67 44.45)
+		(at 203.2 106.68)
+		(size 30.48 16.51)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -483,7 +441,7 @@
 		)
 		(uuid "baf5f864-5fa3-4fb9-89f7-279135a67e52")
 		(property "Sheetname" "IMU"
-			(at 240.03 85.6484 0)
+			(at 203.2 105.9684 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -492,7 +450,7 @@
 			)
 		)
 		(property "Sheetfile" "IMU.kicad_sch"
-			(at 240.03 131.3946 0)
+			(at 203.2 123.7746 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -509,8 +467,8 @@
 		)
 	)
 	(sheet
-		(at 209.55 22.86)
-		(size 43.18 46.99)
+		(at 203.2 77.47)
+		(size 30.48 21.59)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
@@ -525,7 +483,7 @@
 		)
 		(uuid "caa4144d-1f54-4913-83e9-888ee3d0dcec")
 		(property "Sheetname" "FlashSd"
-			(at 209.55 22.1484 0)
+			(at 203.2 76.7584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -534,7 +492,7 @@
 			)
 		)
 		(property "Sheetfile" "FlashSd.kicad_sch"
-			(at 209.55 70.4346 0)
+			(at 203.2 99.6446 0)
 			(effects
 				(font
 					(size 1.27 1.27)

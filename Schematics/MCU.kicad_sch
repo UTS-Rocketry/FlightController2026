@@ -3742,16 +3742,16 @@
 		(uuid "4c887e0c-cd46-483b-90bb-68146330a27f")
 	)
 	(junction
-		(at 129.54 36.83)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "591c6328-5934-4bd8-bf99-540039eda1e6")
-	)
-	(junction
 		(at 116.84 36.83)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "76ad5cf6-2c6a-489b-9671-22a58d3b9ca5")
+	)
+	(junction
+		(at 129.54 36.83)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "76bf00a5-0fce-4d55-80b6-391662333edc")
 	)
 	(junction
 		(at 241.3 69.85)
@@ -4147,16 +4147,6 @@
 	)
 	(wire
 		(pts
-			(xy 129.54 36.83) (xy 140.97 36.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1cc170bd-0249-4395-9e76-52af3f67a2e8")
-	)
-	(wire
-		(pts
 			(xy 148.59 57.15) (xy 148.59 69.85)
 		)
 		(stroke
@@ -4487,7 +4477,17 @@
 	)
 	(wire
 		(pts
-			(xy 50.8 180.34) (xy 62.23 180.34)
+			(xy 129.54 36.83) (xy 140.97 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8ee0ddfc-d4b5-4413-89a8-03af11c20161")
+	)
+	(wire
+		(pts
+			(xy 50.8 180.34) (xy 66.04 180.34)
 		)
 		(stroke
 			(width 0)
@@ -4537,7 +4537,7 @@
 	)
 	(wire
 		(pts
-			(xy 99.06 110.49) (xy 120.65 110.49)
+			(xy 95.25 110.49) (xy 120.65 110.49)
 		)
 		(stroke
 			(width 0)
@@ -4787,16 +4787,6 @@
 	)
 	(wire
 		(pts
-			(xy 72.39 180.34) (xy 69.85 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "d4be46d4-7c00-42e2-ace7-73e59b4bba53")
-	)
-	(wire
-		(pts
 			(xy 67.31 129.54) (xy 69.85 129.54)
 		)
 		(stroke
@@ -4976,7 +4966,7 @@
 		(uuid "09f23585-9a62-4e34-a71f-9a8b2234e8df")
 	)
 	(label "RGB_DATA"
-		(at 72.39 180.34 0)
+		(at 66.04 180.34 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -4986,7 +4976,7 @@
 		(uuid "115bd8af-00df-46ae-bd46-18aea61b19f0")
 	)
 	(label "RGB_DATA"
-		(at 99.06 110.49 180)
+		(at 95.25 110.49 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6526,83 +6516,6 @@
 		)
 	)
 	(symbol
-		(lib_id "Device:R")
-		(at 66.04 180.34 90)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "45a7ef0e-030e-4e84-8934-7a4f14a9a6e3")
-		(property "Reference" "R4"
-			(at 66.04 173.99 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Value" "330R"
-			(at 66.04 176.53 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 66.04 182.118 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 66.04 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 66.04 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part" "C17630"
-			(at 66.04 180.34 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "3817e4d6-d185-4392-9e0f-432d3ddfe8f7")
-		)
-		(pin "2"
-			(uuid "b1b57668-2eba-4be1-8344-3649a32b0621")
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "R4")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
 		(lib_id "Device:Crystal_GND24")
 		(at 226.06 96.52 0)
 		(unit 1)
@@ -7173,85 +7086,6 @@
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "D1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 129.54 40.64 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "7025c285-793f-4a61-b5d9-79ad2dd15980")
-		(property "Reference" "CBulk1"
-			(at 133.35 39.3699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "4.7u"
-			(at 133.35 41.9099 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 130.5052 44.45 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 129.54 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 129.54 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part" "C98192"
-			(at 129.54 40.64 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "2"
-			(uuid "94e13d53-aff0-4888-8651-7d7e640f6fc4")
-		)
-		(pin "1"
-			(uuid "0bd753e2-2c38-4947-84bb-7e772ee95590")
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "CBulk1")
 					(unit 1)
 				)
 			)
@@ -8086,6 +7920,85 @@
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "C2")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C")
+		(at 129.54 40.64 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "8fe809d2-6483-4682-8eaa-2b7ce4ea356b")
+		(property "Reference" "C47"
+			(at 133.35 39.3699 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "4.7u"
+			(at 133.35 41.9099 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+			(at 130.5052 44.45 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC Part" "C98192"
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "06b0f783-0a1c-44e6-9e12-17dcb1d68ce5")
+		)
+		(pin "2"
+			(uuid "cfa8e606-6dab-4282-aa0d-f6d9b8a79875")
+		)
+		(instances
+			(project "flightcomputer2"
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
+					(reference "C47")
 					(unit 1)
 				)
 			)
