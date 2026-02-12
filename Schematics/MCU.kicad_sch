@@ -3620,6 +3620,107 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "power:PWR_FLAG"
+			(power)
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+				(hide yes)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(property "Reference" "#FLG"
+				(at 0 1.905 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Value" "PWR_FLAG"
+				(at 0 3.81 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Datasheet" "~"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description" "Special symbol for telling ERC where power comes from"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "ki_keywords" "flag power"
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(symbol "PWR_FLAG_0_0"
+				(pin power_out line
+					(at 0 0 90)
+					(length 0)
+					(name "~"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(symbol "PWR_FLAG_0_1"
+				(polyline
+					(pts
+						(xy 0 0) (xy 0 1.27) (xy -1.016 1.905) (xy 0 2.54) (xy 1.016 1.905) (xy 0 1.27)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 	)
 	(rectangle
 		(start 201.93 20.32)
@@ -3704,6 +3805,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "12bdcb77-5dd0-445c-ba9c-45af7bf359bf")
+	)
+	(junction
+		(at 149.86 26.67)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "1c1edddc-d194-42b0-bcf0-12a575e1a9e5")
 	)
 	(junction
 		(at 26.67 187.96)
@@ -3820,14 +3927,6 @@
 		(uuid "ffb1e2f8-2f5a-4816-becb-8bf9908068e5")
 	)
 	(no_connect
-		(at 161.29 97.79)
-		(uuid "022d037e-76fd-413a-b04b-1d369d24fa10")
-	)
-	(no_connect
-		(at 161.29 133.35)
-		(uuid "02b9cdcb-19f8-4ed6-968c-f3b4857e9793")
-	)
-	(no_connect
 		(at 161.29 140.97)
 		(uuid "0d27b12b-b526-43c9-a548-7a5dbc9a0ba0")
 	)
@@ -3846,10 +3945,6 @@
 	(no_connect
 		(at 161.29 123.19)
 		(uuid "214b28d0-eb2e-4f2f-8c91-0aa40afb43cc")
-	)
-	(no_connect
-		(at 161.29 92.71)
-		(uuid "26db88ec-f133-46b1-a0bc-a60d2776f36c")
 	)
 	(no_connect
 		(at 254 57.15)
@@ -3872,32 +3967,20 @@
 		(uuid "3258abf1-7378-4912-a8f0-637d63b61650")
 	)
 	(no_connect
-		(at 120.65 95.25)
-		(uuid "33d87f4c-4095-48b2-aec2-3c2806f64514")
-	)
-	(no_connect
 		(at 120.65 138.43)
 		(uuid "44a38d46-052a-430b-a163-a926c26d3c0d")
 	)
 	(no_connect
-		(at 120.65 128.27)
-		(uuid "473b4318-c23e-475b-9ca3-34772bc338f0")
-	)
-	(no_connect
-		(at 161.29 158.75)
-		(uuid "48354039-8c51-4527-af4c-9bc2293b62fb")
-	)
-	(no_connect
-		(at 161.29 128.27)
-		(uuid "5dcda168-fdf5-4867-a98f-b464a949090c")
+		(at 161.29 148.59)
+		(uuid "4b440209-9d02-4633-bebf-ca5cc77c7f03")
 	)
 	(no_connect
 		(at 120.65 102.87)
 		(uuid "5fe5e195-b865-4736-a635-aca68dd4129a")
 	)
 	(no_connect
-		(at 161.29 130.81)
-		(uuid "6425a15f-c751-44fa-a24e-d3d1647aab00")
+		(at 120.65 118.11)
+		(uuid "6beae596-809c-4525-9023-6ea7e4ebd813")
 	)
 	(no_connect
 		(at 161.29 82.55)
@@ -3920,10 +4003,6 @@
 		(uuid "92a7c461-05f6-4f71-bb60-1878cee149a3")
 	)
 	(no_connect
-		(at 120.65 130.81)
-		(uuid "93a0eab4-c63e-41e0-b370-6ef1196ba1ed")
-	)
-	(no_connect
 		(at 254 54.61)
 		(uuid "a6b49e04-0235-4113-b8c9-9ce4fae0a176")
 	)
@@ -3938,10 +4017,6 @@
 	(no_connect
 		(at 45.72 104.14)
 		(uuid "c7be69d8-cdf7-47da-bfdd-7351149a4249")
-	)
-	(no_connect
-		(at 120.65 123.19)
-		(uuid "ce038daa-fe7f-4c89-93bc-48a26d75b3bd")
 	)
 	(no_connect
 		(at 161.29 156.21)
@@ -3962,14 +4037,6 @@
 	(no_connect
 		(at 161.29 125.73)
 		(uuid "e4f1858a-fa8b-413d-9d27-dfb1d3353531")
-	)
-	(no_connect
-		(at 161.29 90.17)
-		(uuid "e54ae84b-01e3-4cff-b91a-527e4b161d04")
-	)
-	(no_connect
-		(at 161.29 95.25)
-		(uuid "e7fe8d61-92af-4be0-81ad-0659a9a8a195")
 	)
 	(no_connect
 		(at 120.65 125.73)
@@ -4167,6 +4234,16 @@
 	)
 	(wire
 		(pts
+			(xy 165.1 97.79) (xy 161.29 97.79)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2a012227-3f6e-4170-89de-883c3b978fa7")
+	)
+	(wire
+		(pts
 			(xy 129.54 26.67) (xy 132.08 26.67)
 		)
 		(stroke
@@ -4174,6 +4251,16 @@
 			(type default)
 		)
 		(uuid "2b11cc10-de37-4bb2-a69a-f3aa03985f97")
+	)
+	(wire
+		(pts
+			(xy 165.1 130.81) (xy 161.29 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2e0a3e37-380d-45dc-a93e-3b6bc11c65f1")
 	)
 	(wire
 		(pts
@@ -4187,6 +4274,16 @@
 	)
 	(wire
 		(pts
+			(xy 149.86 26.67) (xy 152.4 26.67)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2f6603b5-f7ef-4656-9930-640cbb3d9509")
+	)
+	(wire
+		(pts
 			(xy 119.38 67.31) (xy 121.92 67.31)
 		)
 		(stroke
@@ -4194,6 +4291,16 @@
 			(type default)
 		)
 		(uuid "314edb8c-d09f-43c1-a5ae-81fdc4017672")
+	)
+	(wire
+		(pts
+			(xy 165.1 92.71) (xy 161.29 92.71)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "352dd540-f6e9-4186-aacb-3bce462d9f4f")
 	)
 	(wire
 		(pts
@@ -4257,6 +4364,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 123.19) (xy 120.65 123.19)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "481b0293-c989-40f0-bb7d-9f22519551bd")
+	)
+	(wire
+		(pts
 			(xy 142.24 26.67) (xy 146.05 26.67)
 		)
 		(stroke
@@ -4297,6 +4414,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 115.57) (xy 120.65 115.57)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "584b7826-b908-4721-af59-a0e71d5eeaf4")
+	)
+	(wire
+		(pts
 			(xy 146.05 46.99) (xy 146.05 69.85)
 		)
 		(stroke
@@ -4327,16 +4454,6 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 115.57) (xy 120.65 115.57)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5fcb252f-0ed1-48b5-9580-33d4919e94f7")
-	)
-	(wire
-		(pts
 			(xy 26.67 187.96) (xy 43.18 187.96)
 		)
 		(stroke
@@ -4344,6 +4461,16 @@
 			(type default)
 		)
 		(uuid "62381d33-933e-4cca-bd63-44a4ae2b57d1")
+	)
+	(wire
+		(pts
+			(xy 165.1 90.17) (xy 161.29 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6338cc72-c904-44a7-a1d7-e931433cec96")
 	)
 	(wire
 		(pts
@@ -4397,6 +4524,16 @@
 	)
 	(wire
 		(pts
+			(xy 165.1 95.25) (xy 161.29 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "6df90f33-e808-4049-a6f8-e89184ffb8d4")
+	)
+	(wire
+		(pts
 			(xy 120.65 143.51) (xy 96.52 143.51)
 		)
 		(stroke
@@ -4424,6 +4561,16 @@
 			(type default)
 		)
 		(uuid "757cbb64-8498-4c42-9686-5a8f6ef41d36")
+	)
+	(wire
+		(pts
+			(xy 111.76 95.25) (xy 120.65 95.25)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "770508a4-cb02-4a5a-be72-f4e606d105bf")
 	)
 	(wire
 		(pts
@@ -4504,6 +4651,16 @@
 			(type default)
 		)
 		(uuid "92f15acf-35a8-49e2-86f1-19c1f235e204")
+	)
+	(wire
+		(pts
+			(xy 165.1 77.47) (xy 161.29 77.47)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9424a6fb-711f-4043-82c8-94f9563f6d48")
 	)
 	(wire
 		(pts
@@ -4647,6 +4804,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 128.27) (xy 120.65 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "b1a02bd6-3ff0-4a43-beab-4dfe02f7b51e")
+	)
+	(wire
+		(pts
 			(xy 241.3 72.39) (xy 241.3 69.85)
 		)
 		(stroke
@@ -4654,16 +4821,6 @@
 			(type default)
 		)
 		(uuid "b613596a-3c90-475e-af0c-152cba083491")
-	)
-	(wire
-		(pts
-			(xy 111.76 118.11) (xy 120.65 118.11)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "b98457a3-85a4-45f3-86ec-e7fd81e667a1")
 	)
 	(wire
 		(pts
@@ -4747,6 +4904,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 130.81) (xy 120.65 130.81)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c7f7fb62-f1a9-421d-9166-c991113eb7ac")
+	)
+	(wire
+		(pts
 			(xy 116.84 44.45) (xy 129.54 44.45)
 		)
 		(stroke
@@ -4784,6 +4951,26 @@
 			(type default)
 		)
 		(uuid "d4568113-7253-4842-b143-781168dca354")
+	)
+	(wire
+		(pts
+			(xy 165.1 158.75) (xy 161.29 158.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "db8e1a26-9bcf-428a-a525-794bee90a351")
+	)
+	(wire
+		(pts
+			(xy 165.1 133.35) (xy 161.29 133.35)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "dd0846f3-288c-4c87-b4dd-1ebf9a1b5eb0")
 	)
 	(wire
 		(pts
@@ -4837,16 +5024,6 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 148.59) (xy 161.29 148.59)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e7ab927c-7a90-444d-9c52-fa4203c70af3")
-	)
-	(wire
-		(pts
 			(xy 161.29 110.49) (xy 171.45 110.49)
 		)
 		(stroke
@@ -4867,7 +5044,7 @@
 	)
 	(wire
 		(pts
-			(xy 146.05 26.67) (xy 152.4 26.67)
+			(xy 146.05 26.67) (xy 149.86 26.67)
 		)
 		(stroke
 			(width 0)
@@ -4924,6 +5101,16 @@
 			(type default)
 		)
 		(uuid "f844db4a-b959-4de6-a2e7-9c67f582afa0")
+	)
+	(wire
+		(pts
+			(xy 165.1 128.27) (xy 161.29 128.27)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f96df880-cca2-4f5d-896d-60df56d2e370")
 	)
 	(wire
 		(pts
@@ -5095,9 +5282,31 @@
 		)
 		(uuid "e41756a0-e448-417d-8146-a6d5c073a3fb")
 	)
+	(hierarchical_label "GPS1_RX"
+		(shape input)
+		(at 99.06 128.27 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "00d91186-ab43-4c1e-a1cd-a5e8f56a9a29")
+	)
+	(hierarchical_label "sxReset"
+		(shape input)
+		(at 165.1 128.27 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "09610b8a-0bef-4ef7-9466-79c2a66f43a8")
+	)
 	(hierarchical_label "GPS2_RX"
 		(shape input)
-		(at 111.76 115.57 180)
+		(at 111.76 95.25 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5105,6 +5314,17 @@
 			(justify right)
 		)
 		(uuid "0aac5695-f3df-4da5-a5b7-2d8392840eda")
+	)
+	(hierarchical_label "sxNSS"
+		(shape input)
+		(at 165.1 130.81 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1271e281-5cae-4e59-9023-fd5bb4a28e72")
 	)
 	(hierarchical_label "SPI2-MOSI"
 		(shape input)
@@ -5116,6 +5336,17 @@
 			(justify right)
 		)
 		(uuid "1ebffcf1-96b6-4c8d-9ffa-7700b911b9d7")
+	)
+	(hierarchical_label "sxDIO1"
+		(shape input)
+		(at 165.1 133.35 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "1fdf3c2a-6b0c-489b-8738-12008f80ce44")
 	)
 	(hierarchical_label "D+"
 		(shape input)
@@ -5130,7 +5361,7 @@
 	)
 	(hierarchical_label "GPS2_TX"
 		(shape input)
-		(at 111.76 118.11 180)
+		(at 99.06 130.81 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -5161,6 +5392,17 @@
 		)
 		(uuid "3dd10507-8d65-45c4-874c-c390800f25ea")
 	)
+	(hierarchical_label "SPI2-SCK"
+		(shape input)
+		(at 165.1 146.05 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "4723be26-80bb-4dd4-943c-020078b5776c")
+	)
 	(hierarchical_label "CAN_TX_2"
 		(shape input)
 		(at 165.1 153.67 0)
@@ -5171,6 +5413,61 @@
 			(justify left)
 		)
 		(uuid "5f643852-bbf0-4d1b-9d76-1b19f9cdb912")
+	)
+	(hierarchical_label "PyroIgnite"
+		(shape input)
+		(at 165.1 158.75 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "68afab40-a19f-4504-a7e8-98bf1cd2d4af")
+	)
+	(hierarchical_label "SPI1-SCK"
+		(shape input)
+		(at 165.1 90.17 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "6db71354-4696-4cec-843d-2cec3ae94833")
+	)
+	(hierarchical_label "GPSReset2"
+		(shape input)
+		(at 99.06 123.19 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "72209a30-2311-4f87-a982-19ef13fa8076")
+	)
+	(hierarchical_label "DrougeIgnite"
+		(shape input)
+		(at 111.76 115.57 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "7ff66e7a-acca-4f1d-b299-55fa904060e3")
+	)
+	(hierarchical_label "GPS1_TX"
+		(shape input)
+		(at 165.1 77.47 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "93e627af-21e2-4c3a-9f04-d20de5f2f078")
 	)
 	(hierarchical_label "PyroADC"
 		(shape input)
@@ -5183,6 +5480,17 @@
 		)
 		(uuid "97684cd8-2b92-49fb-a9cf-29358fd1a5cf")
 	)
+	(hierarchical_label "SPI1-MISO"
+		(shape input)
+		(at 165.1 92.71 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "a0c9f823-4305-4d43-8ac9-9ed6e0239872")
+	)
 	(hierarchical_label "I2CSDL"
 		(shape input)
 		(at 165.1 138.43 0)
@@ -5193,6 +5501,17 @@
 			(justify left)
 		)
 		(uuid "aaa6e354-67f3-4872-8886-77b4c36bccfe")
+	)
+	(hierarchical_label "GPSReset1"
+		(shape input)
+		(at 165.1 97.79 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "b3a3dd30-1029-4b80-a434-4849111a6683")
 	)
 	(hierarchical_label "DrougeADC"
 		(shape input)
@@ -5205,27 +5524,16 @@
 		)
 		(uuid "b7e02f32-cb91-4dc1-a7ef-b84229fde34e")
 	)
-	(hierarchical_label "GPS1_TX"
+	(hierarchical_label "SPI1-MOSI"
 		(shape input)
-		(at 165.1 146.05 0)
+		(at 165.1 95.25 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "e26af052-f724-4485-85f3-e0fdf20ac8b1")
-	)
-	(hierarchical_label "GPS1_RX"
-		(shape input)
-		(at 165.1 148.59 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "e278a3fa-755f-49db-9600-e3f59218160d")
+		(uuid "d0f025df-be3e-4091-a7a4-a13f1e42cddb")
 	)
 	(hierarchical_label "I2CSDA"
 		(shape input)
@@ -5382,6 +5690,60 @@
 			)
 		)
 		(property "LCSC Part" "C28323"
+			(at 157.48 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 157.48 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 157.48 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 157.48 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 157.48 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 157.48 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 157.48 60.96 0)
 			(effects
 				(font
@@ -5731,6 +6093,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "08dc9dbf-9e7b-4b72-ae7d-f7582933bdf5")
 		)
@@ -5800,6 +6216,60 @@
 			)
 		)
 		(property "LCSC Part" "C49393646"
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 40.64 101.6 0)
 			(effects
 				(font
@@ -6024,6 +6494,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "f1c9dd77-63a5-41e5-bed5-cb283f2d7e73")
 		)
@@ -6168,6 +6692,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 116.84 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 116.84 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 116.84 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 116.84 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 116.84 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 116.84 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 116.84 40.64 0)
 			(effects
 				(font
@@ -6322,6 +6900,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "10"
 			(uuid "c9f451d5-7a8a-4440-9ed5-c43f20ab37a1")
 		)
@@ -6423,6 +7055,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "203ca59e-7fd3-4d24-8113-1b699a89e942")
 		)
@@ -6500,6 +7186,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "a37f145d-9582-4fb5-9eb9-268d10f449a5")
 		)
@@ -6569,6 +7309,60 @@
 			)
 		)
 		(property "LCSC Part" "C19723344"
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 226.06 96.52 0)
 			(effects
 				(font
@@ -6720,6 +7514,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 157.48 50.8 0)
 			(effects
 				(font
@@ -7070,6 +7918,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 43.18 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 43.18 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 43.18 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 43.18 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 43.18 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 43.18 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "4"
 			(uuid "d024f572-9fad-4fcf-a442-28539e922336")
 		)
@@ -7151,6 +8053,72 @@
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "#PWR022")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:PWR_FLAG")
+		(at 149.86 26.67 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "738984ee-cf84-449f-b1e5-bd0d6349f3b3")
+		(property "Reference" "#FLG04"
+			(at 149.86 24.765 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "PWR_FLAG"
+			(at 149.86 21.59 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 149.86 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 149.86 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Special symbol for telling ERC where power comes from"
+			(at 149.86 26.67 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "25eb2131-b7e1-4b04-bd6a-8855f2864089")
+		)
+		(instances
+			(project ""
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
+					(reference "#FLG04")
 					(unit 1)
 				)
 			)
@@ -7485,6 +8453,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "b433d685-6396-47e6-bce3-8cc995d94f13")
 		)
@@ -7764,6 +8786,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "dc927504-3309-47b6-af53-cbd6ae3ddc2d")
 		)
@@ -7910,6 +8986,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "7aa996c7-61d2-4b12-a367-25dce851ba7e")
 		)
@@ -7989,6 +9119,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 129.54 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "06b0f783-0a1c-44e6-9e12-17dcb1d68ce5")
 		)
@@ -8057,6 +9241,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 146.05 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 146.05 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 146.05 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 146.05 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 146.05 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 146.05 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 146.05 30.48 0)
 			(effects
 				(font
@@ -8143,6 +9381,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "8e3d5da2-cf96-4c9b-a3ff-74cd3f2fac95")
 		)
@@ -8214,6 +9506,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 121.92 52.07 0)
 			(effects
 				(font
@@ -8357,6 +9703,60 @@
 			)
 		)
 		(property "LCSC Part" "C84376"
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 40.64 88.9 90)
 			(effects
 				(font
@@ -8511,6 +9911,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "01cfcbef-150e-45e3-9f33-d118fb3fe83f")
 		)
@@ -8582,6 +10036,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 172.72 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 172.72 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 172.72 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 172.72 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 172.72 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 172.72 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 172.72 60.96 0)
 			(effects
 				(font
@@ -8666,6 +10174,60 @@
 				(hide yes)
 			)
 		)
+		(property "Description_1" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
 			(uuid "9a5c676e-8fdf-4543-8560-4b66c15f5d66")
 		)
@@ -8738,6 +10300,60 @@
 			)
 		)
 		(property "LCSC Part" "C15742"
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 140.97 118.11 0)
 			(effects
 				(font
@@ -9106,7 +10722,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 233.3752 107.95 0)
 			(effects
 				(font
@@ -9133,7 +10749,61 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" "C1647"
+		(property "LCSC Part" "C170109"
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 232.41 104.14 0)
 			(effects
 				(font
@@ -9251,7 +10921,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric_Pad1.08x0.95mm_HandSolder"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 218.7448 107.95 0)
 			(effects
 				(font
@@ -9278,7 +10948,61 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" "C1647"
+		(property "LCSC Part" "C170109"
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 219.71 104.14 0)
 			(effects
 				(font
@@ -9425,6 +11149,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 26.67 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 26.67 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 26.67 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 26.67 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 26.67 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 26.67 180.34 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 26.67 180.34 0)
 			(effects
 				(font
@@ -9637,6 +11415,60 @@
 			)
 		)
 		(property "LCSC Part" "C49678"
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
 			(at 121.92 63.5 0)
 			(effects
 				(font
