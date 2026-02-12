@@ -16,6 +16,7 @@ fp-info-cache
 _autosave-*
 *.tmp
 *.bak
+/#autosaved_files#/
 
 # Zip backups
 *.zip
