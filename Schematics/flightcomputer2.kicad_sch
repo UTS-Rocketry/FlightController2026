@@ -101,6 +101,16 @@
 	)
 	(wire
 		(pts
+			(xy 99.06 59.69) (xy 85.09 59.69)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "24506feb-0557-49a6-bf39-9af77b090496")
+	)
+	(wire
+		(pts
 			(xy 162.56 104.14) (xy 166.37 104.14)
 		)
 		(stroke
@@ -158,6 +168,16 @@
 			(type default)
 		)
 		(uuid "358b4992-34eb-4f77-9818-ce2071d0be8d")
+	)
+	(wire
+		(pts
+			(xy 85.09 49.53) (xy 78.74 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "48b58078-53df-4e73-8af1-5d908545ce9d")
 	)
 	(wire
 		(pts
@@ -251,6 +271,16 @@
 	)
 	(wire
 		(pts
+			(xy 86.36 46.99) (xy 78.74 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "716299d5-cd96-4e78-bf37-d9842c549d1b")
+	)
+	(wire
+		(pts
 			(xy 78.74 115.57) (xy 99.06 115.57)
 		)
 		(stroke
@@ -328,6 +358,16 @@
 			(type default)
 		)
 		(uuid "99e88b7b-a546-4efd-989a-ecd0435d8060")
+	)
+	(wire
+		(pts
+			(xy 87.63 54.61) (xy 87.63 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "9b029bb4-2772-4090-a4b0-18b3b014b29a")
 	)
 	(wire
 		(pts
@@ -421,6 +461,26 @@
 	)
 	(wire
 		(pts
+			(xy 86.36 57.15) (xy 86.36 46.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c66ea99e-39cd-449c-9b80-310902b8cc14")
+	)
+	(wire
+		(pts
+			(xy 88.9 41.91) (xy 78.74 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c870b65c-1d72-4e5b-a864-3bc80ba7b184")
+	)
+	(wire
+		(pts
 			(xy 162.56 115.57) (xy 162.56 104.14)
 		)
 		(stroke
@@ -428,6 +488,16 @@
 			(type default)
 		)
 		(uuid "c912c259-6f65-4506-85b7-f4e1ece3389a")
+	)
+	(wire
+		(pts
+			(xy 99.06 52.07) (xy 88.9 52.07)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ce66fd1e-f2ba-4d64-837c-f87850fb6c6d")
 	)
 	(wire
 		(pts
@@ -461,6 +531,36 @@
 	)
 	(wire
 		(pts
+			(xy 88.9 52.07) (xy 88.9 41.91)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e2bcfa21-656b-43f6-bd94-aad8da07f059")
+	)
+	(wire
+		(pts
+			(xy 87.63 44.45) (xy 78.74 44.45)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e6c5c3f2-c947-4bc1-b7f2-a345a605e2cf")
+	)
+	(wire
+		(pts
+			(xy 99.06 57.15) (xy 86.36 57.15)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ec6e81fe-a259-45a5-968f-374e0e78e918")
+	)
+	(wire
+		(pts
 			(xy 121.92 38.1) (xy 121.92 33.02)
 		)
 		(stroke
@@ -471,6 +571,16 @@
 	)
 	(wire
 		(pts
+			(xy 85.09 59.69) (xy 85.09 49.53)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f149e1e5-8a77-4b36-8a2b-7f218eaf4a6d")
+	)
+	(wire
+		(pts
 			(xy 166.37 104.14) (xy 170.18 104.14)
 		)
 		(stroke
@@ -478,6 +588,16 @@
 			(type default)
 		)
 		(uuid "f31a7d33-1eed-4b90-abe6-b18fca50e609")
+	)
+	(wire
+		(pts
+			(xy 99.06 54.61) (xy 87.63 54.61)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f65b7e72-c97e-4a37-bf59-0d5341a2c7fa")
 	)
 	(wire
 		(pts
@@ -916,6 +1036,46 @@
 				(justify left)
 			)
 		)
+		(pin "SPI3_MISO" input
+			(at 99.06 57.15 180)
+			(uuid "07d98b4f-9896-484a-a698-06d82654b0dc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SPI3_MOSI" input
+			(at 99.06 59.69 180)
+			(uuid "8bd9bb2c-413a-43b2-8c80-a825ab02d129")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "SPI3_SCK" input
+			(at 99.06 54.61 180)
+			(uuid "0ecd8593-73ee-4971-9d04-1cc0a68f489c")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(pin "CSFlashmem" input
+			(at 99.06 52.07 180)
+			(uuid "32973b7b-d989-46b5-8240-f2d2d163b271")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
@@ -1084,6 +1244,88 @@
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
 					(page "7")
+				)
+			)
+		)
+	)
+	(sheet
+		(at 46.99 38.1)
+		(size 31.75 22.86)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(stroke
+			(width 0.1524)
+			(type solid)
+		)
+		(fill
+			(color 0 0 0 0.0000)
+		)
+		(uuid "4f36624f-94d6-4603-9d4c-20df28968169")
+		(property "Sheetname" "FlashMemory"
+			(at 46.99 37.3884 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left bottom)
+			)
+		)
+		(property "Sheetfile" "FlashMemory.kicad_sch"
+			(at 46.99 61.5446 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left top)
+			)
+		)
+		(pin "ChipSelectFLash" input
+			(at 78.74 41.91 0)
+			(uuid "1f4da807-85cc-4d8c-8025-ff7a11a589fc")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPICLK" input
+			(at 78.74 44.45 0)
+			(uuid "e6f25848-3498-43b9-8032-295580bbeac4")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPI_MISO" input
+			(at 78.74 46.99 0)
+			(uuid "ef471fee-bf00-4eee-82b7-1ec4c02d3c7b")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(pin "SPI_MOSI" input
+			(at 78.74 49.53 0)
+			(uuid "3368cd7f-bfb6-432c-a321-4149a60e71c1")
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(instances
+			(project "flightcomputer2"
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
+					(page "14")
 				)
 			)
 		)
@@ -1377,7 +1619,7 @@
 		)
 	)
 	(sheet
-		(at 46.99 38.1)
+		(at 33.02 153.67)
 		(size 31.75 21.59)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1393,7 +1635,7 @@
 		)
 		(uuid "ba4deb13-717a-43bb-a60d-abfd8de92de6")
 		(property "Sheetname" "Power"
-			(at 46.99 37.3884 0)
+			(at 33.02 152.9584 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1402,7 +1644,7 @@
 			)
 		)
 		(property "Sheetfile" "power.kicad_sch"
-			(at 46.99 60.2746 0)
+			(at 33.02 175.8446 0)
 			(effects
 				(font
 					(size 1.27 1.27)
