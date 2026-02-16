@@ -1026,24 +1026,24 @@
 		(fields_autoplaced yes)
 		(uuid "0ba054fe-7bc8-4781-a460-e84ae3cd222a")
 		(property "Reference" "R6"
-			(at 118.11 87.6301 0)
+			(at 123.19 85.0899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Value" "10k"
-			(at 118.11 85.0901 0)
+		(property "Value" "100k"
+			(at 123.19 87.6299 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 122.428 86.36 90)
 			(effects
 				(font
@@ -1070,7 +1070,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" "C84376"
+		(property "LCSC Part" "C96346"
 			(at 120.65 86.36 0)
 			(effects
 				(font
@@ -1354,21 +1354,21 @@
 		(fields_autoplaced yes)
 		(uuid "213192b9-bda4-43e1-b7f5-eaf1dedb006f")
 		(property "Reference" "R7"
-			(at 118.11 97.7901 0)
+			(at 123.19 95.2499 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
-		(property "Value" "15k"
-			(at 118.11 95.2501 0)
+		(property "Value" "33k"
+			(at 123.19 97.7899 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
-				(justify left)
+				(justify right)
 			)
 		)
 		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
@@ -1398,7 +1398,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" "C2930170"
+		(property "LCSC Part" "C2933415"
 			(at 120.65 96.52 0)
 			(effects
 				(font
@@ -1570,7 +1570,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 87.122 100.33 90)
 			(effects
 				(font
@@ -1769,7 +1769,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 81.28 95.758 90)
 			(effects
 				(font

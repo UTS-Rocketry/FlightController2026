@@ -1025,7 +1025,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "391317c8-e777-4c1f-88ba-80ee2e92257e")
-		(property "Reference" "#PWR046"
+		(property "Reference" "#PWR052"
 			(at 118.11 90.17 0)
 			(effects
 				(font
@@ -1075,7 +1075,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/49edfe84-9da0-4fce-8baf-f24126c92814"
-					(reference "#PWR046")
+					(reference "#PWR052")
 					(unit 1)
 				)
 			)
@@ -1091,7 +1091,7 @@
 		(dnp no)
 		(uuid "406e9889-db27-4b45-9b89-efcc0fe062d1")
 		(property "Reference" "R11"
-			(at 143.51 65.786 0)
+			(at 144.526 64.516 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1099,8 +1099,8 @@
 				(justify left)
 			)
 		)
-		(property "Value" "15k"
-			(at 143.51 67.818 0)
+		(property "Value" "100k"
+			(at 144.526 66.548 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1135,7 +1135,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" "C2930170"
+		(property "LCSC Part" "C96346"
 			(at 138.43 66.04 90)
 			(effects
 				(font
@@ -1385,7 +1385,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 92.71 75.438 90)
 			(effects
 				(font
@@ -1518,7 +1518,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 102.362 80.01 90)
 			(effects
 				(font
@@ -1633,7 +1633,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8d70a605-8400-4308-9305-e6b2c88449fd")
-		(property "Reference" "#PWR047"
+		(property "Reference" "#PWR053"
 			(at 138.43 95.25 0)
 			(effects
 				(font
@@ -1683,7 +1683,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/49edfe84-9da0-4fce-8baf-f24126c92814"
-					(reference "#PWR047")
+					(reference "#PWR053")
 					(unit 1)
 				)
 			)
@@ -1699,7 +1699,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9b71a08c-9bd2-4017-8a16-d7802c9a3e5a")
-		(property "Reference" "#PWR049"
+		(property "Reference" "#PWR055"
 			(at 147.32 58.42 0)
 			(effects
 				(font
@@ -1750,7 +1750,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/49edfe84-9da0-4fce-8baf-f24126c92814"
-					(reference "#PWR049")
+					(reference "#PWR055")
 					(unit 1)
 				)
 			)
@@ -1774,7 +1774,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "10k"
+		(property "Value" "33k"
 			(at 140.208 77.47 0)
 			(effects
 				(font
@@ -1783,7 +1783,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 136.652 77.47 90)
 			(effects
 				(font
@@ -1810,7 +1810,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC Part" "C84376"
+		(property "LCSC Part" "C2933415"
 			(at 138.43 77.47 90)
 			(effects
 				(font
@@ -1898,7 +1898,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bc4be6a1-bfec-425f-8531-461ecfda93c3")
-		(property "Reference" "#PWR044"
+		(property "Reference" "#PWR050"
 			(at 104.14 90.17 0)
 			(effects
 				(font
@@ -1948,7 +1948,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/49edfe84-9da0-4fce-8baf-f24126c92814"
-					(reference "#PWR044")
+					(reference "#PWR050")
 					(unit 1)
 				)
 			)
