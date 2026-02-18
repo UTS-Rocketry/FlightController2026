@@ -5958,16 +5958,6 @@
 		)
 		(uuid "c3dcbd77-6fd9-4c3d-9cba-9d5ac2d77dc7")
 	)
-	(label "BuzzerControl"
-		(at 33.02 54.61 180)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify right bottom)
-		)
-		(uuid "c8488483-a220-45ae-8a2d-3e4d348ddcc9")
-	)
 	(label "SWCLK"
 		(at 261.62 46.99 0)
 		(effects
@@ -5977,16 +5967,6 @@
 			(justify left bottom)
 		)
 		(uuid "e41756a0-e448-417d-8146-a6d5c073a3fb")
-	)
-	(label "BuzzerControl"
-		(at 165.1 82.55 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left bottom)
-		)
-		(uuid "e4392d82-216c-4d14-bcb8-017229f58249")
 	)
 	(hierarchical_label "GPS1_RX"
 		(shape input)
@@ -6031,6 +6011,17 @@
 			(justify left)
 		)
 		(uuid "1271e281-5cae-4e59-9023-fd5bb4a28e72")
+	)
+	(hierarchical_label "BuzzerControl"
+		(shape input)
+		(at 165.1 82.55 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "18966fe1-317f-4077-b48b-92554b1c6d1e")
 	)
 	(hierarchical_label "SPI2-MOSI"
 		(shape input)
@@ -6185,6 +6176,17 @@
 			(justify right)
 		)
 		(uuid "7ff66e7a-acca-4f1d-b299-55fa904060e3")
+	)
+	(hierarchical_label "BuzzerControl"
+		(shape input)
+		(at 33.02 54.61 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "9215e275-4149-4372-9cba-2813c7193816")
 	)
 	(hierarchical_label "GPS1_TX"
 		(shape input)
@@ -6346,7 +6348,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" "Buzzer_Beeper:Buzzer_12x9.5RM7.6"
+		(property "Footprint" ""
 			(at 64.135 36.83 90)
 			(effects
 				(font
@@ -6365,15 +6367,6 @@
 			)
 		)
 		(property "Description" "Buzzer, polarized"
-			(at 64.77 39.37 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC Part" "C96093"
 			(at 64.77 39.37 0)
 			(effects
 				(font
