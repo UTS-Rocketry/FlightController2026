@@ -978,6 +978,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C190862"
+			(at 127 85.09 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "5"
 			(uuid "8ccedfc6-e070-47c8-9667-db93b093d484")
 		)
@@ -1024,7 +1033,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2ba15447-f7c8-4dba-8f09-0d60c68f673c")
-		(property "Reference" "C28"
+		(property "Reference" "C26"
 			(at 134.62 55.88 90)
 			(effects
 				(font
@@ -1032,7 +1041,7 @@
 				)
 			)
 		)
-		(property "Value" "100nF"
+		(property "Value" "100nf"
 			(at 134.62 58.42 90)
 			(effects
 				(font
@@ -1040,7 +1049,7 @@
 				)
 			)
 		)
-		(property "Footprint" "Capacitor_SMD:C_0201_0603Metric"
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
 			(at 138.43 62.5348 0)
 			(effects
 				(font
@@ -1067,6 +1076,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C49678"
+			(at 134.62 63.5 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "1e7c064b-04eb-452d-9d5b-ca0e34cb8620")
 		)
@@ -1076,7 +1094,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "C28")
+					(reference "C26")
 					(unit 1)
 				)
 			)
@@ -1092,7 +1110,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "44d2150a-219e-4776-aab6-55fbc80899de")
-		(property "Reference" "R17"
+		(property "Reference" "R18"
 			(at 111.76 92.7099 0)
 			(effects
 				(font
@@ -1110,7 +1128,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 107.442 93.98 90)
 			(effects
 				(font
@@ -1137,6 +1155,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C84376"
+			(at 109.22 93.98 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "2b5e5be5-b246-47d9-98de-721147e032d8")
 		)
@@ -1146,7 +1173,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "R17")
+					(reference "R18")
 					(unit 1)
 				)
 			)
@@ -1162,7 +1189,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4b22992d-7a39-4bf4-9e72-ec975938258e")
-		(property "Reference" "#PWR087"
+		(property "Reference" "#PWR088"
 			(at 142.24 72.39 0)
 			(effects
 				(font
@@ -1212,7 +1239,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "#PWR087")
+					(reference "#PWR088")
 					(unit 1)
 				)
 			)
@@ -1228,7 +1255,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "570f5eaf-e9be-4986-8be2-7789c29aa6de")
-		(property "Reference" "#PWR086"
+		(property "Reference" "#PWR087"
 			(at 127 104.14 0)
 			(effects
 				(font
@@ -1278,7 +1305,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "#PWR086")
+					(reference "#PWR087")
 					(unit 1)
 				)
 			)
@@ -1294,7 +1321,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "6ac62262-acc6-4953-9c18-2b0385e7caf3")
-		(property "Reference" "#PWR089"
+		(property "Reference" "#PWR085"
 			(at 92.71 95.25 0)
 			(effects
 				(font
@@ -1344,7 +1371,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "#PWR089")
+					(reference "#PWR085")
 					(unit 1)
 				)
 			)
@@ -1360,7 +1387,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "db531887-8827-4cc7-9763-9b6468a628f4")
-		(property "Reference" "#PWR085"
+		(property "Reference" "#PWR086"
 			(at 127 62.23 0)
 			(effects
 				(font
@@ -1410,7 +1437,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "#PWR085")
+					(reference "#PWR086")
 					(unit 1)
 				)
 			)
@@ -1426,7 +1453,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "f9c317c2-5729-4b91-a796-0e7d9eb3131d")
-		(property "Reference" "#PWR088"
+		(property "Reference" "#PWR084"
 			(at 86.36 95.25 0)
 			(effects
 				(font
@@ -1476,7 +1503,7 @@
 		(instances
 			(project ""
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "#PWR088")
+					(reference "#PWR084")
 					(unit 1)
 				)
 			)
@@ -1492,7 +1519,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ffef9a51-d82d-4406-a97b-304e975bbba4")
-		(property "Reference" "R18"
+		(property "Reference" "R17"
 			(at 102.87 90.1699 0)
 			(effects
 				(font
@@ -1510,7 +1537,7 @@
 				(justify left)
 			)
 		)
-		(property "Footprint" ""
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
 			(at 98.552 91.44 90)
 			(effects
 				(font
@@ -1537,6 +1564,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C84376"
+			(at 100.33 91.44 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
 			(uuid "bf32ee72-d4c7-41ea-81b2-0d2855ac49be")
 		)
@@ -1546,7 +1582,7 @@
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/4f36624f-94d6-4603-9d4c-20df28968169"
-					(reference "R18")
+					(reference "R17")
 					(unit 1)
 				)
 			)
