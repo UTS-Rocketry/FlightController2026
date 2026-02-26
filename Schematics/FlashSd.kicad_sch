@@ -711,14 +711,6 @@
 		(uuid "1eb5a32a-3628-4f10-9bc6-531c2faf28a4")
 	)
 	(no_connect
-		(at 114.3 95.25)
-		(uuid "241764c0-5706-4ec4-8fe5-f13ac1423eda")
-	)
-	(no_connect
-		(at 114.3 92.71)
-		(uuid "aa636469-bd85-4a70-8a1e-06a3daf7d81d")
-	)
-	(no_connect
 		(at 171.45 106.68)
 		(uuid "e5f70009-c95d-4c37-8a60-8a9b608448a0")
 	)

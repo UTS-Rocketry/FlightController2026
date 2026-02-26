@@ -2557,6 +2557,15 @@
 				(hide yes)
 			)
 		)
+		(property "LCSC Part" "C165948"
+			(at 107.95 72.39 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "A5"
 			(uuid "8d9f4771-8b8a-4928-a6b7-60207c14906f")
 		)
