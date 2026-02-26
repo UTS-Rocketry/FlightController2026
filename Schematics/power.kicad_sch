@@ -2553,7 +2553,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "4.7u"
+		(property "Value" "10u"
 			(at 180.34 87.6299 0)
 			(effects
 				(font
@@ -3018,7 +3018,7 @@
 				(justify left)
 			)
 		)
-		(property "Value" "1u"
+		(property "Value" "100nf"
 			(at 125.73 87.6299 0)
 			(effects
 				(font
