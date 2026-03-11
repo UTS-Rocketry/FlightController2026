@@ -48,7 +48,7 @@
         "silk_text_thickness": 0.1,
         "silk_text_upright": false,
         "zones": {
-          "min_clearance": 0.0
+          "min_clearance": 0.25
         }
       },
       "diff_pair_dimensions": [
@@ -679,6 +679,30 @@
           "label": "LCSC",
           "name": "LCSC",
           "show": true
+        },
+        {
+          "group_by": false,
+          "label": "MANUFACTURER",
+          "name": "MANUFACTURER",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "PARTREV",
+          "name": "PARTREV",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "STANDARD",
+          "name": "STANDARD",
+          "show": false
+        },
+        {
+          "group_by": false,
+          "label": "MAXIMUM_PACKAGE_HEIGHT",
+          "name": "MAXIMUM_PACKAGE_HEIGHT",
+          "show": false
         }
       ],
       "filter_string": "",
@@ -744,6 +768,10 @@
     [
       "83b93a99-cc2b-4131-8387-83d6bf066ab3",
       "Can_transceiver"
+    ],
+    [
+      "57128c09-94bf-440d-b07f-f60011d6d6f5",
+      "Aux"
     ],
     [
       "ba4deb13-717a-43bb-a60d-abfd8de92de6",

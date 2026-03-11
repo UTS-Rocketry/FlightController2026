@@ -1541,26 +1541,26 @@
 			(exclude_from_sim no)
 			(in_bom yes)
 			(on_board yes)
-			(property "Reference" "D"
-				(at 5.08 5.715 0)
+			(property "Reference" "D1"
+				(at -8.89 2.5401 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify right bottom)
+					(justify right)
 				)
 			)
 			(property "Value" "NeoPixel_THT"
-				(at 1.27 -5.715 0)
+				(at -8.89 0.0001 0)
 				(effects
 					(font
 						(size 1.27 1.27)
 					)
-					(justify left top)
+					(justify right)
 				)
 			)
-			(property "Footprint" ""
-				(at 1.27 -7.62 0)
+			(property "Footprint" "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm"
+				(at -61.976 5.588 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1570,7 +1570,7 @@
 				)
 			)
 			(property "Datasheet" "https://www.adafruit.com/product/1938"
-				(at 2.54 -9.525 0)
+				(at -64.008 -1.27 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1580,7 +1580,70 @@
 				)
 			)
 			(property "Description" "RGB LED with integrated controller, 5mm/8mm LED package"
+				(at -37.338 8.382 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Description_1" ""
 				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "MF" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "MP" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Package" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Price" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "Purchase-URL" ""
+				(at 0 0 0)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(hide yes)
+				)
+			)
+			(property "LCSC" "C2827321"
+				(at -29.972 1.016 0)
 				(effects
 					(font
 						(size 1.27 1.27)
@@ -1608,7 +1671,7 @@
 			)
 			(symbol "NeoPixel_THT_0_0"
 				(text "RGB"
-					(at 2.286 -4.191 0)
+					(at 2.54 0 0)
 					(effects
 						(font
 							(size 0.762 0.762)
@@ -1617,93 +1680,9 @@
 				)
 			)
 			(symbol "NeoPixel_THT_0_1"
-				(polyline
-					(pts
-						(xy 1.27 -2.54) (xy 1.778 -2.54)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 1.27 -3.556) (xy 1.778 -3.556)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.286 -1.524) (xy 1.27 -2.54) (xy 1.27 -2.032)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 2.286 -2.54) (xy 1.27 -3.556) (xy 1.27 -3.048)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 3.683 -1.016) (xy 3.683 -3.556) (xy 3.683 -4.064)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.699 -1.524) (xy 2.667 -1.524) (xy 3.683 -3.556) (xy 4.699 -1.524)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
-				(polyline
-					(pts
-						(xy 4.699 -3.556) (xy 2.667 -3.556)
-					)
-					(stroke
-						(width 0)
-						(type default)
-					)
-					(fill
-						(type none)
-					)
-				)
 				(rectangle
-					(start 5.08 5.08)
-					(end -5.08 -5.08)
+					(start -5.08 7.62)
+					(end 11.43 -5.08)
 					(stroke
 						(width 0.254)
 						(type default)
@@ -1712,10 +1691,130 @@
 						(type background)
 					)
 				)
+				(polyline
+					(pts
+						(xy 1.524 1.651) (xy 2.032 1.651)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 1.524 0.635) (xy 2.032 0.635)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 2.667) (xy 1.524 1.651) (xy 1.524 2.159)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 2.54 1.651) (xy 1.524 0.635) (xy 1.524 1.143)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 3.937 3.175) (xy 3.937 0.635) (xy 3.937 0.127)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 4.953 2.667) (xy 2.921 2.667) (xy 3.937 0.635) (xy 4.953 2.667)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+				(polyline
+					(pts
+						(xy 4.953 0.635) (xy 2.921 0.635)
+					)
+					(stroke
+						(width 0)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
 			)
 			(symbol "NeoPixel_THT_1_1"
+				(pin power_in line
+					(at -7.62 -3.81 0)
+					(length 2.54)
+					(name "VSS"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at 2.54 10.16 270)
+					(length 2.54)
+					(name "VDD"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
 				(pin input line
-					(at -7.62 0 0)
+					(at 13.97 3.81 180)
 					(length 2.54)
 					(name "DIN"
 						(effects
@@ -1732,44 +1831,8 @@
 						)
 					)
 				)
-				(pin power_in line
-					(at 0 7.62 270)
-					(length 2.54)
-					(name "VDD"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "3"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
-				(pin power_in line
-					(at 0 -7.62 90)
-					(length 2.54)
-					(name "GND"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-					(number "2"
-						(effects
-							(font
-								(size 1.27 1.27)
-							)
-						)
-					)
-				)
 				(pin output line
-					(at 7.62 0 180)
+					(at 13.97 0 180)
 					(length 2.54)
 					(name "DOUT"
 						(effects
@@ -1778,7 +1841,7 @@
 							)
 						)
 					)
-					(number "1"
+					(number "2"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -4322,16 +4385,6 @@
 		)
 		(uuid e98f1e28-fedb-42c7-8bb0-60c0b7a8b717)
 	)
-	(text "Pullup resistors on I2C becuase devices control low (Open Drain)"
-		(exclude_from_sim no)
-		(at 227.33 127.508 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-		)
-		(uuid "229c9d8d-10fb-40cb-b2fb-6b3c7b7a529b")
-	)
 	(junction
 		(at 170.18 64.77)
 		(diameter 0)
@@ -4343,12 +4396,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "00bf4a8a-bf5d-4ad3-90d7-785d84ca1753")
-	)
-	(junction
-		(at 26.67 172.72)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "0a3c01dd-fb36-493f-9b71-0669bac876e8")
 	)
 	(junction
 		(at 156.21 57.15)
@@ -4367,12 +4414,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "1c1edddc-d194-42b0-bcf0-12a575e1a9e5")
-	)
-	(junction
-		(at 26.67 187.96)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "229e4486-9127-4904-8935-b80896780a57")
 	)
 	(junction
 		(at 157.48 36.83)
@@ -4411,12 +4452,6 @@
 		(uuid "6e960d49-3815-4b3c-a9a3-f46e0a1eae6f")
 	)
 	(junction
-		(at 190.5 138.43)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "730a2404-1cb5-478f-9c90-eda5a4dfc0b4")
-	)
-	(junction
 		(at 241.3 69.85)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4445,12 +4480,6 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "ae3669ad-3283-4839-bf73-e0008b0741d4")
-	)
-	(junction
-		(at 190.5 135.89)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "b9edde0c-f938-421b-a354-cfde01b928e7")
 	)
 	(junction
 		(at 170.18 57.15)
@@ -4499,8 +4528,8 @@
 		(uuid "0d27b12b-b526-43c9-a548-7a5dbc9a0ba0")
 	)
 	(no_connect
-		(at 161.29 85.09)
-		(uuid "0e9dac5d-03ea-45d6-aaf6-416e6f3fe018")
+		(at 161.29 135.89)
+		(uuid "145cd5d2-4752-4186-8e39-8d2f1f5f7f79")
 	)
 	(no_connect
 		(at 35.56 129.54)
@@ -4519,10 +4548,6 @@
 		(uuid "299d399e-00b9-47a8-bfcd-e81a1afbee9f")
 	)
 	(no_connect
-		(at 161.29 102.87)
-		(uuid "2e2670f9-2465-4182-84ae-d3426dbad8a2")
-	)
-	(no_connect
 		(at 241.3 36.83)
 		(uuid "311c3787-a085-4f61-a953-3d74343daa2c")
 	)
@@ -4535,16 +4560,8 @@
 		(uuid "44a38d46-052a-430b-a163-a926c26d3c0d")
 	)
 	(no_connect
-		(at 161.29 148.59)
-		(uuid "4b440209-9d02-4633-bebf-ca5cc77c7f03")
-	)
-	(no_connect
-		(at 120.65 102.87)
-		(uuid "5fe5e195-b865-4736-a635-aca68dd4129a")
-	)
-	(no_connect
-		(at 120.65 118.11)
-		(uuid "6beae596-809c-4525-9023-6ea7e4ebd813")
+		(at 161.29 138.43)
+		(uuid "579dd465-2548-450d-8dbb-359e8a918e77")
 	)
 	(no_connect
 		(at 120.65 135.89)
@@ -4575,20 +4592,16 @@
 		(uuid "c7be69d8-cdf7-47da-bfdd-7351149a4249")
 	)
 	(no_connect
-		(at 161.29 156.21)
-		(uuid "d0f4e8c7-5077-426d-9dbc-f860aa79fbd2")
+		(at 120.65 107.95)
+		(uuid "caba9b41-c51c-482f-8b7a-e2096384ce0b")
 	)
 	(no_connect
 		(at 254 52.07)
 		(uuid "dc0f1f88-d630-4536-b9cd-fef33b7c3f6c")
 	)
 	(no_connect
-		(at 35.56 180.34)
-		(uuid "e3a7179a-bc9c-4c3c-8dc1-501ef268753a")
-	)
-	(no_connect
-		(at 120.65 120.65)
-		(uuid "e3d12e1e-b2ff-4eb1-a99d-cea4605e092f")
+		(at 60.96 184.15)
+		(uuid "e0e121bb-d05f-4f0d-808b-b9e4b0a11b0c")
 	)
 	(wire
 		(pts
@@ -4599,16 +4612,6 @@
 			(type default)
 		)
 		(uuid "01912045-a5da-490c-8224-c6c54aae9042")
-	)
-	(wire
-		(pts
-			(xy 190.5 138.43) (xy 204.47 138.43)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "059176dc-f2d9-4e6a-8863-9400bc420ae7")
 	)
 	(wire
 		(pts
@@ -4732,6 +4735,16 @@
 	)
 	(wire
 		(pts
+			(xy 34.29 172.72) (xy 49.53 172.72)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "16fad422-4493-4e40-bcc8-5c47e9f38d90")
+	)
+	(wire
+		(pts
 			(xy 121.92 48.26) (xy 138.43 48.26)
 		)
 		(stroke
@@ -4772,17 +4785,17 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 138.43) (xy 190.5 138.43)
+			(xy 165.1 102.87) (xy 161.29 102.87)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "2375ce0d-17fd-4907-82c8-cb6da8c1fc26")
+		(uuid "214cb504-1a8d-4765-8799-a3dfe019c4d1")
 	)
 	(wire
 		(pts
-			(xy 165.1 82.55) (xy 161.29 82.55)
+			(xy 176.53 82.55) (xy 161.29 82.55)
 		)
 		(stroke
 			(width 0)
@@ -4852,6 +4865,16 @@
 	)
 	(wire
 		(pts
+			(xy 165.1 158.75) (xy 161.29 158.75)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "2fe6df15-9f35-4d44-92ee-89c7f4c22447")
+	)
+	(wire
+		(pts
 			(xy 119.38 67.31) (xy 121.92 67.31)
 		)
 		(stroke
@@ -4879,16 +4902,6 @@
 			(type default)
 		)
 		(uuid "352dd540-f6e9-4186-aacb-3bce462d9f4f")
-	)
-	(wire
-		(pts
-			(xy 190.5 135.89) (xy 204.47 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "366c7c29-8deb-4704-824f-a84aef104222")
 	)
 	(wire
 		(pts
@@ -5012,17 +5025,7 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 107.95) (xy 120.65 107.95)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "57172da7-beeb-42a6-9f79-b63351336dc4")
-	)
-	(wire
-		(pts
-			(xy 165.1 133.35) (xy 161.29 133.35)
+			(xy 170.18 133.35) (xy 161.29 133.35)
 		)
 		(stroke
 			(width 0)
@@ -5052,6 +5055,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 120.65) (xy 120.65 120.65)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "5aa8facd-0882-41a3-b048-c6a113917323")
+	)
+	(wire
+		(pts
 			(xy 238.76 34.29) (xy 238.76 36.83)
 		)
 		(stroke
@@ -5069,26 +5082,6 @@
 			(type default)
 		)
 		(uuid "5cd778c8-125b-43a8-9e4d-01f123256d28")
-	)
-	(wire
-		(pts
-			(xy 161.29 135.89) (xy 190.5 135.89)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "603f0021-334a-4107-a962-a10ce10d5685")
-	)
-	(wire
-		(pts
-			(xy 26.67 187.96) (xy 43.18 187.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "62381d33-933e-4cca-bd63-44a4ae2b57d1")
 	)
 	(wire
 		(pts
@@ -5202,6 +5195,16 @@
 	)
 	(wire
 		(pts
+			(xy 165.1 85.09) (xy 161.29 85.09)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "745c8793-f911-41af-9875-d229a2373f6c")
+	)
+	(wire
+		(pts
 			(xy 132.08 34.29) (xy 147.32 34.29)
 		)
 		(stroke
@@ -5262,6 +5265,16 @@
 	)
 	(wire
 		(pts
+			(xy 165.1 148.59) (xy 161.29 148.59)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7afb4396-b320-4753-bb41-ad95a0c0ef79")
+	)
+	(wire
+		(pts
 			(xy 62.23 34.29) (xy 62.23 35.56)
 		)
 		(stroke
@@ -5282,6 +5295,16 @@
 	)
 	(wire
 		(pts
+			(xy 49.53 172.72) (xy 49.53 173.99)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "7f68310c-fdbe-4df4-aa3d-da3a321df686")
+	)
+	(wire
+		(pts
 			(xy 170.18 64.77) (xy 180.34 64.77)
 		)
 		(stroke
@@ -5292,13 +5315,23 @@
 	)
 	(wire
 		(pts
-			(xy 25.4 187.96) (xy 26.67 187.96)
+			(xy 111.76 118.11) (xy 120.65 118.11)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "8bf5d6c7-7009-4556-b7f2-65b760d38b92")
+		(uuid "864a0b74-fcde-47ba-9a8f-7b4c47f6eee1")
+	)
+	(wire
+		(pts
+			(xy 30.48 187.96) (xy 39.37 187.96)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "87d2162d-184d-4ca7-a59c-a6600c26c7a5")
 	)
 	(wire
 		(pts
@@ -5309,26 +5342,6 @@
 			(type default)
 		)
 		(uuid "8d483910-c9d8-4260-a559-f60df0c72845")
-	)
-	(wire
-		(pts
-			(xy 25.4 172.72) (xy 26.67 172.72)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8e5a44ce-e10c-43f8-b3b5-eccd4ebd1658")
-	)
-	(wire
-		(pts
-			(xy 50.8 180.34) (xy 66.04 180.34)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "8f944682-45b8-4922-9059-6ea95d08ef5c")
 	)
 	(wire
 		(pts
@@ -5382,7 +5395,7 @@
 	)
 	(wire
 		(pts
-			(xy 165.1 130.81) (xy 161.29 130.81)
+			(xy 170.18 130.81) (xy 161.29 130.81)
 		)
 		(stroke
 			(width 0)
@@ -5392,23 +5405,13 @@
 	)
 	(wire
 		(pts
-			(xy 26.67 172.72) (xy 43.18 172.72)
+			(xy 68.58 173.99) (xy 68.58 180.34)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "989167b1-c201-462f-8f99-c2020b04e4e7")
-	)
-	(wire
-		(pts
-			(xy 218.44 146.05) (xy 190.5 146.05)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "9ada19eb-bb62-4d07-ab43-da29981f8e44")
+		(uuid "9b9b4fc7-ebb3-4e24-9207-562ed6ca5c16")
 	)
 	(wire
 		(pts
@@ -5529,6 +5532,16 @@
 			(type default)
 		)
 		(uuid "ae83f9e9-0c42-4780-a920-74cddf79bb25")
+	)
+	(wire
+		(pts
+			(xy 165.1 156.21) (xy 161.29 156.21)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af76ed2d-7eea-4dd0-8ae5-a621f2fde79c")
 	)
 	(wire
 		(pts
@@ -5722,26 +5735,6 @@
 	)
 	(wire
 		(pts
-			(xy 190.5 127) (xy 190.5 128.27)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "da9ac504-670d-4f9c-a7a5-d2012cae4a1c")
-	)
-	(wire
-		(pts
-			(xy 165.1 158.75) (xy 161.29 158.75)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "db8e1a26-9bcf-428a-a525-794bee90a351")
-	)
-	(wire
-		(pts
 			(xy 170.18 57.15) (xy 180.34 57.15)
 		)
 		(stroke
@@ -5769,26 +5762,6 @@
 			(type default)
 		)
 		(uuid "dfb5d6d0-8560-4ede-86e4-13af4b20e46d")
-	)
-	(wire
-		(pts
-			(xy 26.67 184.15) (xy 26.67 187.96)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e110903c-764a-4d7e-86f8-7f9bbf9306d6")
-	)
-	(wire
-		(pts
-			(xy 26.67 172.72) (xy 26.67 176.53)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "e249d5cd-b58f-439d-8c60-e791588ae610")
 	)
 	(wire
 		(pts
@@ -5822,6 +5795,16 @@
 	)
 	(wire
 		(pts
+			(xy 111.76 102.87) (xy 120.65 102.87)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ea2ca09e-5335-4f5d-998c-451358c76c80")
+	)
+	(wire
+		(pts
 			(xy 45.72 99.06) (xy 53.34 99.06)
 		)
 		(stroke
@@ -5829,6 +5812,16 @@
 			(type default)
 		)
 		(uuid "ede3422c-557a-46ac-8df3-be6c520c75ba")
+	)
+	(wire
+		(pts
+			(xy 68.58 180.34) (xy 60.96 180.34)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ee6afc01-d323-47e9-a2ad-790ad3f5db07")
 	)
 	(wire
 		(pts
@@ -5901,7 +5894,7 @@
 		(uuid "09f23585-9a62-4e34-a71f-9a8b2234e8df")
 	)
 	(label "RGB_DATA"
-		(at 66.04 180.34 0)
+		(at 68.58 173.99 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6041,7 +6034,7 @@
 		(uuid "e41756a0-e448-417d-8146-a6d5c073a3fb")
 	)
 	(label "BuzzerControl"
-		(at 165.1 82.55 0)
+		(at 176.53 82.55 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6050,7 +6043,7 @@
 		)
 		(uuid "e4392d82-216c-4d14-bcb8-017229f58249")
 	)
-	(hierarchical_label "GPS1_RX"
+	(hierarchical_label "Uart_4_RX"
 		(shape input)
 		(at 111.76 128.27 180)
 		(effects
@@ -6072,7 +6065,7 @@
 		)
 		(uuid "09610b8a-0bef-4ef7-9466-79c2a66f43a8")
 	)
-	(hierarchical_label "GPS2_RX"
+	(hierarchical_label "Uart_5_RX"
 		(shape input)
 		(at 111.76 95.25 180)
 		(effects
@@ -6096,12 +6089,12 @@
 	)
 	(hierarchical_label "SPI2-MOSI"
 		(shape input)
-		(at 111.76 107.95 180)
+		(at 165.1 158.75 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right)
+			(justify left)
 		)
 		(uuid "1ebffcf1-96b6-4c8d-9ffa-7700b911b9d7")
 	)
@@ -6127,7 +6120,7 @@
 		)
 		(uuid "2b49f74f-d19d-4bfa-baaa-508e3a93eb91")
 	)
-	(hierarchical_label "GPS2_TX"
+	(hierarchical_label "Uart_5_TX"
 		(shape input)
 		(at 111.76 130.81 180)
 		(effects
@@ -6137,6 +6130,17 @@
 			(justify right)
 		)
 		(uuid "2db316fd-8293-4ce5-99fd-d6098fe3525b")
+	)
+	(hierarchical_label "AuxADC"
+		(shape input)
+		(at 111.76 120.65 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "2f3e0746-53c7-41d2-8725-647a1f636715")
 	)
 	(hierarchical_label "VBUS"
 		(shape input)
@@ -6193,9 +6197,20 @@
 		)
 		(uuid "5f643852-bbf0-4d1b-9d76-1b19f9cdb912")
 	)
+	(hierarchical_label "CS_SDCARD"
+		(shape input)
+		(at 111.76 102.87 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "6522b384-07c3-4ae7-851b-20c9247637d1")
+	)
 	(hierarchical_label "PyroIgnite"
 		(shape input)
-		(at 165.1 158.75 0)
+		(at 165.1 156.21 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6226,9 +6241,9 @@
 		)
 		(uuid "72209a30-2311-4f87-a982-19ef13fa8076")
 	)
-	(hierarchical_label "SPI3_MISO"
+	(hierarchical_label "SPI3_MOSI"
 		(shape input)
-		(at 165.1 133.35 0)
+		(at 170.18 133.35 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6248,7 +6263,7 @@
 		)
 		(uuid "7ff66e7a-acca-4f1d-b299-55fa904060e3")
 	)
-	(hierarchical_label "GPS1_TX"
+	(hierarchical_label "Uart_4_TX"
 		(shape input)
 		(at 165.1 77.47 0)
 		(effects
@@ -6258,6 +6273,17 @@
 			(justify left)
 		)
 		(uuid "93e627af-21e2-4c3a-9f04-d20de5f2f078")
+	)
+	(hierarchical_label "CS_Barometer"
+		(shape input)
+		(at 111.76 118.11 180)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify right)
+		)
+		(uuid "965db88d-0d02-4e03-ae31-3bc741fe5dda")
 	)
 	(hierarchical_label "PyroADC"
 		(shape input)
@@ -6281,17 +6307,6 @@
 		)
 		(uuid "a0c9f823-4305-4d43-8ac9-9ed6e0239872")
 	)
-	(hierarchical_label "I2CSDL"
-		(shape input)
-		(at 204.47 138.43 0)
-		(effects
-			(font
-				(size 1.27 1.27)
-			)
-			(justify left)
-		)
-		(uuid "aaa6e354-67f3-4872-8886-77b4c36bccfe")
-	)
 	(hierarchical_label "GPSReset1"
 		(shape input)
 		(at 165.1 97.79 0)
@@ -6314,6 +6329,17 @@
 		)
 		(uuid "b7e02f32-cb91-4dc1-a7ef-b84229fde34e")
 	)
+	(hierarchical_label "AuxIgnite"
+		(shape input)
+		(at 165.1 85.09 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "c9aaf5ea-4d14-473f-808d-cb74bd559c41")
+	)
 	(hierarchical_label "SPI1-MOSI"
 		(shape input)
 		(at 165.1 95.25 0)
@@ -6325,16 +6351,27 @@
 		)
 		(uuid "d0f025df-be3e-4091-a7a4-a13f1e42cddb")
 	)
-	(hierarchical_label "I2CSDA"
+	(hierarchical_label "CS_Accelerometer"
 		(shape input)
-		(at 204.47 135.89 0)
+		(at 165.1 148.59 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
 			(justify left)
 		)
-		(uuid "e7006704-1515-452a-ac50-a5191cb6dbe9")
+		(uuid "e4d74b82-a1e1-4ed3-9c63-39efe29e6258")
+	)
+	(hierarchical_label "CS_IMU"
+		(shape input)
+		(at 165.1 102.87 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+			(justify left)
+		)
+		(uuid "f0568abe-80e3-4f21-adac-fc1ee7c6a24b")
 	)
 	(hierarchical_label "CAN_RX_2"
 		(shape input)
@@ -6369,9 +6406,9 @@
 		)
 		(uuid "fc70f9cd-e119-4392-ba14-77a7b5f51043")
 	)
-	(hierarchical_label "SPI3_MOSI"
+	(hierarchical_label "SPI3_MISO"
 		(shape input)
-		(at 165.1 130.81 0)
+		(at 170.18 130.81 0)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -6444,11 +6481,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 64.77 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 64.77 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 64.77 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 64.77 39.37 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "28445955-b9c7-4dd3-9576-593c17b20268")
+			(uuid "6c2dfd59-3752-415d-85e4-c7654d60dcbc")
 		)
 		(pin "1"
-			(uuid "67cad57f-6bd4-410a-ade8-9816a13eb9e2")
+			(uuid "9937db1d-2f0b-406b-aab7-8b771cb4a389")
 		)
 		(instances
 			(project ""
@@ -6522,11 +6595,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 58.42 39.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 58.42 39.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 58.42 39.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 58.42 39.37 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "1c0ebef9-66a2-4dca-8f5c-c687df6e250a")
+			(uuid "9027d91e-4892-48af-a958-ec205a1004a1")
 		)
 		(pin "2"
-			(uuid "5af48dc7-edf3-4fad-b369-52ce8508e690")
+			(uuid "7847b595-36fd-484e-b077-31c439eae98a")
 		)
 		(instances
 			(project ""
@@ -6539,7 +6648,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 25.4 187.96 90)
+		(at 34.29 172.72 90)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -6547,7 +6656,7 @@
 		(dnp no)
 		(uuid "0f48dd4a-bc14-4551-b34e-ddbb0c500a08")
 		(property "Reference" "#PWR02"
-			(at 29.21 187.96 0)
+			(at 38.1 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6556,7 +6665,7 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 21.59 187.9599 90)
+			(at 30.48 172.7199 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6565,7 +6674,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 25.4 187.96 0)
+			(at 34.29 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6574,7 +6683,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 25.4 187.96 0)
+			(at 34.29 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6583,7 +6692,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 25.4 187.96 0)
+			(at 34.29 172.72 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -6592,7 +6701,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "59e82eb1-4b24-42e8-ab41-858d3e964843")
+			(uuid "f3973fcb-84ed-4845-911c-c7ac952e93bd")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -6721,82 +6830,52 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 170.18 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 170.18 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 170.18 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 170.18 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "0c84e95f-29cf-4bbc-8f1e-b69f62cfe404")
+			(uuid "00bfdf42-a6d0-452c-a37b-c5d54a918db8")
 		)
 		(pin "2"
-			(uuid "2be27768-247b-4384-8bd9-bc6b3eace559")
+			(uuid "fb07640f-7994-4ecf-9502-38a7d9f6e0b2")
 		)
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "C13")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3V")
-		(at 218.44 146.05 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "121388f3-6b76-4145-912a-fbcd615195ef")
-		(property "Reference" "#PWR067"
-			(at 218.44 149.86 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3.3V"
-			(at 218.44 140.97 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 218.44 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 218.44 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 218.44 146.05 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c9f3b622-19e8-467d-a042-c6f31c7017f0")
-		)
-		(instances
-			(project ""
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "#PWR067")
 					(unit 1)
 				)
 			)
@@ -6858,7 +6937,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "de9e9187-2cfe-4eaf-ae14-57823c7bfe92")
+			(uuid "58c9db34-27e4-4f60-b22c-dd333f7a8a25")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -6923,7 +7002,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "eef16fbf-5358-48d4-b5e8-ccedd96cf311")
+			(uuid "a48e2cb0-434f-4118-b73a-33bb4325276d")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -6988,7 +7067,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "459d810a-1381-456e-a5af-c43ced654792")
+			(uuid "2a964e51-0493-4b22-ba2d-24a201aa44f9")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7055,7 +7134,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "a3b972d3-1692-4936-81be-430609999ef0")
+			(uuid "88cd8198-39f6-488e-9952-f1d426268620")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7182,11 +7261,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 40.64 138.43 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "08dc9dbf-9e7b-4b72-ae7d-f7582933bdf5")
+			(uuid "015969c7-a2f1-4d27-88d9-7a5f175c404d")
 		)
 		(pin "2"
-			(uuid "bea0ec34-0b8d-451a-bbf0-a89e2296f107")
+			(uuid "7837ce13-9c82-46dc-96d4-77c9e36187ef")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7313,17 +7428,53 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 40.64 101.6 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "27b2fa96-f761-4480-a2d3-01a08d38bc04")
+			(uuid "4b649018-5ece-4ae5-ae51-341ee51fbf6c")
 		)
 		(pin "3"
-			(uuid "503b60e6-ef94-4d79-8547-8514d7e1474a")
+			(uuid "586ed0d3-2cab-4c1d-8986-4e60f2a1ecba")
 		)
 		(pin "2"
-			(uuid "654f0df8-b427-4f09-bbfd-2dfc8eee258a")
+			(uuid "64120031-2c5c-4baa-bf8e-26e935eb7899")
 		)
 		(pin "4"
-			(uuid "82aa8f6f-2f03-422e-b220-d0ff079ecb99")
+			(uuid "21512880-3d9a-4b07-afc8-edde578faaf3")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7390,7 +7541,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "98d04ed0-87ee-4a29-8f6d-2a939703a12f")
+			(uuid "9cfd7cba-d85f-41bd-8404-589b04ad77a5")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7456,7 +7607,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "61c134b0-f53c-4357-adce-1607a2df9339")
+			(uuid "dd758390-c3ab-49b0-baa0-c3c5006780e2")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7583,17 +7734,53 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 40.64 127 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "f1c9dd77-63a5-41e5-bed5-cb283f2d7e73")
+			(uuid "2d0809a3-cd72-4197-adcf-47aa21837fa3")
 		)
 		(pin "3"
-			(uuid "066ee4e1-2806-461d-b7a7-66743e2f83e7")
+			(uuid "cbbe267f-62b9-4d56-b9ed-3eecdde29f0d")
 		)
 		(pin "2"
-			(uuid "554780d2-e29a-4906-a614-0bdb4bd74eba")
+			(uuid "f09ac6eb-55d2-431c-a2c9-2d2f802f4714")
 		)
 		(pin "4"
-			(uuid "433a9d73-06bd-4198-b273-b9a6edadc94d")
+			(uuid "f3a726c4-21ba-40a3-9e9d-447e205c166a")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7660,7 +7847,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "8eaedfa5-d479-4600-8753-03da4a91b768")
+			(uuid "5026770c-643c-44f2-8674-b60dc8106248")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -7789,82 +7976,52 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 130.81 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 130.81 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 130.81 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 130.81 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "5ca66f74-df98-4c51-b6c9-f96853181ba9")
+			(uuid "a6e0db09-cfd6-41cf-bf27-fd6d110cc3a7")
 		)
 		(pin "2"
-			(uuid "f9d72d0a-6d2e-49cc-9855-f90669983259")
+			(uuid "62ab2e51-70e8-4d16-97f4-74369055e1fa")
 		)
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "C5")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "power:+3.3V")
-		(at 190.5 127 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "309cff02-b70d-4c49-9ab0-afe6c7f881cd")
-		(property "Reference" "#PWR068"
-			(at 190.5 130.81 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Value" "+3.3V"
-			(at 190.5 121.92 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-			)
-		)
-		(property "Footprint" ""
-			(at 190.5 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" ""
-			(at 190.5 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 190.5 127 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "4e63e6c4-e5f4-4328-8ebb-82dfa6ab5962")
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "#PWR068")
 					(unit 1)
 				)
 			)
@@ -7926,7 +8083,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "d24f431e-c9ce-45e5-aa4c-584781bce2fc")
+			(uuid "09099bde-f5b0-4927-ab79-2c49d2f19171")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8046,7 +8203,43 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C585350"
+		(property "LCSC" " C588426"
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 241.3 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
 			(at 241.3 52.07 0)
 			(effects
 				(font
@@ -8056,34 +8249,34 @@
 			)
 		)
 		(pin "10"
-			(uuid "c9f451d5-7a8a-4440-9ed5-c43f20ab37a1")
+			(uuid "c8392236-242b-4248-885c-3e0ef6c4d5eb")
 		)
 		(pin "7"
-			(uuid "53a2ccff-9785-46da-ad88-54eb6ce9d70f")
+			(uuid "31ea1a76-be16-4ef8-8448-ff92c11fd8dd")
 		)
 		(pin "8"
-			(uuid "d0f9092c-4e88-4afd-9e9e-c71268868346")
+			(uuid "05283b7f-8e34-4ed3-9441-8d3ea28209c9")
 		)
 		(pin "5"
-			(uuid "c2839151-2a7e-441e-ba19-dc08fe39d4fc")
+			(uuid "47ded4fd-cd9b-405d-9403-f41553aede83")
 		)
 		(pin "6"
-			(uuid "182a25e3-2ac1-4046-884c-3f35053631e1")
+			(uuid "55d5fcc9-f78b-49b5-9957-5eccd8a93ebc")
 		)
 		(pin "9"
-			(uuid "d40a496f-2df3-4f8b-be53-fdfd80ea1664")
+			(uuid "1a5fb309-e134-4e74-9a9f-9fe453ec6c4b")
 		)
 		(pin "4"
-			(uuid "2cbc23a4-c0d9-4020-bec0-27032dcb8fb0")
+			(uuid "34ff4bab-b46b-4296-920c-919d8fdd32ed")
 		)
 		(pin "2"
-			(uuid "a4c44945-4f63-4b06-9d98-0e958d6cfcfe")
+			(uuid "0c7f8f60-dacd-491c-9f7f-d72ddbb3cb84")
 		)
 		(pin "1"
-			(uuid "b4cedb64-b43a-4f64-8626-4edb58279f9d")
+			(uuid "a5461d51-3f65-4fb2-84cf-f73525da7762")
 		)
 		(pin "3"
-			(uuid "c7d7400d-077d-4b82-8b56-a39cdc80e8fa")
+			(uuid "42f33f23-090c-4be2-8c54-957fc68665c6")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8210,11 +8403,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 49.53 157.48 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "203ca59e-7fd3-4d24-8113-1b699a89e942")
+			(uuid "50f96f62-7240-402f-8c5a-564b9926d266")
 		)
 		(pin "1"
-			(uuid "40cefca7-b430-45ff-bcb0-6c8c58bab56a")
+			(uuid "8b5b0fe4-55e5-45ae-b785-f4ed1f2fa3b5")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8341,95 +8570,52 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 39.37 157.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "a37f145d-9582-4fb5-9eb9-268d10f449a5")
+			(uuid "3d21b21d-699e-4d0d-aa42-ec97c18ac84b")
 		)
 		(pin "1"
-			(uuid "1f6efc58-c85d-491a-8b63-4b66ed461c62")
+			(uuid "0466e317-2df5-4434-94b2-62ccc681f1e2")
 		)
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "PowerLED1")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 190.5 142.24 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "3dc6426f-ef98-4610-aa5b-ea3a7be269f0")
-		(property "Reference" "R21"
-			(at 193.04 140.9699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "4.7k"
-			(at 193.04 143.5099 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 188.722 142.24 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 190.5 142.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 190.5 142.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C17673"
-			(at 190.5 142.24 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "4cd2b928-5048-4417-a3c3-766410092763")
-		)
-		(pin "2"
-			(uuid "f3dfb295-c6d4-4321-840b-a23183a5c9c4")
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "R21")
 					(unit 1)
 				)
 			)
@@ -8551,17 +8737,53 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 226.06 96.52 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "01ef9148-de03-4422-8844-66ca455f9a4a")
+			(uuid "657cd2bc-d699-4f7c-a120-22fb2e340f95")
 		)
 		(pin "2"
-			(uuid "575459a6-a4db-47c2-86c6-d5cdb62f58cd")
+			(uuid "fe125e00-01db-45c6-9cc4-5291dbe2cb84")
 		)
 		(pin "3"
-			(uuid "c6575897-f98f-4317-9008-d3e4fe519abc")
+			(uuid "a3c62031-f150-4a99-88f3-96887b62282c")
 		)
 		(pin "4"
-			(uuid "0a5ecc50-43ca-4094-be50-fedd91233168")
+			(uuid "93d9c6f1-1094-4878-8559-5ad53983d625")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8627,7 +8849,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "4cfbeac3-a6e8-4ebf-967f-c4b3211b4b66")
+			(uuid "4742fd54-02db-4a00-aafa-4feb013045b2")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8756,11 +8978,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 157.48 50.8 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "0243c39d-3af4-405d-8b90-d5eb9ad8af1e")
+			(uuid "59463f23-2803-437b-9631-15b09a6715d3")
 		)
 		(pin "2"
-			(uuid "667a6df8-f3ae-4b23-aa65-2369323ccea1")
+			(uuid "34c39051-dc03-48fb-a1d5-dc09a1a6626c")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8835,11 +9093,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 44.45 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 44.45 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 44.45 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 44.45 62.23 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "4661d56e-d878-4de9-93f4-a818e592791a")
+			(uuid "92d4b27a-86da-4d60-81f2-addfbcf192e5")
 		)
 		(pin "1"
-			(uuid "0c159104-4af6-4492-bea1-de15b3f684bd")
+			(uuid "f971610d-f275-41a9-91f2-a754d6a3237b")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8905,7 +9199,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "f3671845-2e36-4b50-9dfb-21719577c530")
+			(uuid "2fa140cc-9a29-45ce-a0ce-b5e4f4acd5f8")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -8983,14 +9277,50 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 59.69 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 59.69 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 59.69 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 59.69 54.61 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "2745c713-5880-4b68-8d1a-05943d28bd0f")
+			(uuid "30e11e22-da48-48af-800b-df4775330440")
 		)
 		(pin "2"
-			(uuid "aae105aa-816d-46ab-80dd-7f6505c71054")
+			(uuid "36417f04-e2de-4a79-b5be-13ec7041eaad")
 		)
 		(pin "3"
-			(uuid "931641df-d544-40a7-b664-7c27c2ee7727")
+			(uuid "62a9bcdf-a995-4f48-8475-1e0532ce203a")
 		)
 		(instances
 			(project ""
@@ -9056,7 +9386,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "6b6180f5-fe31-4780-9b94-b72f6f668d74")
+			(uuid "a631e7f3-a4d3-4a2a-ac31-f7aa35d57852")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9122,7 +9452,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "36822683-7937-40b9-b93f-cbfb52d123f0")
+			(uuid "8cf0017b-c5ee-4fbf-8971-e6deffa527cd")
 		)
 		(instances
 			(project ""
@@ -9187,7 +9517,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "46315ebe-e1a7-4d92-aa1f-48326b3e68fe")
+			(uuid "7ea851a3-6c99-4860-8728-74656e7fbf4e")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9252,7 +9582,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "8bef4db7-0eb4-42f0-b894-6d69f118fcef")
+			(uuid "5c0cc2f1-e15b-40a9-bdc9-9eeaaebeb7d4")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9319,7 +9649,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ad7905cc-f6d3-43ee-a2b0-1d7c86d67bce")
+			(uuid "bdc86baa-6d54-46ab-8e18-f70fc37adf9e")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9332,32 +9662,31 @@
 	)
 	(symbol
 		(lib_id "LED:NeoPixel_THT")
-		(at 43.18 180.34 180)
+		(at 46.99 184.15 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "6e7a2d47-3085-41fd-bf5b-b110a26f1906")
 		(property "Reference" "D1"
-			(at 55.88 174.8946 0)
+			(at 35.56 181.61 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Value" "NeoPixel_THT"
-			(at 55.88 177.4346 0)
+		(property "Value" "ws2812b"
+			(at 35.56 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
 			)
 		)
-		(property "Footprint" "LED_SMD:LED_Kingbright_AAA3528ESGCT"
-			(at 41.91 172.72 0)
+		(property "Footprint" "LED_SMD:LED_WS2812B_PLCC4_5.0x5.0mm_P3.2mm"
+			(at -14.986 178.562 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9367,7 +9696,7 @@
 			)
 		)
 		(property "Datasheet" "https://www.adafruit.com/product/1938"
-			(at 40.64 170.815 0)
+			(at -17.018 185.42 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9377,7 +9706,7 @@
 			)
 		)
 		(property "Description" "RGB LED with integrated controller, 5mm/8mm LED package"
-			(at 43.18 180.34 0)
+			(at 9.652 175.768 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9386,7 +9715,7 @@
 			)
 		)
 		(property "Description_1" ""
-			(at 43.18 180.34 0)
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9395,7 +9724,7 @@
 			)
 		)
 		(property "MF" ""
-			(at 43.18 180.34 0)
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9404,7 +9733,7 @@
 			)
 		)
 		(property "MP" ""
-			(at 43.18 180.34 0)
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9413,7 +9742,7 @@
 			)
 		)
 		(property "Package" ""
-			(at 43.18 180.34 0)
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9422,7 +9751,7 @@
 			)
 		)
 		(property "Price" ""
-			(at 43.18 180.34 0)
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9431,7 +9760,7 @@
 			)
 		)
 		(property "Purchase-URL" ""
-			(at 43.18 180.34 0)
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9439,8 +9768,44 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2827321"
-			(at 43.18 180.34 0)
+		(property "LCSC" "C114586"
+			(at 17.018 183.134 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" ""
+			(at 46.99 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 46.99 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 46.99 184.15 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 46.99 184.15 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -9449,16 +9814,16 @@
 			)
 		)
 		(pin "4"
-			(uuid "d024f572-9fad-4fcf-a442-28539e922336")
+			(uuid "20f98c1f-463b-49ee-9463-da765e5a20c8")
 		)
 		(pin "3"
-			(uuid "5f06058c-54f8-41a3-b06f-ee7b39e181f5")
+			(uuid "4c20f8a3-f343-4265-8c86-fb1c61a6a79b")
 		)
 		(pin "1"
-			(uuid "ba3c8a92-602b-4c73-b21a-4fef28ed970b")
+			(uuid "a341fc2a-4a5b-468b-8af2-d16f3b6dac58")
 		)
 		(pin "2"
-			(uuid "18fef583-3212-4fa6-a66b-4e7eb78556e7")
+			(uuid "8dd7796c-cd98-4720-970e-eaf2e6dbe5f2")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9523,7 +9888,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "51d9df8d-f5b3-4520-9e4e-7a4944a85ea6")
+			(uuid "9c20707f-034d-41ff-ab04-5e99b06cbfb0")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9589,7 +9954,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "25eb2131-b7e1-4b04-bd6a-8855f2864089")
+			(uuid "f15067a1-d805-44bf-b9c0-94b3e52e3794")
 		)
 		(instances
 			(project ""
@@ -9656,7 +10021,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ec018c24-8551-4da1-a562-e1e0ff2718b9")
+			(uuid "3dc8285d-1351-4b30-87f1-c7b98bc14887")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9723,7 +10088,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "9a19e243-357a-491b-ac9a-35d549f5ac81")
+			(uuid "8ad8e582-3ccd-4e94-bb89-dc917f1bcaef")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9789,7 +10154,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "df53c3ee-f7ae-4412-b5dc-19bd671d9e58")
+			(uuid "77a606a3-c9ad-4f90-91bc-f4f93de7a302")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9856,7 +10221,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "80480329-419d-4213-9b25-c7fc61165b5a")
+			(uuid "4de58c3d-1410-4812-896a-1a3b35c1c5b5")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -9983,11 +10348,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 138.43 26.67 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "b433d685-6396-47e6-bce3-8cc995d94f13")
+			(uuid "514395c6-fffd-44bb-b7c1-bbfded80f14d")
 		)
 		(pin "1"
-			(uuid "62fd6a25-3276-4d06-ae0d-9478b3db4ba7")
+			(uuid "49155242-0fdd-4ceb-9ca7-0d2a67f41674")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10053,7 +10454,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "124632d3-c578-4331-bbaf-4962fd37cd38")
+			(uuid "72b0b6b5-c0b7-4207-86f8-6bcc8ba36a1c")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10066,16 +10467,15 @@
 	)
 	(symbol
 		(lib_id "power:GND")
-		(at 25.4 172.72 270)
+		(at 30.48 187.96 270)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
 		(dnp no)
-		(fields_autoplaced yes)
 		(uuid "82fd277c-9bb6-4f90-8bac-b907e30cd545")
 		(property "Reference" "#PWR01"
-			(at 19.05 172.72 0)
+			(at 24.13 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10084,7 +10484,7 @@
 			)
 		)
 		(property "Value" "GND"
-			(at 21.59 172.7199 90)
+			(at 28.194 188.468 90)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10093,7 +10493,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 25.4 172.72 0)
+			(at 30.48 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10102,7 +10502,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 25.4 172.72 0)
+			(at 30.48 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10111,7 +10511,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
-			(at 25.4 172.72 0)
+			(at 30.48 187.96 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -10120,7 +10520,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "efdea876-d078-4782-8a6c-43f9dca99177")
+			(uuid "177751c8-0da2-4871-96b2-1230295f1d6d")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10187,7 +10587,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "5e58448d-d76c-4d49-b8b0-aa5c3760e806")
+			(uuid "4f1d3927-8564-44fc-805f-7c88c292d035")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10316,11 +10716,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 157.48 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "dc927504-3309-47b6-af53-cbd6ae3ddc2d")
+			(uuid "18c9067a-40de-489f-95cd-f07cecd27781")
 		)
 		(pin "2"
-			(uuid "7e22f93c-834b-43a7-b947-fbe212e8c48e")
+			(uuid "8109d2d7-ad40-43a7-852e-69f692c3d790")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10387,7 +10823,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "a473eb7d-79e2-449c-949a-db4ae14205fa")
+			(uuid "49713e7f-3a48-4008-9ece-34f144e48371")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10516,11 +10952,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 53.34 95.25 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "7aa996c7-61d2-4b12-a367-25dce851ba7e")
+			(uuid "dd273b83-1fea-434e-820e-d7dcd228a9c4")
 		)
 		(pin "2"
-			(uuid "f73073d7-13c7-46c6-bfad-84b174d1eb22")
+			(uuid "47bc45aa-aa86-4367-a2a5-eb7de9d203f6")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10649,11 +11121,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 119.38 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 119.38 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 119.38 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 119.38 40.64 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "06b0f783-0a1c-44e6-9e12-17dcb1d68ce5")
+			(uuid "8e42c5f1-6009-41b8-8416-cd1d4cda5ec6")
 		)
 		(pin "2"
-			(uuid "cfa8e606-6dab-4282-aa0d-f6d9b8a79875")
+			(uuid "6c9579a4-e769-4ff3-8114-1adda2b5092e")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10779,11 +11287,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 147.32 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 147.32 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 147.32 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 147.32 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "7d3d7cf4-ff59-4e40-8e6a-1319b7b49545")
+			(uuid "875724d6-a322-4968-8032-839a1b6e1512")
 		)
 		(pin "1"
-			(uuid "b56db27f-e69d-4a2d-8703-cd61456c7037")
+			(uuid "084a8afa-f501-4ef4-ba86-587804fe2990")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -10911,11 +11455,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 96.52 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "8e3d5da2-cf96-4c9b-a3ff-74cd3f2fac95")
+			(uuid "36b5e5aa-3c76-470f-aa46-3e188ed38d4f")
 		)
 		(pin "2"
-			(uuid "8a174e58-06c1-4ca7-8570-fe313121055f")
+			(uuid "8792461e-cc97-426c-93e5-5a2b8bb14500")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11044,11 +11624,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 121.92 52.07 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "f5a5a07e-4582-4a9d-ac51-5ef18c21b0a9")
+			(uuid "971d6680-e5fa-47d8-9ba6-0a0b7de48f87")
 		)
 		(pin "2"
-			(uuid "683296c1-5246-43e4-b19a-f1aeda4706a9")
+			(uuid "27a36546-a4fe-474c-ac15-9a620f7831ff")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11114,7 +11730,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1dd4d940-8903-4e97-80f7-f02656c56544")
+			(uuid "22cd243a-6141-4521-a423-1299cb511666")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11187,11 +11803,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 38.1 54.61 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 38.1 54.61 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 38.1 54.61 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 38.1 54.61 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "a323770d-932d-4d07-8dec-ec0a0c56f949")
+			(uuid "c7ae700b-c51d-4af8-aa53-3109461475a1")
 		)
 		(pin "1"
-			(uuid "9187471b-30e5-49e3-ae37-7fe841de9e9c")
+			(uuid "42fbf4d8-f717-4635-b3b3-92dbe0595df3")
 		)
 		(instances
 			(project ""
@@ -11318,11 +11970,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 40.64 88.9 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "a956f876-af03-4558-ad8d-c4bd59a08c35")
+			(uuid "05873727-598e-4960-a3a5-0c49b9bd1c1d")
 		)
 		(pin "2"
-			(uuid "4dc67a44-e55e-400d-8c73-48f82277384d")
+			(uuid "af5f626f-31f7-4c41-8bb7-e277e158651b")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11389,7 +12077,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ab7687f3-7162-4515-9277-efc4bf25a9a0")
+			(uuid "df4827ef-0b79-4f35-8673-66e2b16f9752")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11518,11 +12206,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 109.22 154.94 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "01cfcbef-150e-45e3-9f33-d118fb3fe83f")
+			(uuid "85cfa615-e635-4311-b060-70f518100a2b")
 		)
 		(pin "2"
-			(uuid "c6b031f3-9acd-4368-9ac5-6077e5de688f")
+			(uuid "693b0ffe-454a-4ec7-b497-e5eaa1e40d52")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11651,11 +12375,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 156.21 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 156.21 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 156.21 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 156.21 60.96 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "d7f267a5-d736-4953-9933-aaaae528dcc3")
+			(uuid "9973bcaa-595d-4bcf-af43-97800f9250e0")
 		)
 		(pin "2"
-			(uuid "bbaa0bdf-c0c8-4fb4-877d-d3bb6d0ccdf1")
+			(uuid "dcfe8feb-ee03-4525-8f5f-2572fffc61e1")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11781,11 +12541,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 132.08 30.48 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "9a5c676e-8fdf-4543-8560-4b66c15f5d66")
+			(uuid "1ce710c9-df98-4408-ad67-ebf7161e44ca")
 		)
 		(pin "1"
-			(uuid "75fc5166-c799-486d-916f-beba91b9bb2f")
+			(uuid "3f55c589-220f-46b6-b827-2f6577607928")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -11915,197 +12711,233 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 140.97 118.11 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "31"
-			(uuid "fbed6b58-76eb-47fa-9a50-143e616ca32f")
+			(uuid "ced02d62-359d-4136-9c63-d92fb62866e3")
 		)
 		(pin "1"
-			(uuid "c7011924-d7e0-4716-9d06-c0f96155a6c2")
+			(uuid "3fbaee10-8353-4b2c-a7a9-784aabd34e05")
 		)
 		(pin "37"
-			(uuid "e033de0c-dee9-49bd-aa76-a7cf5d24496d")
+			(uuid "5ed289ec-8d13-4d77-8ae7-202286468d53")
 		)
 		(pin "18"
-			(uuid "a0eba64c-b4d4-4fbd-8a9e-432020b77148")
+			(uuid "0e1271c9-7133-45f7-8f27-ec00151c7724")
 		)
 		(pin "38"
-			(uuid "a617b106-55a2-4ffc-8e62-dcbb627cceeb")
+			(uuid "d9d431fe-13a1-4d65-a713-89fdbd770a12")
 		)
 		(pin "12"
-			(uuid "4bd522e8-a1ad-4b92-a56a-82fbcbb97b70")
+			(uuid "192b942e-0ff1-45cb-a34e-2bc8d4f81145")
 		)
 		(pin "11"
-			(uuid "53e4d143-fcb8-49af-9858-eb7eab79e36b")
+			(uuid "3a24b728-c0a6-43ec-96fa-e28b996d4350")
 		)
 		(pin "5"
-			(uuid "7c51c6ba-9681-4f06-bfb4-76c9587742b6")
+			(uuid "bd839a79-d985-49e7-86dd-86586bb141d5")
 		)
 		(pin "7"
-			(uuid "d1572767-0a7e-4551-a04b-d7299caa1ded")
+			(uuid "770eb602-636f-406c-a1eb-24128ec9db7c")
 		)
 		(pin "6"
-			(uuid "9c578ee2-9937-4b42-858d-b622a303d959")
+			(uuid "25f506cf-1025-4904-bb95-e8957ca1c39f")
 		)
 		(pin "8"
-			(uuid "082e9de6-7086-4473-9919-8237712d3dfc")
+			(uuid "31f8214d-fcf1-491e-8fdd-77edcd446b59")
 		)
 		(pin "9"
-			(uuid "02592ce2-b18e-4fa1-a4e2-4f7948089827")
+			(uuid "7627de6a-af47-4df4-80da-931c8f401067")
 		)
 		(pin "25"
-			(uuid "69dd8655-b9c9-4e08-b5a1-0e687f50a8df")
+			(uuid "6bd4640d-0801-46b7-b803-9b245ea5f67a")
 		)
 		(pin "39"
-			(uuid "3423ac6c-cc1f-4de5-af25-8f83b091ae01")
+			(uuid "3e819aa9-09d3-44e7-a203-ed43fc72a7ba")
 		)
 		(pin "24"
-			(uuid "0adc1f8b-0c0e-4613-9106-1ff2a7b362d0")
+			(uuid "18fe3697-50fd-4dab-ab27-1365a57937d2")
 		)
 		(pin "60"
-			(uuid "adec6620-3339-4dee-b483-098cac13be8d")
+			(uuid "f8377f44-ca5d-4762-8916-44a0a8a11939")
 		)
 		(pin "40"
-			(uuid "c1b06fb6-9d08-42f2-8114-2d0b3c313409")
+			(uuid "ee5c00a1-dd33-4c5c-9500-aa767568859d")
 		)
 		(pin "51"
-			(uuid "18bb9fad-a7df-4ca6-9f23-6175fb803f65")
+			(uuid "eed9113c-1876-4243-b789-89c8934846d3")
 		)
 		(pin "53"
-			(uuid "79f103d2-0326-4bb7-a680-96923942a65b")
+			(uuid "997ea6e8-f094-4d8f-a98c-cd4066fa63f4")
 		)
 		(pin "54"
-			(uuid "c87af8fa-92cb-4130-be53-e71269a222be")
+			(uuid "d6fe7f88-e56e-4893-b3b1-1f7d8e674e7e")
 		)
 		(pin "10"
-			(uuid "20ef021a-394e-4086-aa11-0feb2b8f4236")
+			(uuid "e46804da-1296-4974-812b-c8dd7aa01649")
 		)
 		(pin "2"
-			(uuid "598b2ec4-61a6-4642-b2eb-2145a3f56aad")
+			(uuid "e32b1014-70cc-42fc-8ac8-34771d62e846")
 		)
 		(pin "52"
-			(uuid "71db5c4b-0a0e-48cb-9dd3-b3274b04afd5")
+			(uuid "e3e62b14-a1bb-48bb-b6f2-71ddce2c4ba7")
 		)
 		(pin "3"
-			(uuid "b3cb6201-aad4-4014-94ff-2df3e2974733")
+			(uuid "a9918c35-f832-4adb-bb4a-2947b5c69f60")
 		)
 		(pin "4"
-			(uuid "53ed8181-93e0-4d7a-acf4-cea68d2db4c4")
+			(uuid "17af0ed6-259e-4f97-9225-e339feb48e04")
 		)
 		(pin "47"
-			(uuid "9f3b02e7-85f6-4c36-8a42-ccf4f8bdb6f4")
+			(uuid "6c883f2b-a333-4627-9684-ec623515a0e9")
 		)
 		(pin "19"
-			(uuid "fd7a3b8a-a2b1-4df8-86a0-888730e07ae9")
+			(uuid "6bdd6eca-1b43-4317-b3fb-4fb243ebcb4b")
 		)
 		(pin "32"
-			(uuid "8bf96257-42dd-4dea-a5da-491806f6f83a")
+			(uuid "5fbf4f70-2453-4235-9ec1-8f3396b945a6")
 		)
 		(pin "63"
-			(uuid "8b68d309-afec-4a87-8e8b-c931343600b6")
+			(uuid "dbb14570-d32c-4245-8c25-9e46ab3a43a0")
 		)
 		(pin "48"
-			(uuid "fe7c6b15-01e1-41f3-80d9-b9deb5a4f232")
+			(uuid "cdfb1c3a-a522-4bc4-93e0-56fabdcc9e8c")
 		)
 		(pin "64"
-			(uuid "2aa03651-ffab-4525-9592-3673c730d852")
+			(uuid "aee8ce97-a861-410c-b929-d15372461a08")
 		)
 		(pin "13"
-			(uuid "0532cec9-065e-427e-908a-592b188dbfd0")
+			(uuid "44cad1fe-8031-46c6-a82c-be14168a3fd3")
 		)
 		(pin "14"
-			(uuid "0a106a16-749b-4b78-b2f3-687b711d5da5")
+			(uuid "46b1ae55-7532-4a2e-ab71-c9dde59ae667")
 		)
 		(pin "15"
-			(uuid "89c4d437-eb7a-483f-a049-aabf160d3e9c")
+			(uuid "625282cf-0da1-44f3-acfc-3436c256802f")
 		)
 		(pin "17"
-			(uuid "18d52df1-74ba-4ec9-b24a-ea3bedc8f04f")
+			(uuid "b9da30ff-731d-4622-83ff-adb668f3258f")
 		)
 		(pin "21"
-			(uuid "19990495-df21-4c1c-90d5-08e7db23691b")
+			(uuid "6b8c19ae-5d86-46df-82e4-c1c363568047")
 		)
 		(pin "20"
-			(uuid "bbd1124c-1a2b-4b56-82cf-a96cb03138f1")
+			(uuid "36ea7ddd-857c-4f50-917e-053d5e2bcdd4")
 		)
 		(pin "22"
-			(uuid "bc1d8a9a-a8ea-4f7c-95f8-0aff13b432e2")
+			(uuid "41f50e49-01a8-40dc-b0a4-5e6a6155b219")
 		)
 		(pin "16"
-			(uuid "44d12538-6c6c-4cbe-8b9b-f319f5b155c2")
+			(uuid "9247080a-24b0-4e3c-b16d-4e6c4225ba50")
 		)
 		(pin "29"
-			(uuid "2eb8d20c-101e-42aa-9697-a6e532ca4172")
+			(uuid "32e8fe3a-f092-4eed-9cad-c3de94fc6de2")
 		)
 		(pin "33"
-			(uuid "f23b3c46-64ff-4e4f-b82c-c745787ea72b")
+			(uuid "f4960c7a-d7b0-4cbb-aedc-0bde373e0167")
 		)
 		(pin "42"
-			(uuid "8efe724d-83ae-4716-b723-b115f8abad4e")
+			(uuid "cfeab386-a4e7-429a-97bf-64cdcf54fd79")
 		)
 		(pin "62"
-			(uuid "8fbb06f2-99a2-49d1-b3fb-593b471245b3")
+			(uuid "cb1423b8-1afe-457c-8d8f-8d2dfc0ecc5b")
 		)
 		(pin "55"
-			(uuid "379ed7e7-8642-47e2-a59b-20b44bda6247")
+			(uuid "14aef185-2acf-4eb5-b284-536a762d24f9")
 		)
 		(pin "28"
-			(uuid "4f2ed47a-966e-48a8-9dde-14c40611f2a6")
+			(uuid "bb6f2424-a818-4ee5-86b6-538866fb6838")
 		)
 		(pin "46"
-			(uuid "68d64ccd-b014-4189-a153-d87376e3bb89")
+			(uuid "ca0f8cfa-5555-4840-bd44-55571717a7ac")
 		)
 		(pin "50"
-			(uuid "32d488b6-58a1-4c09-ba55-121075f05330")
+			(uuid "778975b3-2319-49cf-b80d-06a375de518e")
 		)
 		(pin "36"
-			(uuid "da84d336-8090-41f7-8396-3698e6c2486f")
+			(uuid "85f306eb-f67b-494d-a27a-0eead6974e30")
 		)
 		(pin "56"
-			(uuid "c4079f35-495e-43c5-841a-c30e7d0f28de")
+			(uuid "085460b8-8a38-43e2-9356-1b46a8bd768f")
 		)
 		(pin "49"
-			(uuid "1e6936bf-a901-43ea-acf4-7a4f47841b34")
+			(uuid "e9ffbf0c-699c-4acf-b3b5-5a774736b16f")
 		)
 		(pin "26"
-			(uuid "41cc00d0-4cef-42c5-ba91-40b06e05511d")
+			(uuid "21598d76-48bc-4e33-9562-131262d4f3e0")
 		)
 		(pin "59"
-			(uuid "239b75c9-8487-42cf-855f-7b5b9223a5f1")
+			(uuid "72b4df66-1d01-4d97-8ff1-777b7f955492")
 		)
 		(pin "35"
-			(uuid "a03ae9ef-57b5-42ab-9759-c4a046f056ba")
+			(uuid "e664d070-f532-43cf-b897-ddca16b1ce9b")
 		)
 		(pin "44"
-			(uuid "9d765bc8-7aee-43ca-8101-970e60f6ccd8")
+			(uuid "1926abde-d008-4fb9-82b3-068fc58f4573")
 		)
 		(pin "45"
-			(uuid "aa02b9f4-4ad7-479f-ab1f-b0be7be7d6fa")
+			(uuid "0fb94d04-1ea3-46bf-b662-c8b7b6620f0d")
 		)
 		(pin "41"
-			(uuid "b8f9d408-a258-4232-8a1b-97469d1d6339")
+			(uuid "6c1ae6c7-020e-42a8-830f-fa9144b0be16")
 		)
 		(pin "23"
-			(uuid "094fe3e8-a4fa-4a44-a21d-f61333c7f31f")
+			(uuid "4d28a778-5cd7-40b0-a418-c8c6aee3c5cc")
 		)
 		(pin "43"
-			(uuid "af8ad0cf-3e3b-497a-bf2c-248cd3e9a124")
+			(uuid "d7e3f7e8-1827-4205-9fc2-7ca2540e3676")
 		)
 		(pin "27"
-			(uuid "1699187a-4fc8-4337-8b50-4b7bcc459fec")
+			(uuid "81cc9c54-ee81-49fd-af4f-75c46d1365dc")
 		)
 		(pin "58"
-			(uuid "26de4368-36b2-4fa2-9453-98ec85ecbe46")
+			(uuid "45cda83c-c421-47e4-aa78-c57a82b7b2e5")
 		)
 		(pin "61"
-			(uuid "d51d55a1-a605-4bc9-906d-454b9b54c8ef")
+			(uuid "a2568612-bcc7-40cb-aeda-380bef30db6b")
 		)
 		(pin "57"
-			(uuid "ef0992fc-4e39-4aba-84b7-3634556168a7")
+			(uuid "e4766430-e2cc-49ad-9d35-a3e62b78061c")
 		)
 		(pin "30"
-			(uuid "7f8f01f7-26d4-44a3-817b-6e942c71ac79")
+			(uuid "a96c8c32-5235-4eb7-a9bb-cdb84ffeaed8")
 		)
 		(pin "34"
-			(uuid "fcf82bc8-f06c-46a3-988e-6853150ca131")
+			(uuid "3a983619-949e-4d7d-8ea5-c83d3c6e4b66")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12171,7 +13003,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "88b4d832-6aa9-44fe-bb6f-42d955979da9")
+			(uuid "e69bca6d-2147-493b-9e60-20e8d809f1fb")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12237,7 +13069,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "c52ea594-04de-43b4-be21-6523289e856a")
+			(uuid "74dd0526-722f-4da4-b3ae-c124bb8bd5ef")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12365,11 +13197,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 232.41 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "354e57ad-6f8d-41f8-b289-a07d46fd29cb")
+			(uuid "0c27f9f8-e51b-4a14-9b68-c4f503f9de9b")
 		)
 		(pin "1"
-			(uuid "bd47ce60-d0ab-4334-a392-99bc96098600")
+			(uuid "711d59af-56a6-49fb-b8da-7b0091af8a86")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12435,7 +13303,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "63babda7-c0e3-41ce-a22e-30b29ef879bd")
+			(uuid "6693551e-14f2-4204-8146-a882f0275a43")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12564,11 +13432,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 219.71 104.14 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "2"
-			(uuid "32904682-cd4d-4ae1-b7e3-894bbd95ba27")
+			(uuid "9f2b68e0-1c91-4a36-99a9-20a601f51da9")
 		)
 		(pin "1"
-			(uuid "d046c62c-ead5-411e-b20f-ec54bc874dc3")
+			(uuid "85a495b8-8d14-4a05-932a-6359dbfe235e")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12635,224 +13539,12 @@
 			)
 		)
 		(pin "1"
-			(uuid "341254f8-f959-400c-9821-301b71fcb877")
+			(uuid "d69a49e6-4cbb-4f2f-a583-cb083e1aecb7")
 		)
 		(instances
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "#PWR018")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:R")
-		(at 190.5 132.08 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "dcea2587-0df4-4b12-a338-792c4f57e386")
-		(property "Reference" "R22"
-			(at 193.04 130.8099 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "4.7k"
-			(at 193.04 133.3499 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
-			(at 188.722 132.08 90)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 190.5 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Resistor"
-			(at 190.5 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C17673"
-			(at 190.5 132.08 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "ce961ae6-e0e8-4a97-b397-0534fcbdd12b")
-		)
-		(pin "2"
-			(uuid "e634be36-72f0-4b58-8841-f57cbd3f316b")
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "R22")
-					(unit 1)
-				)
-			)
-		)
-	)
-	(symbol
-		(lib_id "Device:C")
-		(at 26.67 180.34 0)
-		(unit 1)
-		(exclude_from_sim no)
-		(in_bom yes)
-		(on_board yes)
-		(dnp no)
-		(fields_autoplaced yes)
-		(uuid "df561403-95cd-412e-8305-1637cd5435d5")
-		(property "Reference" "C1"
-			(at 30.48 179.0699 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Value" "100nf"
-			(at 30.48 181.6099 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(justify left)
-			)
-		)
-		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
-			(at 27.6352 184.15 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Datasheet" "~"
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description" "Unpolarized capacitor"
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Description_1" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MF" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "MP" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Package" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Price" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "Purchase-URL" ""
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(property "LCSC" "C49678"
-			(at 26.67 180.34 0)
-			(effects
-				(font
-					(size 1.27 1.27)
-				)
-				(hide yes)
-			)
-		)
-		(pin "1"
-			(uuid "c84ebe99-27fe-4916-a70b-6c0cdf0d9e1d")
-		)
-		(pin "2"
-			(uuid "d2f2f711-0b36-48ce-8057-c7571d982247")
-		)
-		(instances
-			(project "flightcomputer2"
-				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
-					(reference "C1")
 					(unit 1)
 				)
 			)
@@ -12913,7 +13605,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "ea2c1371-e9ac-439b-a3b4-cb7dac248726")
+			(uuid "77920c67-94e0-43af-a42e-5a6734e9e632")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -12979,7 +13671,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "8b9678de-1e75-475e-886b-1812f9f624be")
+			(uuid "7d596bd3-8801-4b3c-855d-44f1fa089523")
 		)
 		(instances
 			(project ""
@@ -13046,7 +13738,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "da41f48a-03a4-40c6-b297-e63da62f26b8")
+			(uuid "7d058bad-12a9-4bfe-96e6-0351a1d39517")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -13175,11 +13867,47 @@
 				(hide yes)
 			)
 		)
+		(property "MANUFACTURER" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 121.92 63.5 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
 		(pin "1"
-			(uuid "2ca5c681-380f-4e1d-b129-99993ed1298f")
+			(uuid "2d07dfcf-ec6e-4844-aeee-48d8ef6deeff")
 		)
 		(pin "2"
-			(uuid "aaca8884-d00c-47e9-a784-6192114c4ab1")
+			(uuid "52f774ac-fdd5-4a6a-b2e3-d4ad1791be6d")
 		)
 		(instances
 			(project "flightcomputer2"
@@ -13246,7 +13974,7 @@
 			)
 		)
 		(pin "1"
-			(uuid "1d212e25-edea-4316-a108-249f5c2cb4ba")
+			(uuid "a7cc828a-ec98-4a73-88ed-b01a922c1f8e")
 		)
 		(instances
 			(project "flightcomputer2"
