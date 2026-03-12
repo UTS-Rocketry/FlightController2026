@@ -1911,7 +1911,7 @@
 				(justify left bottom)
 			)
 		)
-		(property "Sheetfile" "Aux.kicad_sch"
+		(property "Sheetfile" "AuxPyro.kicad_sch"
 			(at 59.69 120.142 0)
 			(effects
 				(font

@@ -4592,16 +4592,16 @@
 		(uuid "c7be69d8-cdf7-47da-bfdd-7351149a4249")
 	)
 	(no_connect
-		(at 120.65 107.95)
-		(uuid "caba9b41-c51c-482f-8b7a-e2096384ce0b")
-	)
-	(no_connect
 		(at 254 52.07)
 		(uuid "dc0f1f88-d630-4536-b9cd-fef33b7c3f6c")
 	)
 	(no_connect
 		(at 60.96 184.15)
 		(uuid "e0e121bb-d05f-4f0d-808b-b9e4b0a11b0c")
+	)
+	(no_connect
+		(at 120.65 120.65)
+		(uuid "f1b0f59a-7dc1-40a5-abc5-8c5b717edd79")
 	)
 	(wire
 		(pts
@@ -5055,13 +5055,13 @@
 	)
 	(wire
 		(pts
-			(xy 111.76 120.65) (xy 120.65 120.65)
+			(xy 111.76 107.95) (xy 120.65 107.95)
 		)
 		(stroke
 			(width 0)
 			(type default)
 		)
-		(uuid "5aa8facd-0882-41a3-b048-c6a113917323")
+		(uuid "5c03c6be-89fb-479e-8340-c3a95455b173")
 	)
 	(wire
 		(pts
@@ -6133,7 +6133,7 @@
 	)
 	(hierarchical_label "AuxADC"
 		(shape input)
-		(at 111.76 120.65 180)
+		(at 111.76 107.95 180)
 		(effects
 			(font
 				(size 1.27 1.27)
