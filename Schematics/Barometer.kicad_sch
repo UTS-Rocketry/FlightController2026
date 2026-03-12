@@ -838,6 +838,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Baraometer to detect altitude and apogee events"
+		(exclude_from_sim no)
+		(at 157.48 56.896 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "5df72681-19c8-4f24-9c32-1cdc6ddf1189")
+	)
 	(junction
 		(at 137.16 96.52)
 		(diameter 0)

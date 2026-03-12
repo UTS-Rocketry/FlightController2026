@@ -126,12 +126,6 @@
 		(uuid "7a6affc6-211b-424c-9583-56f6099825c4")
 	)
 	(junction
-		(at 54.61 81.28)
-		(diameter 0)
-		(color 0 0 0 0)
-		(uuid "99540149-38cf-4391-86ef-208d2052ab96")
-	)
-	(junction
 		(at 189.23 105.41)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -148,6 +142,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "b5e6f182-ce9b-4156-a5db-19b60a11b355")
+	)
+	(junction
+		(at 53.34 81.28)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c21e4f08-de70-4b02-911a-361947191ef5")
 	)
 	(junction
 		(at 190.5 102.87)
@@ -178,6 +178,16 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "fb8e3fce-2f5c-4e40-9bd3-ba678ab148f4")
+	)
+	(wire
+		(pts
+			(xy 53.34 81.28) (xy 59.69 81.28)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0524a1e5-98d5-40a5-9abf-146bdde591bb")
 	)
 	(wire
 		(pts
@@ -258,16 +268,6 @@
 			(type default)
 		)
 		(uuid "19cd8a2c-f5e3-4424-b7f3-1b35d5850481")
-	)
-	(wire
-		(pts
-			(xy 53.34 81.28) (xy 54.61 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "20d97dfd-1b6d-41cb-b544-b35b47b9a3dc")
 	)
 	(wire
 		(pts
@@ -468,16 +468,6 @@
 			(type default)
 		)
 		(uuid "61cae6cc-dc93-4163-a683-bebb864ba203")
-	)
-	(wire
-		(pts
-			(xy 54.61 81.28) (xy 59.69 81.28)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "64e369d8-7dbb-4f1e-82c8-7d7ae0189c64")
 	)
 	(wire
 		(pts
@@ -961,7 +951,7 @@
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
-		(at 54.61 81.28 0)
+		(at 53.34 81.28 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -970,7 +960,7 @@
 		(fields_autoplaced yes)
 		(uuid "06c50457-3bb7-4ecf-88cc-78d33d2529f6")
 		(property "Reference" "#FLG06"
-			(at 54.61 79.375 0)
+			(at 53.34 79.375 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -979,7 +969,7 @@
 			)
 		)
 		(property "Value" "PWR_FLAG"
-			(at 54.61 76.2 0)
+			(at 53.34 76.2 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -987,7 +977,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 54.61 81.28 0)
+			(at 53.34 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -996,7 +986,7 @@
 			)
 		)
 		(property "Datasheet" "~"
-			(at 54.61 81.28 0)
+			(at 53.34 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -1005,7 +995,7 @@
 			)
 		)
 		(property "Description" "Special symbol for telling ERC where power comes from"
-			(at 54.61 81.28 0)
+			(at 53.34 81.28 0)
 			(effects
 				(font
 					(size 1.27 1.27)

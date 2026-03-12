@@ -706,6 +706,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "SD Card for flight telemetry logging and possible lookup tables for control systems"
+		(exclude_from_sim no)
+		(at 143.51 68.834 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "a3c3cea9-2da1-4918-83b3-df7d480dd3ef")
+	)
 	(junction
 		(at 115.57 87.63)
 		(diameter 0)
@@ -722,7 +732,7 @@
 	)
 	(wire
 		(pts
-			(xy 105.41 95.25) (xy 134.62 95.25)
+			(xy 90.17 95.25) (xy 134.62 95.25)
 		)
 		(stroke
 			(width 0)
@@ -792,7 +802,7 @@
 	)
 	(wire
 		(pts
-			(xy 105.41 87.63) (xy 115.57 87.63)
+			(xy 90.17 87.63) (xy 115.57 87.63)
 		)
 		(stroke
 			(width 0)
@@ -802,7 +812,7 @@
 	)
 	(hierarchical_label "ChipSelectSDCARD"
 		(shape input)
-		(at 105.41 87.63 180)
+		(at 90.17 87.63 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -813,7 +823,7 @@
 	)
 	(hierarchical_label "SDCLK"
 		(shape input)
-		(at 105.41 95.25 180)
+		(at 90.17 95.25 180)
 		(effects
 			(font
 				(size 1.27 1.27)

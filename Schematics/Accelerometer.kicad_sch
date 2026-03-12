@@ -879,6 +879,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "High g imu for liftoff data"
+		(exclude_from_sim no)
+		(at 156.718 65.278 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "8619dc59-0a54-4cc6-894a-756f41a2a8f3")
+	)
 	(junction
 		(at 156.21 78.74)
 		(diameter 0)

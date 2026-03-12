@@ -739,6 +739,16 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Redundant storage to be used in tandem with SD card"
+		(exclude_from_sim no)
+		(at 126.746 43.942 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "7df54054-f29a-46ca-a14c-83db3fca77fb")
+	)
 	(text_box "Memory\n"
 		(exclude_from_sim no)
 		(at 80.01 48.26 0)

@@ -788,6 +788,26 @@
 			(embedded_fonts no)
 		)
 	)
+	(text "Continuity detection with adc resistors to protect adc pins"
+		(exclude_from_sim no)
+		(at 98.298 91.44 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "3fcb1f8f-d1cf-4fa2-a59b-264ed0e055ee")
+	)
+	(text "Low-Side Mosfet Switch for pulling igniton to ground"
+		(exclude_from_sim no)
+		(at 156.972 64.008 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "d4dffb51-ed65-4cd6-b461-56adee59ae7a")
+	)
 	(junction
 		(at 187.96 95.25)
 		(diameter 0)
@@ -1723,7 +1743,7 @@
 		(at 187.96 88.9 270)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -2131,6 +2151,15 @@
 		)
 		(property "Description" "Resistor"
 			(at 146.05 87.63 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C95781"
+			(at 146.05 87.63 90)
 			(effects
 				(font
 					(size 1.27 1.27)
