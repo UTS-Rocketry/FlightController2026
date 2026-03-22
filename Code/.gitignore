@@ -1,0 +1,8 @@
+build
+mx.scratch
+!.settings
+
+.vscode
+.claude
+Drivers
+.settings
