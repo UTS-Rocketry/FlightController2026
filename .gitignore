@@ -35,3 +35,36 @@ Thumbs.db
 .idea/
 *~
 *.lck
+
+# =========================
+# Code Ingonre files
+# =========================
+
+# =========================
+# STM32
+# =========================
+
+# Object and dependency files
+*.o
+*.obj
+*.d
+*.dep
+
+# Compiled output
+*.elf
+*.bin
+*.hex
+*.out
+*.map
+*.lst
+*.a
+
+# IAR project browser / debug database
+*.pbd
+*.pbi
+*.dbgdt
+*.wsdt
+*.dni
+*.cspy*
+
+
