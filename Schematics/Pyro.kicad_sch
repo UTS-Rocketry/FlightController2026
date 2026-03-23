@@ -1471,7 +1471,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C84376"
+		(property "LCSC" "C17414"
 			(at 157.48 95.25 0)
 			(effects
 				(font
@@ -1639,7 +1639,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2933415"
+		(property "LCSC" "C17713"
 			(at 104.14 91.44 0)
 			(effects
 				(font
@@ -1752,7 +1752,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C95781"
+		(property "LCSC" "C17513"
 			(at 118.11 85.09 90)
 			(effects
 				(font
@@ -1781,7 +1781,7 @@
 		(at 99.06 72.39 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(uuid "a64cd120-1c5b-41e0-9b24-b03228548e67")

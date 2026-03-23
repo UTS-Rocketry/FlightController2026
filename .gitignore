@@ -5,6 +5,7 @@
 # Backup folders
 *-backups/
 **/*-backups/
+.history
 
 # Project-local settings (machine specific)
 *.kicad_prl

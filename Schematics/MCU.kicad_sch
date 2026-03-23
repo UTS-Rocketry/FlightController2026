@@ -4416,6 +4416,12 @@
 		(uuid "1c1edddc-d194-42b0-bcf0-12a575e1a9e5")
 	)
 	(junction
+		(at 251.46 27.94)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "24783b08-2985-425f-b88a-75cbeb36f470")
+	)
+	(junction
 		(at 157.48 36.83)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -4787,16 +4793,6 @@
 	)
 	(wire
 		(pts
-			(xy 176.53 82.55) (xy 161.29 82.55)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "24cf5de3-4ff8-4802-87c9-8f5b23d59715")
-	)
-	(wire
-		(pts
 			(xy 62.23 49.53) (xy 62.23 43.18)
 		)
 		(stroke
@@ -5067,16 +5063,6 @@
 	)
 	(wire
 		(pts
-			(xy 238.76 34.29) (xy 238.76 36.83)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "5c6e96e0-b8e3-43d0-afb6-eed76bbe90f4")
-	)
-	(wire
-		(pts
 			(xy 219.71 96.52) (xy 219.71 100.33)
 		)
 		(stroke
@@ -5114,6 +5100,16 @@
 			(type default)
 		)
 		(uuid "671c2a74-6157-45a3-9c50-0bf4c73636d2")
+	)
+	(wire
+		(pts
+			(xy 251.46 27.94) (xy 238.76 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "67f89097-5c8d-4ec0-9497-c14a022df5e2")
 	)
 	(wire
 		(pts
@@ -5224,6 +5220,16 @@
 			(type default)
 		)
 		(uuid "757cbb64-8498-4c42-9686-5a8f6ef41d36")
+	)
+	(wire
+		(pts
+			(xy 100.33 110.49) (xy 120.65 110.49)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "76f47306-a81c-4725-a1e6-d9f0447911b7")
 	)
 	(wire
 		(pts
@@ -5347,6 +5353,16 @@
 	)
 	(wire
 		(pts
+			(xy 176.53 82.55) (xy 161.29 82.55)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8d7ecd47-2930-4388-80dd-f20284f960b9")
+	)
+	(wire
+		(pts
 			(xy 58.42 43.18) (xy 62.23 43.18)
 		)
 		(stroke
@@ -5424,16 +5440,6 @@
 			(type default)
 		)
 		(uuid "9ebf9cf1-8378-4d41-acab-2d7189e6ab9d")
-	)
-	(wire
-		(pts
-			(xy 95.25 110.49) (xy 120.65 110.49)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "a152c172-b71e-46cb-bd11-0017e4b88c9b")
 	)
 	(wire
 		(pts
@@ -5524,6 +5530,16 @@
 			(type default)
 		)
 		(uuid "ad577ba1-e0ef-49a9-9a88-b654cffb78c0")
+	)
+	(wire
+		(pts
+			(xy 257.81 27.94) (xy 251.46 27.94)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae7b483d-63ba-4390-806d-c10c2617034c")
 	)
 	(wire
 		(pts
@@ -5644,6 +5660,16 @@
 			(type default)
 		)
 		(uuid "c6281db4-6a11-4981-bc43-b73e9bab098f")
+	)
+	(wire
+		(pts
+			(xy 238.76 27.94) (xy 238.76 36.83)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "c7d32398-f936-44cf-940b-10ff26102044")
 	)
 	(wire
 		(pts
@@ -5916,12 +5942,12 @@
 		(uuid "115bd8af-00df-46ae-bd46-18aea61b19f0")
 	)
 	(label "RGB_DATA"
-		(at 95.25 110.49 180)
+		(at 176.53 82.55 0)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify right bottom)
+			(justify left bottom)
 		)
 		(uuid "2e325732-feed-4e46-bfdc-10bb21e85365")
 	)
@@ -6046,12 +6072,12 @@
 		(uuid "e41756a0-e448-417d-8146-a6d5c073a3fb")
 	)
 	(label "BuzzerControl"
-		(at 176.53 82.55 0)
+		(at 100.33 110.49 180)
 		(effects
 			(font
 				(size 1.27 1.27)
 			)
-			(justify left bottom)
+			(justify right bottom)
 		)
 		(uuid "e4392d82-216c-4d14-bcb8-017229f58249")
 	)
@@ -7286,7 +7312,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C96346"
+		(property "LCSC" "C149504"
 			(at 40.64 138.43 90)
 			(effects
 				(font
@@ -8133,7 +8159,7 @@
 		(at 241.3 52.07 0)
 		(unit 1)
 		(exclude_from_sim no)
-		(in_bom yes)
+		(in_bom no)
 		(on_board yes)
 		(dnp no)
 		(fields_autoplaced yes)
@@ -8428,7 +8454,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C95781"
+		(property "LCSC" "C17513"
 			(at 49.53 157.48 90)
 			(effects
 				(font
@@ -9118,7 +9144,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C84376"
+		(property "LCSC" "C17414"
 			(at 44.45 62.23 0)
 			(effects
 				(font
@@ -9239,6 +9265,73 @@
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
 					(reference "#PWR021")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 251.46 35.56 90)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "561ae2f4-0aed-46bc-80a8-fc64347e9973")
+		(property "Reference" "#PWR068"
+			(at 257.81 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Value" "GND"
+			(at 255.27 35.5599 90)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" ""
+			(at 251.46 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" ""
+			(at 251.46 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 251.46 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "e61f9508-c497-47c2-a603-e211d4a62136")
+		)
+		(instances
+			(project "flightcomputer2"
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
+					(reference "#PWR068")
 					(unit 1)
 				)
 			)
@@ -10373,7 +10466,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C85840"
+		(property "LCSC" "C1015"
 			(at 138.43 26.67 90)
 			(effects
 				(font
@@ -11480,7 +11573,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C19110"
+		(property "LCSC" "C377773"
 			(at 96.52 154.94 0)
 			(effects
 				(font
@@ -11710,6 +11803,175 @@
 		)
 	)
 	(symbol
+		(lib_id "Device:C")
+		(at 251.46 31.75 0)
+		(unit 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a8420069-7e4d-4a05-a9c0-15f7cf4b02f7")
+		(property "Reference" "C20"
+			(at 255.27 30.4799 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Value" "100nf"
+			(at 255.27 33.0199 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify left)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0805_2012Metric_Pad1.18x1.45mm_HandSolder"
+			(at 252.4252 35.56 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Datasheet" "~"
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description" "Unpolarized capacitor"
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Description_1" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MF" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MP" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Package" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Price" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "Purchase-URL" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "LCSC" "C49678"
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MANUFACTURER" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "MAXIMUM_PACKAGE_HEIGHT" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "PARTREV" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(property "STANDARD" ""
+			(at 251.46 31.75 0)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(hide yes)
+			)
+		)
+		(pin "1"
+			(uuid "1e24dd5b-172e-4074-86fe-7bb0e634f5fb")
+		)
+		(pin "2"
+			(uuid "f4b6fed2-6c50-4345-b03d-23e97369048f")
+		)
+		(instances
+			(project "flightcomputer2"
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199/2415024d-c1fa-457e-8c6b-d01152b96a1d"
+					(reference "C20")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
 		(lib_id "power:GND")
 		(at 226.06 101.6 0)
 		(mirror y)
@@ -11828,7 +12090,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C2907267"
+		(property "LCSC" " C17710"
 			(at 38.1 54.61 90)
 			(effects
 				(font
@@ -11995,7 +12257,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C84376"
+		(property "LCSC" "C17414"
 			(at 40.64 88.9 90)
 			(effects
 				(font
@@ -12231,7 +12493,7 @@
 				(hide yes)
 			)
 		)
-		(property "LCSC" "C19110"
+		(property "LCSC" "C377773"
 			(at 109.22 154.94 0)
 			(effects
 				(font
@@ -13586,7 +13848,7 @@
 	)
 	(symbol
 		(lib_id "power:+3.3V")
-		(at 238.76 34.29 0)
+		(at 257.81 27.94 0)
 		(unit 1)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -13595,7 +13857,7 @@
 		(fields_autoplaced yes)
 		(uuid "e30542b4-bac8-4e90-af9f-263594ab5d6b")
 		(property "Reference" "#PWR031"
-			(at 238.76 38.1 0)
+			(at 257.81 31.75 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13604,15 +13866,16 @@
 			)
 		)
 		(property "Value" "+3.3V"
-			(at 238.76 29.21 0)
+			(at 260.35 26.6699 0)
 			(effects
 				(font
 					(size 1.27 1.27)
 				)
+				(justify left)
 			)
 		)
 		(property "Footprint" ""
-			(at 238.76 34.29 0)
+			(at 257.81 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13621,7 +13884,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 238.76 34.29 0)
+			(at 257.81 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
@@ -13630,7 +13893,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
-			(at 238.76 34.29 0)
+			(at 257.81 27.94 0)
 			(effects
 				(font
 					(size 1.27 1.27)
