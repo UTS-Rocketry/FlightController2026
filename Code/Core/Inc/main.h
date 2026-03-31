@@ -94,6 +94,10 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN Private defines */
 
+#define BitSet(reg,x) (reg |= (1 << x))
+#define BitClear(reg,x) (reg &= ~(1 << x))
+
+
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

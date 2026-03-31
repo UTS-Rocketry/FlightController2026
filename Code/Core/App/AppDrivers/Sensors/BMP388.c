@@ -40,17 +40,39 @@ HAL_StatusTypeDef BMP388_readRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg
     uint8_t rxBuff[2];
 
     //sets the register to read
-    txBuff[0] = reg | 0x80;
+    txBuff[0] = BitSet(reg, 7);
     txBuff[1] = 0x00;
 
     HAL_GPIO_WritePin(bmp->cs_port, bmp->cs_pin, GPIO_PIN_RESET);
 
-    HAL_SPI_TransmitReceive(bmp->hspi, txBuff, rxBuff, 2, HAL_MAX_DELAY);
+    HAL_StatusTypeDef result = HAL_SPI_TransmitReceive(bmp->hspi, txBuff, rxBuff, 2, HAL_MAX_DELAY);
 
     HAL_GPIO_WritePin(bmp->cs_port, bmp->cs_pin, GPIO_PIN_SET);
 
     *data = rxBuff[1];
 
-    return HAL_OK;
+    return result;
 
 }
+
+HAL_StatusTypeDef BMP388_WriteRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *data) {
+    
+    //Buffers to store what is in the register
+    uint8_t txBuff[2];
+    uint8_t rxBuff[2];
+
+    //sets the register to write Bit 7 = 0
+    txBuff[0] = BitClear(reg, 7);
+    txBuff[1] = data;
+
+    HAL_GPIO_WritePin(bmp->cs_port, bmp->cs_pin, GPIO_PIN_RESET);
+
+     HAL_StatusTypeDef result = HAL_SPI_TransmitReceive(bmp->hspi, txBuff, rxBuff, 2, HAL_MAX_DELAY);
+
+    HAL_GPIO_WritePin(bmp->cs_port, bmp->cs_pin, GPIO_PIN_SET);
+
+
+    return result;
+
+}
+
