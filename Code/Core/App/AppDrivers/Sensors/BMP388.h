@@ -5,6 +5,7 @@
 
 #include "stm32f405xx.h"
 #include "stm32f4xx_hal_def.h"
+#include <stdint.h>
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -13,6 +14,8 @@
 #include "stm32f4xx_hal.h"
 
 /* Declarations and definitions ----------------------------------------------*/
+
+#define MAX_LEN                                          100
 #define BMP3_ADDR                                       0x76
 
 #define BMP3_CHIP_ID                                    0x50
@@ -150,25 +153,17 @@ typedef struct{
     uint8_t osr; //oversampling settings OSR register
     uint8_t iir; // iir filtering coeif  IIR register
     uint8_t odr; //output data rate      ODR register
-    uint16_t cs_pin //pass cs pin to drive the device low
+    uint16_t cs_pin; //pass cs pin to drive the device low
     GPIO_TypeDef *cs_port; // this is the pin port
     Calib_data calib_data;
 
 }BMP388Handle_TypeDef;
 
-typedef struct {
-    float pressureKpa;
-    float temperatureC;
-} pressure&temp;
-
 HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp);
-HAL_StatusTypeDef BMP388_SetTempOS(BMP388_HandleTypeDef *bmp, uint8_t oversample);
-HAL_StatusTypeDef BMP388_SetPressOS(BMP388_HandleTypeDef *bmp, uint8_t oversample);
-HAL_StatusTypeDef BMP388_SetIIRFilterCoeff(BMP388_HandleTypeDef *bmp, uint8_t filtercoeff);
-HAL_StatusTypeDef BMP388_SetOutputDataRate(BMP388_HandleTypeDef *bmp, uint8_t odr);
 
-HAL_StatusTypeDef BM388_ReadRawValues(BMP388Handle_TypeDef *bmp);
-
+HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_t *raw_pressure, uint32_t *raw_temperature, uint32_t *time);
+BMP388_CompensateRawPressTemp(BMP388Handle_TypeDef *bmp, uint32_t raw_pressure, uint32_t raw_temperature, float *pressure, float *temperature);
+BMP388_FindAltitude(float ground_pressure, float pressure);
 
 
 #ifdef __cplusplus
