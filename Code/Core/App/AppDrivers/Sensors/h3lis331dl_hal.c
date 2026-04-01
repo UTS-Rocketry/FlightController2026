@@ -1,0 +1,137 @@
+#include <stdint.h>
+#include <string.h>
+#include <stdio.h>
+#include "h3lis331dl_reg.h"
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_def.h"
+#include "usart.h"
+#include "gpio.h"
+
+
+
+#define  BOOT_TIME     50 //ms
+
+
+
+/* Private variables ---------------------------------------------------------*/
+static uint8_t whoamI;
+static uint8_t tx_buffer[1000];
+
+
+static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
+                              uint16_t len);
+static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
+                             uint16_t len);
+static void tx_com(uint8_t *tx_buffer, uint16_t len);
+static void platform_delay(uint32_t ms);
+
+
+static stmdev_ctx_t dev_ctx;
+
+
+HAL_StatusTypeDef h3lis331dl_init(h3lis331dl_HandleTypeDef *h3)
+{
+  h3lis331dl_int1_on_th_conf_t int_route;
+  uint32_t resultINT = 0;
+
+  /* Initialize mems driver interface */
+  dev_ctx.write_reg = platform_write;
+  dev_ctx.read_reg = platform_read;
+  dev_ctx.mdelay = platform_delay;
+  dev_ctx.handle = h3;
+  
+
+  /* Wait sensor boot time */
+  platform_delay(BOOT_TIME);
+  /* Check device ID */
+  whoamI = 0;
+  resultINT = h3lis331dl_device_id_get(&dev_ctx, &whoamI);
+
+  if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  if ( whoamI != H3LIS331DL_ID )
+  {
+    return HAL_ERROR;
+  }
+
+  /* Set full scale */
+  resultINT = h3lis331dl_full_scale_set(&dev_ctx, H3LIS331DL_100g);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+  /* Configure filtering chain */
+  resultINT = h3lis331dl_hp_path_set(&dev_ctx, H3LIS331DL_HP_DISABLE);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  /* Set minimum event duration for wakeup */
+  resultINT = h3lis331dl_int1_dur_set(&dev_ctx, 1);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  /*
+   * Apply wakeup axis threshold (lsb is FS/128)
+   */
+  resultINT = h3lis331dl_int1_threshold_set(&dev_ctx, 3);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  resultINT = h3lis331dl_int1_on_threshold_mode_set(&dev_ctx, H3LIS331DL_INT1_ON_THRESHOLD_OR);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  resultINT = h3lis331dl_int1_on_threshold_conf_get(&dev_ctx, &int_route);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+  int_route.int1_xhie = PROPERTY_ENABLE;
+  int_route.int1_yhie = PROPERTY_ENABLE;
+  int_route.int1_zhie = PROPERTY_ENABLE;
+  resultINT = h3lis331dl_int1_on_threshold_conf_set(&dev_ctx, int_route);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+  resultINT = h3lis331dl_pin_int1_route_set(&dev_ctx, H3LIS331DL_PAD1_INT1_SRC);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+  resultINT = h3lis331dl_int1_notification_set(&dev_ctx, H3LIS331DL_INT1_LATCHED);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  /* Set Output Data Rate */
+  resultINT = h3lis331dl_data_rate_set(&dev_ctx, H3LIS331DL_ODR_100Hz);
+   if (resultINT != 0){
+    return HAL_ERROR;
+  }
+
+  return HAL_OK;
+
+ 
+}
+
+static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
+                              uint16_t len)
+{
+  /* Write multiple command */
+  reg |= 0x80;
+ 
+  HAL_GPIO_WritePin(CS_up_GPIO_Port, CS_up_Pin, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(handle, &reg, 1, 1000);
+  HAL_SPI_Transmit(handle, (uint8_t*) bufp, len, 1000);
+  HAL_GPIO_WritePin(CS_up_GPIO_Port, CS_up_Pin, GPIO_PIN_SET);
+
+  return 0;
+}
+
+void platform_delay(uint32_t ms)
+{
+    HAL_Delay(ms);
+}
