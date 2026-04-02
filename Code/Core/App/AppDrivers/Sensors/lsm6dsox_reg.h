@@ -4668,6 +4668,17 @@ int32_t lsm6dsox_embedded_sens_get(const stmdev_ctx_t *ctx,
                                    lsm6dsox_emb_sens_t *val);
 int32_t lsm6dsox_embedded_sens_off(const stmdev_ctx_t *ctx);
 
+
+typedef struct{
+
+  //this is the spi struct pass a pointer of it to the struct for the IMU
+    SPI_HandleTypeDef *hspi;
+    uint16_t cs_pin; //pass cs pin to drive the device low
+    GPIO_TypeDef *cs_port; // this is the pin port
+
+} lsm6dso_HandleTypedef;
+
+HAL_StatusTypeDef lsm6dso_init(lsm6dso_HandleTypedef *l6);
 /**
   * @}
   *

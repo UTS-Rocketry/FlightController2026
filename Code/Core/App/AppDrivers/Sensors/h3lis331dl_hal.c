@@ -8,14 +8,14 @@
 #include "gpio.h"
 
 
-
+/* Defines           ---------------------------------------------------------*/
 #define  BOOT_TIME     50 //ms
 
 
 
 /* Private variables ---------------------------------------------------------*/
 static uint8_t whoamI;
-static uint8_t tx_buffer[1000];
+//static uint8_t tx_buffer[1000];
 
 
 static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
