@@ -24,10 +24,10 @@ typedef enum {
 
 typedef enum {
 
-    HEARTBEAT_MSG       = 0x01
-    FSM_STATE_MSG   = 0x02
-    KESTREL_COMMAND = 0x03
-    RAVEN_COMMAND   = 0x04
+    HEARTBEAT_MSG   = 0x01,
+    FSM_STATE_MSG   = 0x02,
+    KESTREL_COMMAND = 0x03,
+    RAVEN_COMMAND   = 0x04,
     ACK             = 0x05,
     ACTUATOR_STATUS = 0x06,
     CAMERA_STATUS   = 0x07,
