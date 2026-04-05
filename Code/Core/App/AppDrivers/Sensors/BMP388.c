@@ -30,9 +30,6 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
     }
 
 
-    
-
-
 }
 
 HAL_StatusTypeDef BMP388_readRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *data) {

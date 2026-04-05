@@ -98,9 +98,12 @@ extern "C" {
 #define MODE_FSTX                   0x02
 #define MODE_TRANSMIT               0x03
 #define MODE_FSRX                   0x04
-#define MODE_RX_CONTINUEOUS         0x05
+#define MODE_RX_CONTINUOUS          0x05
 #define MODE_RX_SINGLE              0x06
 #define MODE_CAD                    0x07
+
+/*PA config*/
+#define PA_BOOST                    0x80
 
 /*IRQ FLAGS*/
 #define IRQ_CAD_DETECTED_MASK       0x01
@@ -113,12 +116,15 @@ extern "C" {
 #define IRQ_RX_TIMEOUT_MASK         0x80
 
 
+
+
 /*STRUCTS ****************************************************************************************/
 
 typedef struct {
+
     uint32_t frequency;         /*ex: 915000000UL for 915 MHz*/
     uint8_t spreading_Factor;   /* 7-12 (SF6 will have extra register writes) */
-    uint32_t bandwith;          /* 7800, 10400, 15600, 31250, 41700,
+    uint32_t bandwidth;          /* 7800, 10400, 15600, 31250, 41700,
                                  62500, 125000, 250000, 500000 Hz */
     
     uint8_t coding_Rate;        /* 5=4/5, 6=4/6, 7=4/7, 8=4/8 */
@@ -126,18 +132,30 @@ typedef struct {
     uint8_t use_Pa_Boost;       /* 1 = PA_BOOST pin, 0 = RFO pin */
     uint16_t preamble_Length;   /* symbols, min 6, default 8 */
     uint8_t sync_Word;          /* 0x12 private, 0x34 LoRaWAN */
-    uint8_t enable_CRC;         /*1 = CRC on payload, 0 = off */
+    uint8_t enable_CRC;         /* 1 = CRC on payload, 0 = off */
+    uint8_t implicit_header;    /* 0 for explicit header mode, 1 for implicit */
 
 } LORA_CONFIG_TYPEDEF;
+
+typedef struct {
+
+    SPI_HandleTypeDef *hspi;
+
+    GPIO_TypeDef *nss_port; 
+    uint16_t nss_pin; 
+    
+    GPIO_TypeDef *rst_port;
+    uint16_t rst_pin;
+
+} SX1276_HandleTypedef;
+
 
 /*FUNCTIONS **************************************************************************************/
 
 /*Initialization*/
 
-HAL_StatusTypeDef lora_init(SPI_HandleTypeDef *hspi, GPIO_TypeDef *nss_port, uint16_t *nss_pin, 
-                            GPIO_TypeDef *rst_port, uint16_t rst_pin, 
+HAL_StatusTypeDef lora_init(SX1276_HandleTypedef *sx1262, 
                             const LORA_CONFIG_TYPEDEF *lora_config);
-
 /*Transmit*/                            
 HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_ms);
 
@@ -145,16 +163,18 @@ HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_
 
 HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint32_t timeout_ms);
 
-void lora_recieve_cont(void);
+void lora_receive_cont(void);
 
-HAL_StatusTypeDef lora_recieve_cont_poll(uint8_t *buff, uint8_t *rx_length);
+HAL_StatusTypeDef lora_receive_cont_poll(uint8_t *buff, uint8_t *rx_length);
 
 /*Utility*/
 
 void lora_sleep(void);
 void lora_standby(void);
 int16_t lora_packet_rssi(void); /*returns dBm*/
-int16_t lora_version(void); /*should return 0x12*/
+uint8_t lora_version(void); /*should return 0x12*/
+float lora_packet_snr(void);
+
 
 
 #ifdef __cplusplus
