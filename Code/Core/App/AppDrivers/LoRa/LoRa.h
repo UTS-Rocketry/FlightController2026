@@ -1,6 +1,10 @@
 #ifndef  LORA_H
 #define LORA_H
 
+#include "stm32f405xx.h"
+#include "stm32f4xx_hal_def.h"
+#include "stm32f4xx_hal_spi.h"
+#include <stdint.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -112,9 +116,45 @@ extern "C" {
 /*STRUCTS ****************************************************************************************/
 
 typedef struct {
+    uint32_t frequency;         /*ex: 915000000UL for 915 MHz*/
+    uint8_t spreading_Factor;   /* 7-12 (SF6 will have extra register writes) */
+    uint32_t bandwith;          /* 7800, 10400, 15600, 31250, 41700,
+                                 62500, 125000, 250000, 500000 Hz */
+    
+    uint8_t coding_Rate;        /* 5=4/5, 6=4/6, 7=4/7, 8=4/8 */
+    uint8_t tx_Power;           /* dBm — 2..17 (RFO) or 2..20 (PA_BOOST) */
+    uint8_t use_Pa_Boost;       /* 1 = PA_BOOST pin, 0 = RFO pin */
+    uint16_t preamble_Length;   /* symbols, min 6, default 8 */
+    uint8_t sync_Word;          /* 0x12 private, 0x34 LoRaWAN */
+    uint8_t enable_CRC;         /*1 = CRC on payload, 0 = off */
 
-}
+} LORA_CONFIG_TYPEDEF;
 
+/*FUNCTIONS **************************************************************************************/
+
+/*Initialization*/
+
+HAL_StatusTypeDef lora_init(SPI_HandleTypeDef *hspi, GPIO_TypeDef *nss_port, uint16_t *nss_pin, 
+                            GPIO_TypeDef *rst_port, uint16_t rst_pin, 
+                            const LORA_CONFIG_TYPEDEF *lora_config);
+
+/*Transmit*/                            
+HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_ms);
+
+/*Recive*/
+
+HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint32_t timeout_ms);
+
+void lora_recieve_cont(void);
+
+HAL_StatusTypeDef lora_recieve_cont_poll(uint8_t *buff, uint8_t *rx_length);
+
+/*Utility*/
+
+void lora_sleep(void);
+void lora_standby(void);
+int16_t lora_packet_rssi(void); /*returns dBm*/
+int16_t lora_version(void); /*should return 0x12*/
 
 
 #ifdef __cplusplus
