@@ -30,6 +30,7 @@ static HAL_StatusTypeDef lora_set_modem_2 (uint8_t spreading_factor, uint8_t ena
 static HAL_StatusTypeDef lora_set_modem_3 (uint8_t spreading_factor, uint32_t bandwidth);
 static HAL_StatusTypeDef lora_set_syncword(uint8_t syncword);
 static HAL_StatusTypeDef lora_set_TX_power(uint8_t use_pa_boost, uint8_t tx_power);
+static HAL_StatusTypeDef lora_get_mode(uint8_t *buff);
 
 /*FUNCTIONS **************************************************************************************/
 
@@ -366,6 +367,152 @@ static HAL_StatusTypeDef lora_set_TX_power(uint8_t use_pa_boost, uint8_t tx_powe
 
     
     }
+
+    return result;
+
+
+}
+
+static HAL_StatusTypeDef lora_get_mode(uint8_t *buff) {
+
+    HAL_StatusTypeDef result;
+    uint8_t mode_result = 0;
+    
+    result = platform_read(&sx1, REG_OPMODE, buff, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    mode_result = *buff & 0x07;
+    *buff = mode_result;
+
+    return result;
+    
+}
+
+HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_ms) {
+
+    HAL_StatusTypeDef result;
+    uint8_t buffer;
+    
+    result = lora_get_mode(&buffer);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    if (buffer != MODE_STAND_BY) return HAL_ERROR;
+
+    /* Set DIO 0 to tx done*/
+    buffer = 0x40;
+    result = platform_write(&sx1, REG_DIO_MAPPING_1, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    /* write poiter of tx base addres to ptr addr */
+    result = platform_read(&sx1, REG_FIFO_TX_BASE_ADDR, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+    result = platform_write( &sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    result = platform_write_FIFO(&sx1, (uint8_t*)data, length);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    buffer = length;
+    result = platform_write(&sx1, REG_PAYLOAD_LENGTH, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    buffer = MODE_LONG_RANGE | MODE_TRANSMIT;
+    result = platform_write(&sx1, REG_OPMODE, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+
+    buffer = 0;
+    uint32_t start = HAL_GetTick();
+    
+    while(!(buffer & IRQ_TX_DONE_MASK)) {
+        result = platform_read(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+        if(result != HAL_OK) return HAL_ERROR;
+
+        if ((HAL_GetTick() - start) >= timeout_ms) {
+            return HAL_TIMEOUT;
+        }
+
+    }
+    
+    buffer = IRQ_TX_DONE_MASK;
+    result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+
+
+    return result;
+
+
+}
+
+HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint8_t max_length, uint32_t timeout_ms) {
+
+    HAL_StatusTypeDef result;
+    uint8_t buffer;
+
+    result = lora_get_mode(&buffer);
+    if(result != HAL_OK) return HAL_ERROR;
+    if (buffer != MODE_STAND_BY) return HAL_ERROR;
+
+    /* Set DIO 0 to rx done*/
+    buffer = 0x00;
+    result = platform_write(&sx1, REG_DIO_MAPPING_1, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    /* Clear IRQ flags */
+    buffer = 0xFF;
+    result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    /* write poiter of rx base addres to ptr addr */
+    result = platform_read(&sx1, REG_FIFO_RX_BASE_ADDR, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+    result = platform_write( &sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    buffer = MODE_LONG_RANGE | MODE_RX_SINGLE;
+    result = platform_write(&sx1, REG_OPMODE, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+
+    /* polling loop to check for RX DONE*/
+    buffer = 0;
+    uint32_t start = HAL_GetTick();
+    while(!(buffer & IRQ_RX_DONE_MASK)) {
+        result = platform_read(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+        if(result != HAL_OK) return HAL_ERROR;
+
+        if ((HAL_GetTick() - start) >= timeout_ms) {
+            return HAL_TIMEOUT;
+        }
+
+    }
+
+    /* check CRC */
+    if(buffer & IRQ_PAYLOAD_CRC_ERR_MASK) return HAL_ERROR;
+
+    result = platform_read(&sx1, REG_RX_NB_BYTES, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+    if (buffer >= max_length) return HAL_ERROR;
+
+    *rx_length = buffer;
+
+    /* write poiter of rx base addres to ptr addr */
+    result = platform_read(&sx1, REG_FIFO_RX_CURRENT_ADDR, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+    result = platform_write( &sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
+
+    result = platform_read(&sx1, REG_FIFO, buff, *rx_length);
+    if(result != HAL_OK) return HAL_ERROR;
+
+
+    buffer = IRQ_RX_DONE_MASK;
+    result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+    if(result != HAL_OK) return HAL_ERROR;
+
 
     return result;
 

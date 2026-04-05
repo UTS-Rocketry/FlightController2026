@@ -161,7 +161,7 @@ HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_
 
 /*Recive*/
 
-HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint32_t timeout_ms);
+HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint8_t max_length, uint32_t timeout_ms);
 
 void lora_receive_cont(void);
 
