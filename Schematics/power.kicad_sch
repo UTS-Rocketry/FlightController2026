@@ -753,7 +753,7 @@
 			(on_board yes)
 			(in_pos_files yes)
 			(duplicate_pin_numbers_are_jumpers no)
-			(property "Reference" "U3"
+			(property "Reference" "U4"
 				(at -1.27 27.94 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -806,7 +806,7 @@
 					)
 				)
 			)
-			(property "LCSC" ""
+			(property "LCSC" "C435835"
 				(at 8.636 5.588 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -818,17 +818,6 @@
 				)
 			)
 			(property "Description_1" ""
-				(at 0 0 0)
-				(show_name no)
-				(do_not_autoplace no)
-				(hide yes)
-				(effects
-					(font
-						(size 1.27 1.27)
-					)
-				)
-			)
-			(property "LCSC Part" "C435835"
 				(at 0 0 0)
 				(show_name no)
 				(do_not_autoplace no)
@@ -894,6 +883,50 @@
 					)
 				)
 			)
+			(property "MANUFACTURER" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "MAXIMUM_PACKAGE_HEIGHT" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "PARTREV" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "STANDARD" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
 			(symbol "LDL1117-3.3_0_1"
 				(rectangle
 					(start -10.16 22.86)
@@ -909,9 +942,9 @@
 			)
 			(symbol "LDL1117-3.3_1_1"
 				(pin power_in line
-					(at -12.7 20.32 0)
+					(at -1.27 10.16 90)
 					(length 2.54)
-					(name "Vin"
+					(name "GND"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -927,9 +960,9 @@
 					)
 				)
 				(pin power_in line
-					(at -1.27 10.16 90)
+					(at 10.16 20.32 180)
 					(length 2.54)
-					(name "GND"
+					(name "Vout"
 						(effects
 							(font
 								(size 1.27 1.27)
@@ -945,9 +978,9 @@
 					)
 				)
 				(pin power_out line
-					(at 10.16 20.32 180)
+					(at -12.7 20.32 0)
 					(length 2.54)
-					(name "Vout"
+					(name "Vin"
 						(effects
 							(font
 								(size 1.27 1.27)

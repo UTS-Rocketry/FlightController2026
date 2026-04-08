@@ -128,6 +128,146 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Device:R"
+			(pin_numbers
+				(hide yes)
+			)
+			(pin_names
+				(offset 0)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "R"
+				(at 2.032 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "R"
+				(at 0 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Footprint" ""
+				(at -1.778 0 90)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Datasheet" ""
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "R res resistor"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "R_*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "R_0_1"
+				(rectangle
+					(start -1.016 -2.54)
+					(end 1.016 2.54)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type none)
+					)
+				)
+			)
+			(symbol "R_1_1"
+				(pin passive line
+					(at 0 3.81 270)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin passive line
+					(at 0 -3.81 90)
+					(length 1.27)
+					(name ""
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "power:PWR_FLAG"
 			(power global)
 			(pin_numbers
@@ -376,6 +516,16 @@
 	)
 	(wire
 		(pts
+			(xy 173.99 66.04) (xy 204.47 66.04)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c0a5934-3879-4bb5-a73f-70d15c5b9b20")
+	)
+	(wire
+		(pts
 			(xy 91.44 97.79) (xy 111.76 97.79)
 		)
 		(stroke
@@ -406,7 +556,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 71.12) (xy 173.99 71.12)
+			(xy 161.29 71.12) (xy 204.47 71.12)
 		)
 		(stroke
 			(width 0)
@@ -476,7 +626,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 68.58) (xy 173.99 68.58)
+			(xy 161.29 68.58) (xy 177.8 68.58)
 		)
 		(stroke
 			(width 0)
@@ -1136,7 +1286,7 @@
 	)
 	(wire
 		(pts
-			(xy 161.29 66.04) (xy 173.99 66.04)
+			(xy 161.29 66.04) (xy 166.37 66.04)
 		)
 		(stroke
 			(width 0)
@@ -1153,6 +1303,16 @@
 			(type default)
 		)
 		(uuid "fb67ab3b-f98a-4258-b35b-d4bc33cf5727")
+	)
+	(wire
+		(pts
+			(xy 185.42 68.58) (xy 204.47 68.58)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fddfd7fb-419b-4472-b27a-49a2acede516")
 	)
 	(symbol
 		(lib_id "power:PWR_FLAG")
@@ -1306,6 +1466,166 @@
 			(project "flightcomputer2"
 				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
 					(reference "TP8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 181.61 68.58 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4c2311f4-1119-4ed3-879c-237c8ae74832")
+		(property "Reference" "R29"
+			(at 181.61 62.23 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "27r"
+			(at 181.61 64.77 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 181.61 66.802 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 181.61 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 181.61 68.58 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "8be2fc34-469b-4dee-894c-f23521cb4817")
+		)
+		(pin "2"
+			(uuid "1b5167f0-1d3c-475d-a3bc-30c06a238337")
+		)
+		(instances
+			(project "flightcomputer2"
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
+					(reference "R29")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:R")
+		(at 170.18 66.04 270)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "a0e66ac2-16ca-4cf1-a29d-c506a6bc412e")
+		(property "Reference" "R28"
+			(at 170.18 59.69 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "27r"
+			(at 170.18 62.23 90)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric_Pad1.20x1.40mm_HandSolder"
+			(at 170.18 64.262 90)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 170.18 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Resistor"
+			(at 170.18 66.04 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "315c186f-8bfb-4e54-9a7d-faf1aa95a8d1")
+		)
+		(pin "2"
+			(uuid "2067d716-ffd8-4c4e-951b-38f434d0b54d")
+		)
+		(instances
+			(project "flightcomputer2"
+				(path "/6cb3dda3-5fe8-4715-b831-354360aa3199"
+					(reference "R28")
 					(unit 1)
 				)
 			)
@@ -1545,7 +1865,7 @@
 		)
 	)
 	(sheet
-		(at 173.99 62.23)
+		(at 204.47 62.23)
 		(size 30.48 11.43)
 		(exclude_from_sim no)
 		(in_bom yes)
@@ -1561,7 +1881,7 @@
 		)
 		(uuid "105f27ec-5fab-44f4-a683-69b23a7486f0")
 		(property "Sheetname" "usb_type_c"
-			(at 173.99 61.5184 0)
+			(at 204.47 61.5184 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -1572,7 +1892,7 @@
 			)
 		)
 		(property "Sheetfile" "usb_type_c_sch.kicad_sch"
-			(at 173.99 74.2446 0)
+			(at 204.47 74.2446 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -1583,7 +1903,7 @@
 			)
 		)
 		(pin "D+" input
-			(at 173.99 66.04 180)
+			(at 204.47 66.04 180)
 			(uuid "f62e3621-631a-4927-b574-0160b7ccb003")
 			(effects
 				(font
@@ -1593,7 +1913,7 @@
 			)
 		)
 		(pin "D-" input
-			(at 173.99 68.58 180)
+			(at 204.47 68.58 180)
 			(uuid "97ef60cc-bfdb-4dc9-9a17-3b9b3fe8a3c7")
 			(effects
 				(font
@@ -1603,7 +1923,7 @@
 			)
 		)
 		(pin "VBUS" input
-			(at 173.99 71.12 180)
+			(at 204.47 71.12 180)
 			(uuid "5f9e6b7f-4117-4a5a-bcbc-ccb67684b170")
 			(effects
 				(font

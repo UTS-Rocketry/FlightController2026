@@ -1,6 +1,5 @@
 #include "LoRa.h"
 #include "main.h"
-#include "stm32_hal_legacy.h"
 #include "stm32f405xx.h"
 #include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_def.h"

@@ -5,6 +5,7 @@
 #include "stm32f4xx_hal_def.h"
 #include "stm32f4xx_hal_spi.h"
 #include <stdint.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
