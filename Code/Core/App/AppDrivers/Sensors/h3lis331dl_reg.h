@@ -29,6 +29,8 @@ extern "C" {
 #include <stdint.h>
 #include <stddef.h>
 #include <math.h>
+#include "stm32f4xx_hal.h"
+#include "main.h"
 
 /** @addtogroup H3LIS331DL
   * @{

@@ -2,8 +2,7 @@
 #define LORA_H
 
 #include "stm32f405xx.h"
-#include "stm32f4xx_hal_def.h"
-#include "stm32f4xx_hal_spi.h"
+#include "stm32f4xx_hal.h"
 #include <stdint.h>
 
 #ifdef __cplusplus

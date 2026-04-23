@@ -30,6 +30,8 @@ extern "C" {
 #include <stddef.h>
 #include <math.h>
 #include <string.h>
+#include "stm32f4xx_hal.h"
+#include "main.h"
 
 /** @addtogroup LSM6DSOX
   * @{

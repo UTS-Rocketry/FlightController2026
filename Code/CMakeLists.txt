@@ -45,11 +45,28 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    Core/App/AppDrivers/Sensors/BMP388.c
+    Core/App/AppDrivers/Sensors/h3lis331dl_hal.c
+    Core/App/AppDrivers/Sensors/h3lis331dl_reg.c
+    Core/App/AppDrivers/Sensors/lsm6dsox_hal.c
+    Core/App/AppDrivers/Sensors/lsm6dsox_reg.c
+    Core/App/AppDrivers/CAN/CAN.c
+    Core/App/AppDrivers/GPS/GPS.c
+    Core/App/AppDrivers/LoRa/LoRa.c
+    Core/App/AppDrivers/Memory/FlashMemory.c
+    Core/App/AppDrivers/Memory/SdCard.c
+    Core/App/AppDrivers/USB/USBC.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    Core/App/AppDrivers/Sensors
+    Core/App/AppDrivers/CAN
+    Core/App/AppDrivers/GPS
+    Core/App/AppDrivers/LoRa
+    Core/App/AppDrivers/Memory
+    Core/App/AppDrivers/USB
 )
 
 # Add project symbols (macros)
@@ -65,4 +82,9 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
     stm32cubemx
 
     # Add user defined libraries
+)
+
+add_custom_target(flash
+    COMMAND st-flash write ${CMAKE_PROJECT_NAME}.elf 0x08000000
+    DEPENDS ${CMAKE_PROJECT_NAME}
 )

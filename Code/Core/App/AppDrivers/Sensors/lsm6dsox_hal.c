@@ -4,10 +4,6 @@
 #include <stdint.h>
 #include <string.h>
 #include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_def.h"
-#include "usart.h"
-#include "gpio.h"
-
 
 /* Defines           ---------------------------------------------------------*/
 #define  BOOT_TIME     50 //ms
@@ -45,6 +41,8 @@ HAL_StatusTypeDef lsm6dso_init(lsm6dso_HandleTypedef *l6)
   platform_delay(BOOT_TIME);
   /* Check device ID */
   resultINT = lsm6dsox_device_id_get(&dev_ctx, &whoamI);
+
+  printf("resultINT: 0x%02X\r\n", whoamI);  // add this
 
   if (resultINT != 0) {
     return HAL_ERROR;
@@ -109,9 +107,9 @@ HAL_StatusTypeDef lsm6dso_init(lsm6dso_HandleTypedef *l6)
 static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
                               uint16_t len)
 {
-  lsm6dso_HandleTypeDef *l6 = (lsm6dso_HandleTypedef*)handle;
+  lsm6dso_HandleTypedef *l6 = (lsm6dso_HandleTypedef*)handle;
 
-  bitSet(reg,7);
+  BitSet(reg,7);
   //reg |= 0x80;
  
   HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_RESET);
@@ -126,7 +124,7 @@ static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
                               uint16_t len)
 {
 
-  lsm6dso_HandleTypeDef *l6 = (lsm6dso_HandleTypedef*)handle;
+  lsm6dso_HandleTypedef *l6 = (lsm6dso_HandleTypedef*)handle;
   reg |= 0xC0;
   
   HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_RESET);

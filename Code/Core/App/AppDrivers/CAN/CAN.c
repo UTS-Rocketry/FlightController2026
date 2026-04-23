@@ -9,7 +9,7 @@
 
 CAN_HandleTypeDef hcan1;
 
-HAL_StatusTypeDef Can_init() {
+HAL_StatusTypeDef Can_init(CAN_HandleTypeDef *hcan) {
 
     HAL_StatusTypeDef result;
 

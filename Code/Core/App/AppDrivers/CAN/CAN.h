@@ -1,8 +1,7 @@
 #ifndef CAN_H
 #define CAN_H
 #include "stm32f405xx.h"
-#include "stm32f4xx_hal_can.h"
-#include "stm32f4xx_hal_def.h"
+#include "stm32f4xx_hal.h"
 #include <stdint.h>
 
 #ifdef __cplusplus
@@ -34,7 +33,7 @@ typedef enum {
     ACK             = 0x05,
     ACTUATOR_STATUS = 0x06,
     CAMERA_STATUS   = 0x07,
-    ERROR           = 0x08
+    CAN_ERROR           = 0x08
 
 } MESSAGE_TYPE;
 

@@ -1,9 +1,12 @@
 #include "BMP388.h"
+#include "stm32_hal_legacy.h"
+#include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_def.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_spi.h"
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
 
 HAL_StatusTypeDef BMP388_readBytes(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *data, uint8_t length);
 HAL_StatusTypeDef BMP388_GetCalibData(BMP388Handle_TypeDef *bmp);
@@ -29,6 +32,8 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
     uint8_t data;
     
     result = BMP388_readRegister(bmp,CHIP_ID,&data);
+
+	printf("CHIP_ID: 0x%02X\r\n", data);  // add this
     
     if (result != HAL_OK) {
 
@@ -44,6 +49,9 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
 
         return HAL_ERROR;
     }
+
+    HAL_Delay(10);
+
 
     result = BMP388_GetCalibData(bmp);
 
@@ -123,9 +131,11 @@ HAL_StatusTypeDef BMP388_readRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg
 HAL_StatusTypeDef BMP388_readBytes(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *buff, uint8_t length) {
     
     //Buffers to store what is in the register
-    uint8_t txBuff[2];
+    uint8_t txBuff[length + 2];
     uint8_t rxBuff[length + 2];
 
+
+    memset(txBuff, 0, length + 2);
     //sets the register to read
     txBuff[0] = BitSet(reg, 7);
     txBuff[1] = 0x00;
