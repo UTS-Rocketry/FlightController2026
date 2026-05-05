@@ -87,6 +87,7 @@ void Error_Handler(void);
 #define CS_IMU_GPIO_Port GPIOA
 #define LoRaDIO0_Pin GPIO_PIN_6
 #define LoRaDIO0_GPIO_Port GPIOB
+#define LoRaDIO0_EXTI_IRQn EXTI9_5_IRQn
 #define LoRaDIO2_Pin GPIO_PIN_7
 #define LoRaDIO2_GPIO_Port GPIOB
 
