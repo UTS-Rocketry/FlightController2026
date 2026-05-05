@@ -11,7 +11,8 @@ extern "C" {
 
 extern volatile uint8_t lora_tx_done_flag;
 
-void HAL_GPIOEXTI_Callback(uint16t GPIO_PIN);
+void HAL_GPIOEXTI_Callback(uint16_t GPIO_PIN);
+HAL_StatusTypeDef lora_App_Init();
 
 #ifdef __cplusplus
 }

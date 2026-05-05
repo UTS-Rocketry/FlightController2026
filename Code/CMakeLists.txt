@@ -57,7 +57,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/AppDrivers/Memory/SdCard.c
     Core/App/AppDrivers/USB/USBC.c
     Core/App/ApplicationLayer/ApplicationInits/flight_sensors.c
-    Core/App/ApplicationLayer/ApplicationInits/Lora_init.c
+    Core/App/ApplicationLayer/ApplicationInits/Lora_App.c
     Core/App/Outputs/DataLogger/logger.c
     Core/App/Outputs/LED&buzzer/indicators.c
     Core/App/Outputs/Telemetry/telemetry.c

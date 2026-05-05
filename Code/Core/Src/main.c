@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "LoRa.h"
 #include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -32,6 +33,7 @@
 #include "flight_sensors.h"
 #include "indicators.h"
 #include "telemetry.h"
+#include "Lora_App.h"
 
 
 /* USER CODE END Includes */
@@ -146,6 +148,9 @@ int main(void)
   result = flight_sensors_init();
   if (result != HAL_OK) printf("Sensors init failed");
 
+  result = lora_App_Init();
+  if (result != HAL_OK) printf("Sensors init failed");
+
   uint32_t last = HAL_GetTick();
   
 
@@ -170,8 +175,6 @@ int main(void)
     {
         serial_print(&sensorData);
     }
-
-    HAL_Delay(100);
      
     /* USER CODE END WHILE */
 
