@@ -180,19 +180,12 @@ int main(void)
     else
     {
         serial_print(&sensorData);
+        lora_tx_telemetry(&sensorData);
     }
 
-    uint8_t test_payload[] = "ODIN_TEST";
-    HAL_StatusTypeDef tx_result = lora_TX(test_payload, sizeof(test_payload), 2000);
-
-    if (tx_result == HAL_OK) {
-        printf("TX OK\r\n");
-    } else if (tx_result == HAL_TIMEOUT) {
-        printf("TX TIMEOUT\r\n");
-    } else {
-        printf("TX ERROR\r\n");
-    }
     HAL_Delay(1000);
+
+    
      
     /* USER CODE END WHILE */
 
