@@ -42,14 +42,16 @@ HAL_StatusTypeDef h3lis331dl_init(h3lis331dl_HandleTypeDef *h3)
 
 
   whoamI = 0;
-  resultINT = h3lis331dl_device_id_get(&dev_ctx, &whoamI);
-  
+  resultINT = h3lis331dl_device_id_get(&dev_ctx, &whoamI);  
   if (resultINT != 0){
+
+    printf("error at whoami 1 ");
     return HAL_ERROR;
   }
 
   if ( whoamI != H3LIS331DL_ID )
   {
+    printf("error at whoami 2 ");
     return HAL_ERROR;
   }
 
@@ -61,18 +63,24 @@ HAL_StatusTypeDef h3lis331dl_init(h3lis331dl_HandleTypeDef *h3)
   /* Set full scale */
   resultINT = h3lis331dl_full_scale_set(&dev_ctx, H3LIS331DL_200g);
    if (resultINT != 0){
+    printf("set full scale");
     return HAL_ERROR;
   }
 
   /* Configure filtering chain */
   resultINT = h3lis331dl_hp_path_set(&dev_ctx, H3LIS331DL_HP_DISABLE);
    if (resultINT != 0){
+      
+    printf("HP");
+
     return HAL_ERROR;
   }
 
   /* Set Output Data Rate */
   resultINT = h3lis331dl_data_rate_set(&dev_ctx, H3LIS331DL_ODR_100Hz);
    if (resultINT != 0){
+        printf("Data Rate");
+
     return HAL_ERROR;
   }
 

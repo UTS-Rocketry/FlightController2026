@@ -36,6 +36,7 @@ HAL_StatusTypeDef lora_App_Init() {
     lora_t.preamble_Length = 8;
 
     
+    
     return lora_init(&sx_t, &lora_t);
     
 }

@@ -52,10 +52,18 @@ HAL_StatusTypeDef lora_init(SX1276_HandleTypedef *sx1276, const LORA_CONFIG_TYPE
 
     /*checks address*/
     uint8_t buffer;
-    result = platform_read(&sx1,&buffer,REG_VERSION,1);
-    if(result != HAL_OK) return HAL_ERROR;
-    if(buffer != 0x12) return HAL_ERROR;
+    result = platform_read(&sx1,REG_VERSION,&buffer,1);
+    if(result != HAL_OK) {
+        printf("read 1\r\n");
+        return HAL_ERROR;
+    }
 
+    if(buffer != 0x12) {
+        printf("Incorrect version\r\n");
+        printf("%d", buffer);
+
+        return HAL_ERROR;
+    }
     /* Set LoRa Mode */
     buffer = MODE_LONG_RANGE | MODE_SLEEP;
     result = platform_write(&sx1, REG_OPMODE, &buffer, 1);

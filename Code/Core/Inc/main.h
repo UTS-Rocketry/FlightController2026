@@ -65,12 +65,14 @@ void Error_Handler(void);
 #define RGBLEDControl_GPIO_Port GPIOA
 #define AuxIgnite_Pin GPIO_PIN_3
 #define AuxIgnite_GPIO_Port GPIOA
-#define LoRaResetPin_Pin GPIO_PIN_4
-#define LoRaResetPin_GPIO_Port GPIOA
 #define BuzzerControl_Pin GPIO_PIN_4
 #define BuzzerControl_GPIO_Port GPIOC
 #define LoRaNssPin_Pin GPIO_PIN_0
 #define LoRaNssPin_GPIO_Port GPIOB
+#define LoRaDIO1_Pin GPIO_PIN_1
+#define LoRaDIO1_GPIO_Port GPIOB
+#define LoRaResetPin_Pin GPIO_PIN_2
+#define LoRaResetPin_GPIO_Port GPIOB
 #define CSAccelerometer_Pin GPIO_PIN_11
 #define CSAccelerometer_GPIO_Port GPIOB
 #define PyroIgnite_Pin GPIO_PIN_14
