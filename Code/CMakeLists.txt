@@ -61,6 +61,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/Outputs/DataLogger/logger.c
     Core/App/Outputs/LED&buzzer/indicators.c
     Core/App/Outputs/Telemetry/telemetry.c
+    Core/App/ApplicationLayer/ApplicationInits/crc16.c
 )
 
 # Add include paths

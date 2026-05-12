@@ -159,7 +159,7 @@ void lora_telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
     buff[49] = (raw >> 8) & 0xFF;
     buff[50] = (raw) & 0xFF;
 
-    buff[51] = packet->flight_state;
+    buff[51] = packet->flight_State;
 
     uint16_t crc = crc16(0, buff, 51);
 
@@ -168,4 +168,4 @@ void lora_telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
 
 
 
-}t
+}

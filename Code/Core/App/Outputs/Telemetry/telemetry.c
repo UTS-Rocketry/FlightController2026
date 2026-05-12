@@ -1,5 +1,7 @@
 #include "telemetry.h"
 #include "Lora_App.h"
+#include "LoRa.h"
+#include "crc16.h"
 
 void serial_print(const FlightSensorData *sensordata)
 {
@@ -27,7 +29,7 @@ void serial_print(const FlightSensorData *sensordata)
 HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
     
     static uint8_t seq = 0;
-    uint8_t buff[54] = {0};
+    uint8_t buff[58] = {0};
     HAL_StatusTypeDef result;
     TelemetryPacket packet;
 
@@ -41,9 +43,9 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
 
 
 
-    lora_telemetry_seraializer(&packet, buff);
+    lora_telemetry_serializer(&packet, buff + 4);
 
-    result = lora_TX(buff, 54, 1000);
+    result = lora_TX(buff, 58, 1000);
 
     seq++;
 

@@ -25,7 +25,7 @@ typedef struct{
     HeaderPacket header;
     FlightSensorData sensordata;
     uint8_t flight_State;
-    uint16_t CRC;
+    uint16_t crc;
 
 }TelemetryPacket;
 
@@ -34,7 +34,7 @@ typedef struct{
     HeaderPacket header;
     /* Gps info */
     uint8_t flight_State;
-    uint16_t CRC;
+    uint16_t crc;
 
 }GPSPacket;
 
