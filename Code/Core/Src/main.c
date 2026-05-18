@@ -142,7 +142,9 @@ int main(void)
   MX_SPI3_Init();
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-
+  
+  FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
+  printf("f_mount: %d\r\n", (int)fr);
   
   result = flight_sensors_init();
   if (result != HAL_OK) printf("Sensors init failed\r\n");

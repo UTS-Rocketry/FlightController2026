@@ -54,7 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/AppDrivers/GPS/GPS.c
     Core/App/AppDrivers/LoRa/LoRa.c
     Core/App/AppDrivers/Memory/FlashMemory.c
-    Core/App/AppDrivers/Memory/SdCard.c
+    Core/App/AppDrivers/Memory/fatfs_sd.c
     Core/App/AppDrivers/USB/USBC.c
     Core/App/ApplicationLayer/ApplicationInits/flight_sensors.c
     Core/App/ApplicationLayer/ApplicationInits/Lora_App.c

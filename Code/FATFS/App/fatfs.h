@@ -29,6 +29,8 @@
 
 /* USER CODE BEGIN Includes */
 
+#include "fatfs_sd.h"
+
 /* USER CODE END Includes */
 
 extern uint8_t retUSER; /* Return value for USER */

@@ -8,7 +8,7 @@ typedef struct{
     GPIO_TypeDef *cs_port; 
     uint16_t cs_pin; 
 
-} SD_HandleTypedef;
+} SD_HandleTypeDef;
 
 /* Definitions for MMC/SDC command */
 #define CMD0     (0x40+0)     	/* GO_IDLE_STATE */
