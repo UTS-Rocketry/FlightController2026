@@ -43,3 +43,5 @@ DRESULT SD_disk_ioctl (BYTE pdrv, BYTE cmd, void* buff);
 void SD_Init(SPI_HandleTypeDef *hspi, GPIO_TypeDef *cs_port, uint16_t cs_pin);
 
 #define SPI_TIMEOUT 100
+
+#endif

@@ -87,8 +87,7 @@ DSTATUS USER_initialize (
 {
   /* USER CODE BEGIN INIT */
 
-    SD_Init(&hspi3, &CS_SD_Card_GPIO_Port, CS_SD_Card_Pin);
-    
+    SD_Init(&hspi3, CS_SD_Card_GPIO_Port, CS_SD_Card_Pin);
     Stat = SD_disk_initialize(pdrv);
     return Stat;
   /* USER CODE END INIT */

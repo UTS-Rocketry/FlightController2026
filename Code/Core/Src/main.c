@@ -86,6 +86,7 @@ static void MX_SPI3_Init(void);
 /* USER CODE BEGIN PFP */
 
 FlightSensorData sensorData;
+extern volatile uint16_t Timer1, Timer2;
 
 /* USER CODE END PFP */
 
@@ -95,6 +96,12 @@ FlightSensorData sensorData;
 int _write(int file, char *ptr, int len) {
     HAL_UART_Transmit(&huart4, (uint8_t*)ptr, len, HAL_MAX_DELAY);
     return len;
+}
+
+void HAL_SYSTICK_Callback(void)
+{
+    if (Timer1 > 0) Timer1--;
+    if (Timer2 > 0) Timer2--;
 }
 
 
@@ -143,6 +150,8 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   
+  HAL_Delay(1000);
+
   FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
   printf("f_mount: %d\r\n", (int)fr);
   
@@ -481,7 +490,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
