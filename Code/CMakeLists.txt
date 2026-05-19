@@ -53,15 +53,16 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/AppDrivers/CAN/CAN.c
     Core/App/AppDrivers/GPS/GPS.c
     Core/App/AppDrivers/LoRa/LoRa.c
-    Core/App/AppDrivers/Memory/FlashMemory.c
+    Core/App/AppDrivers/Memory/W25Q128.c
     Core/App/AppDrivers/Memory/fatfs_sd.c
     Core/App/AppDrivers/USB/USBC.c
-    Core/App/ApplicationLayer/ApplicationInits/flight_sensors.c
-    Core/App/ApplicationLayer/ApplicationInits/Lora_App.c
+    Core/App/ApplicationLayer/ApplicationHALS/flight_sensors.c
+    Core/App/ApplicationLayer/ApplicationHALS/Lora_App.c
     Core/App/Outputs/DataLogger/logger.c
     Core/App/Outputs/LED&buzzer/indicators.c
     Core/App/Outputs/Telemetry/telemetry.c
-    Core/App/ApplicationLayer/ApplicationInits/crc16.c
+    Core/App/ApplicationLayer/ApplicationHALS/crc16.c
+    Core/App/ApplicationLayer/ApplicationHALS/W25Q128_HAL.c
 )
 
 # Add include paths
@@ -73,7 +74,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/AppDrivers/LoRa
     Core/App/AppDrivers/Memory
     Core/App/AppDrivers/USB
-    Core/App/ApplicationLayer/ApplicationInits/
+    Core/App/ApplicationLayer/ApplicationHALS/
     Core/App/Outputs/DataLogger
     Core/App/Outputs/LED&buzzer
     Core/App/Outputs/Telemetry

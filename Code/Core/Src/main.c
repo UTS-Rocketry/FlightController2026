@@ -33,6 +33,7 @@
 #include "indicators.h"
 #include "telemetry.h"
 #include "Lora_App.h"
+#include "W25Q128_HAL.h"
 
 
 /* USER CODE END Includes */
@@ -168,9 +169,19 @@ int main(void)
     printf("Lora Init Successfull\r\n");
   }
 
-  uint32_t last = HAL_GetTick();
+  result = flash_memory_init();
+  if (result != HAL_OK) {
+    printf("flash memory failed\r\n");
+  } else { 
+    printf("Flash memory OK");
+  }
+
+  result = flash_sanity_check();
+  if (result != HAL_OK) printf("flash sanity check failed\r\n");
   
 
+  uint32_t last = HAL_GetTick();
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
