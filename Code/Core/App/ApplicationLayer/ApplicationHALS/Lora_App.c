@@ -41,7 +41,7 @@ HAL_StatusTypeDef lora_App_Init() {
     
 }
 
-void lora_telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
+void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
 
     buff[0] = packet->header.sync_word;
     buff[1] = packet->header.packet_type;

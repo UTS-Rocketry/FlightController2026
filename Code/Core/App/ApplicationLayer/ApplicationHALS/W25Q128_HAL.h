@@ -7,6 +7,8 @@
 
 HAL_StatusTypeDef flash_memory_init();
 HAL_StatusTypeDef flash_sanity_check();
+HAL_StatusTypeDef flash_read_record(uint32_t index, uint8_t *buff, uint16_t len);
+HAL_StatusTypeDef flash_log_packet(uint8_t *buff, uint16_t len);
 
 
 #endif

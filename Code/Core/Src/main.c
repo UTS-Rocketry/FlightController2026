@@ -33,7 +33,7 @@
 #include "indicators.h"
 #include "telemetry.h"
 #include "Lora_App.h"
-#include "W25Q128_HAL.h"
+
 
 
 /* USER CODE END Includes */
@@ -203,6 +203,7 @@ int main(void)
     {
         serial_print(&sensorData);
         lora_tx_telemetry(&sensorData);
+        flash_log_telemetry(&sensorData);
     }
 
     HAL_Delay(1000);
