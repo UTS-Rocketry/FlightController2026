@@ -35,6 +35,12 @@ typedef struct
     float y_gy;
     float z_gy;
 
+    /*Velocity*/
+    float velocity;
+
+    /*Flight State*/
+    uint8_t flight_state;
+
 } FlightSensorData;
 
 /* Initialization */

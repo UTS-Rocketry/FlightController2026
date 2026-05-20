@@ -118,6 +118,12 @@ HAL_StatusTypeDef flight_sensors_init(void) {
 HAL_StatusTypeDef flight_sensors_update(FlightSensorData *sensordata) {
     
 
+  static float prev_altitude = 0;
+  static uint32_t prev_time = 0;
+
+  uint32_t now = HAL_GetTick();
+  float dt = (now - prev_time) / 1000.0f;
+
   HAL_StatusTypeDef result;
   if (sensordata == NULL) return HAL_ERROR;
   
@@ -128,6 +134,15 @@ HAL_StatusTypeDef flight_sensors_update(FlightSensorData *sensordata) {
     return result;
 
   }
+
+  if (dt > 0 && prev_time != 0) {
+    sensordata->velocity = (sensordata->altitude - prev_altitude) / dt;
+  } else {
+      sensordata->velocity = 0.0f;
+  }
+
+  prev_altitude = sensordata->altitude;
+  prev_time = now;
 
   result = h3lis331dl_externalRead(accel_val);
   if (result != HAL_OK) {

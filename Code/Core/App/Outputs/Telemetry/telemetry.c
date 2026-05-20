@@ -40,7 +40,7 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
 
     packet.sensordata = *sensordata;
 
-    packet.flight_State = 0x01; /*placeholder for now*/
+    packet.flight_State = sensorData->flight_state;
 
     
     // LoRa driver consumes first 4 bytes internally (SX1276 FIFO header)
@@ -66,7 +66,7 @@ HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData) {
     packet.header.packet_type = 0x01;
     packet.header.sequence_number = seq++;
     packet.sensordata = *sensorData;
-    packet.flight_State = 0x01;
+    packet.flight_State = sensorData->flight_state;
 
     telemetry_serializer(&packet, buff);
 

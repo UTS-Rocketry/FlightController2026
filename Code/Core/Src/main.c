@@ -153,9 +153,11 @@ int main(void)
   
   HAL_Delay(1000);
 
-  FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
-  printf("f_mount: %d\r\n", (int)fr);
+  /*THIS IS FOR SD card but it is wired wrong*/
+  /* FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
+  printf("f_mount: %d\r\n", (int)fr); */
   
+
   result = flight_sensors_init();
   if (result != HAL_OK) printf("Sensors init failed\r\n");
 
@@ -200,15 +202,12 @@ int main(void)
         printf("Sensor update failed\r\n");
     }
     else
-    {
+    {   
+        
         serial_print(&sensorData);
         lora_tx_telemetry(&sensorData);
         flash_log_telemetry(&sensorData);
-    }
-
-    HAL_Delay(1000);
-
-    
+    }    
      
     /* USER CODE END WHILE */
 
