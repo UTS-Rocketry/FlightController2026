@@ -4,6 +4,7 @@
 #include "lsm6dsox_reg.h"
 #include "h3lis331dl_reg.h"
 #include "main.h"
+#include "stm32f4xx_hal_def.h"
 
 extern SPI_HandleTypeDef hspi1;
 static BMP388Handle_TypeDef bmp;
@@ -72,7 +73,6 @@ static void h3lis331dl_handleinit(h3lis331dl_HandleTypeDef *accel) {
 HAL_StatusTypeDef flight_sensors_init(void) {
   
   HAL_StatusTypeDef result;
-
   /*SENSOR INITS*/
   /* BAROMETER INIT */
   BMP388_handleinit(&bmp);
@@ -115,14 +115,7 @@ HAL_StatusTypeDef flight_sensors_init(void) {
 }
 
 
-HAL_StatusTypeDef flight_sensors_update(FlightSensorData *sensordata) {
-    
-
-  static float prev_altitude = 0;
-  static uint32_t prev_time = 0;
-
-  uint32_t now = HAL_GetTick();
-  float dt = (now - prev_time) / 1000.0f;
+HAL_StatusTypeDef flight_sensors_update_baro(FlightSensorData *sensordata) {
 
   HAL_StatusTypeDef result;
   if (sensordata == NULL) return HAL_ERROR;
@@ -135,15 +128,14 @@ HAL_StatusTypeDef flight_sensors_update(FlightSensorData *sensordata) {
 
   }
 
-  if (dt > 0 && prev_time != 0) {
-    sensordata->velocity = (sensordata->altitude - prev_altitude) / dt;
-  } else {
-      sensordata->velocity = 0.0f;
-  }
+  return HAL_OK;
 
-  prev_altitude = sensordata->altitude;
-  prev_time = now;
+}
 
+HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata) {
+  
+  HAL_StatusTypeDef result;
+  if (sensordata == NULL) return HAL_ERROR;
   result = h3lis331dl_externalRead(accel_val);
   if (result != HAL_OK) {
 
@@ -173,5 +165,5 @@ HAL_StatusTypeDef flight_sensors_update(FlightSensorData *sensordata) {
   sensordata->z_gy = lsm6dsox_from_fs2000_to_mdps(gy_Val[2]) - gy_Offset[2];
 
   return HAL_OK;
-  
+
 }

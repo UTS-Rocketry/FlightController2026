@@ -26,7 +26,7 @@ typedef struct {
     uint8_t entry;              // true on first tick of a new state
 } FSM_Context_t;
 
-HAL_StatusTypeDef FSM_update(FSM_Context_t *ctx, FlightSensorData *sensorData);
+HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData);
 void FSM_init();
 
 #endif

@@ -35,7 +35,8 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             break;
 
         case STATE_PAD:
-        
+            
+            /* This runs the first time state entry */
             if(ctx.entry) {
                 ctx.entry = 0;
                 printf("FSM: ARMED\r\n");
@@ -59,6 +60,7 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
 
 
             break;
+
         case STATE_BOOST:
             
             if (ctx.entry) {
@@ -85,14 +87,50 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
 
             break;
         case STATE_COAST:
+            
+            if (ctx.entry) {
+                ctx.entry = 0;
+                printf("FSM: BOOST\r\n");
+                /* ADD LORA TRANSMISSION */
+            }
+            //apogee detected
+            
+                
             break;
         case STATE_APOGEE:
+            
+            if (ctx.entry) {
+                ctx.entry = 0;
+                printf("FSM: APOGEE\r\n");
+                /* ADD LORA TRANSMISSION */
+            }
+            //APPOGEE DETECTED FIRE PYRO
             break;
         case STATE_DROGUE:
+            if (ctx.entry) {
+                ctx.entry = 0;
+                printf("FSM: DROUGE\r\n");
+                /* ADD LORA TRANSMISSION */
+            }
+            //PYRO DEPLOYED
+            //WAIT UNTILL CERTAIN HIEGT TO DEPLOY MAIN/PARAFOIL
             break;
         case STATE_PARAFOIL:
+            if (ctx.entry) {
+                ctx.entry = 0;
+                printf("FSM: PARAFOIL\r\n");
+                /* ADD LORA TRANSMISSION */
+            }
+            //PYRO DEPLOYED
+            //WAIT UNTIL LAND TO CHANGE STATE
             break;
          case STATE_LAND:
+            if (ctx.entry) {
+                ctx.entry = 0;
+                printf("FSM: LANDED\r\n");
+                /* ADD LORA TRANSMISSION */
+            }
+            //LANDED
             break;
 
     }

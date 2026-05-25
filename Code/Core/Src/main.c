@@ -151,7 +151,7 @@ int main(void)
   MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   
-  HAL_Delay(1000);
+  HAL_Delay(10);
 
   /*THIS IS FOR SD card but it is wired wrong*/
   /* FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
@@ -183,6 +183,10 @@ int main(void)
   
 
   uint32_t last = HAL_GetTick();
+  uint32_t last_imu   = 0;
+  uint32_t last_baro  = 0;
+  uint32_t last_lora  = 0;
+  uint32_t last_flash = 0;
   
   /* USER CODE END 2 */
 
@@ -191,23 +195,42 @@ int main(void)
   while (1)
   {
     
+    /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
     uint32_t dt = now - last;
     last = now;
 
     printf("Sensor loop dt: %lums\r\n", dt);
 
-    if (flight_sensors_update(&sensorData) != HAL_OK)
-    {
-        printf("Sensor update failed\r\n");
+    if (now - last_imu >= 10) {
+      last_imu = now;
+      if(flight_sensors_update_IMU_accel(&sensorData) != HAL_OK) printf("Baro sensor update failed\r\n");
+      //kalman_predict()
     }
-    else
-    {   
-        
-        serial_print(&sensorData);
-        lora_tx_telemetry(&sensorData);
+
+    if (now - last_baro >= 40) {
+      last_baro = now;
+      flight_sensors_update_baro(&sensorData);
+      //kalman_update()
+    }
+
+    FSM_update(&sensorData);
+    // Write this sensorData.flight_state = FSM_getState();
+
+    if (now - last_lora >= 200 && FSM_get_state() >= STATE_PAD) {
+      last_lora = now;
+      lora_tx_telemetry(&sensorData);
+
+    }
+    if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
+        last_flash = now;
         flash_log_telemetry(&sensorData);
-    }    
+    }
+
+    #ifdef DEBUG
+      serial_print(&sensorData);
+    #endif
+
      
     /* USER CODE END WHILE */
 
