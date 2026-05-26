@@ -19,6 +19,7 @@ typedef struct
     float altitude;
     float pressure;
     float temperature;
+    float velocity;
 
     /* High-g accelerometer */
     float x_mg;
@@ -35,8 +36,8 @@ typedef struct
     float y_gy;
     float z_gy;
 
-    /*Velocity*/
-    float velocity;
+    float kalman_altitude;   // add
+    float kalman_velocity;   // add
 
     /*Flight State*/
     uint8_t flight_state;

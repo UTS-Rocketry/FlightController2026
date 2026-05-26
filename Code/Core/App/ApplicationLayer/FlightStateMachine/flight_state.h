@@ -1,6 +1,7 @@
 #ifndef FLIGHT_STATE_H
 #define FLIGHT_STATE_H
 #include "flight_sensors.h"
+#include <stdint.h>
 
 
 typedef enum{
@@ -27,6 +28,7 @@ typedef struct {
 } FSM_Context_t;
 
 HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData);
-void FSM_init();
+void FSM_init(void);
+FlightState_t FSM_get_state(void);
 
 #endif

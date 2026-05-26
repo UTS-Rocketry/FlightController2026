@@ -180,9 +180,14 @@ int main(void)
 
   result = flash_sanity_check();
   if (result != HAL_OK) printf("flash sanity check failed\r\n");
+
+  kalman_init();
   
 
+  #ifdef DEBUG
   uint32_t last = HAL_GetTick();
+  #endif
+
   uint32_t last_imu   = 0;
   uint32_t last_baro  = 0;
   uint32_t last_lora  = 0;
@@ -194,28 +199,27 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    
     /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
-    uint32_t dt = now - last;
-    last = now;
-
-    printf("Sensor loop dt: %lums\r\n", dt);
 
     if (now - last_imu >= 10) {
       last_imu = now;
       if(flight_sensors_update_IMU_accel(&sensorData) != HAL_OK) printf("Baro sensor update failed\r\n");
-      //kalman_predict()
+      kalman_predict(sensorData.z_mg_IMU, 0.01f);
+      sensorData.kalman_altitude = kalman_get_altitude();
+      sensorData.kalman_velocity = kalman_get_velocity();
     }
 
     if (now - last_baro >= 40) {
       last_baro = now;
       flight_sensors_update_baro(&sensorData);
-      //kalman_update()
+      kalman_update(sensorData.altitude);
+      sensorData.kalman_altitude = kalman_get_altitude();
+      sensorData.kalman_velocity = kalman_get_velocity();
     }
 
     FSM_update(&sensorData);
-    // Write this sensorData.flight_state = FSM_getState();
+    sensorData.flight_state = FSM_get_State();
 
     if (now - last_lora >= 200 && FSM_get_state() >= STATE_PAD) {
       last_lora = now;
@@ -229,8 +233,11 @@ int main(void)
 
     #ifdef DEBUG
       serial_print(&sensorData);
+      uint32_t dt = now - last;
+      last = now;
+      printf("Sensor loop dt: %lums\r\n", dt);
     #endif
-
+  
      
     /* USER CODE END WHILE */
 
