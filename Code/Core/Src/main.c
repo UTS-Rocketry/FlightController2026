@@ -33,6 +33,9 @@
 #include "indicators.h"
 #include "telemetry.h"
 #include "Lora_App.h"
+#include "pyro.h"
+#include "flight_state.h"
+
 
 
 
@@ -99,12 +102,13 @@ int _write(int file, char *ptr, int len) {
     return len;
 }
 
+/* Removed because sd doesnt work
 void HAL_SYSTICK_Callback(void)
 {
     if (Timer1 > 0) Timer1--;
     if (Timer2 > 0) Timer2--;
 }
-
+*/
 
 /* USER CODE END 0 */
 
@@ -148,7 +152,7 @@ int main(void)
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
-  MX_FATFS_Init();
+  // MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
   
   HAL_Delay(10);
@@ -182,6 +186,8 @@ int main(void)
   if (result != HAL_OK) printf("flash sanity check failed\r\n");
 
   kalman_init();
+  pyro_init();
+  FSM_init();
   
 
   #ifdef DEBUG
@@ -204,7 +210,7 @@ int main(void)
 
     if (now - last_imu >= 10) {
       last_imu = now;
-      if(flight_sensors_update_IMU_accel(&sensorData) != HAL_OK) printf("Baro sensor update failed\r\n");
+      if(flight_sensors_update_IMU_accel(&sensorData) != HAL_OK) printf(" sensor update failed\r\n");
       kalman_predict(sensorData.z_mg_IMU, 0.01f);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
@@ -212,7 +218,7 @@ int main(void)
 
     if (now - last_baro >= 40) {
       last_baro = now;
-      flight_sensors_update_baro(&sensorData);
+      if(flight_sensors_update_baro(&sensorData)!= HAL_OK) printf("Baro sensor update failed\r\n") ;
       kalman_update(sensorData.altitude);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();

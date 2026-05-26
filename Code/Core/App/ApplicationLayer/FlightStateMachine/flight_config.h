@@ -29,7 +29,5 @@
 /* ── Arming ────────────────────────────────────────── */
 #define ARM_AUTO_DELAY_MS               10000     /* temp: auto arm after 10s */
 
-/* ── Pyro ──────────────────────────────────────────── */
-#define PYRO_FIRE_DURATION_MS           500       /* how long to hold pyro high */
 
 #endif

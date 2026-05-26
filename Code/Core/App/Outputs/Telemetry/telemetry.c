@@ -3,6 +3,7 @@
 #include "LoRa.h"
 #include "crc16.h"
 #include "flight_sensors.h"
+#include "kalman.h"
 
 void serial_print(const FlightSensorData *sensordata)
 {
@@ -12,7 +13,7 @@ void serial_print(const FlightSensorData *sensordata)
            "IMU XL X:%.1f Y:%.1f Z:%.1f mg | "
            "GY X:%.1f Y:%.1f Z:%.1f mdps\r\n",
 
-           sensordata->altitude,
+           sensordata->kalman_altitude,
 
            sensordata->x_mg,
            sensordata->y_mg,
@@ -47,7 +48,7 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
     // payload starts at buff + 4
     telemetry_serializer(&packet, buff + 4);
 
-    result = lora_TX(buff, 58, 1000);
+    result = lora_TX(buff, 62, 1000);
 
     seq++;
 
@@ -98,6 +99,7 @@ HAL_StatusTypeDef flash_dump_serial(void) {
         float x_mg, y_mg, z_mg;
         float x_mg_IMU, y_mg_IMU, z_mg_IMU;
         float x_gy, y_gy, z_gy;
+        float velocity;
 
         memcpy(&altitude,    &buff[3],  4);
         memcpy(&pressure,    &buff[7],  4);
@@ -111,14 +113,15 @@ HAL_StatusTypeDef flash_dump_serial(void) {
         memcpy(&x_gy,        &buff[39], 4);
         memcpy(&y_gy,        &buff[43], 4);
         memcpy(&z_gy,        &buff[47], 4);
+        memcpy(&velocity,    &buff[51], 4);
 
-        uint8_t state = buff[51];
+        uint8_t state = buff[55];
 
-        printf("[%lu] alt=%.2f pres=%.2f temp=%.2f | "
+        printf("[%lu] alt=%.2f pres=%.2f temp=%.2f velocity=%.2f | "
                "hg=%.1f,%.1f,%.1f | "
                "imu=%.1f,%.1f,%.1f | "
                "gy=%.1f,%.1f,%.1f | state=%u\r\n",
-               i, altitude, pressure, temperature,
+               i, altitude, pressure, temperature, velocity,
                x_mg, y_mg, z_mg,
                x_mg_IMU, y_mg_IMU, z_mg_IMU,
                x_gy, y_gy, z_gy,

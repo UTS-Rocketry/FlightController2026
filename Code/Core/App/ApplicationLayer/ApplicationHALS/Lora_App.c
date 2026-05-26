@@ -51,7 +51,7 @@ void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
     uint32_t raw = 0;
     
     /*altitude*/
-    memcpy(&raw, &packet->sensordata.altitude, 4);
+    memcpy(&raw, &packet->sensordata.kalman_altitude, 4);
 
     buff[3] = (raw >> 24) & 0xFF;
     buff[4] = (raw >> 16) & 0xFF;
@@ -159,12 +159,22 @@ void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
     buff[49] = (raw >> 8) & 0xFF;
     buff[50] = (raw) & 0xFF;
 
-    buff[51] = packet->flight_State;
+    /*Kalman velocity*/
+    raw = 0;
+    memcpy(&raw, &packet->sensordata.kalman_velocity, 4);
 
-    uint16_t crc = crc16(0, buff, 51);
+    buff[51] = (raw >> 24) & 0xFF;
+    buff[52] = (raw >> 16) & 0xFF;
+    buff[53] = (raw >> 8) & 0xFF;
+    buff[54] = (raw) & 0xFF;
 
-    buff[52] =  (crc >> 8) & 0xFF;
-    buff[53] = (crc) & 0xFF;
+
+    buff[55] = packet->flight_State;
+
+    uint16_t crc = crc16(0, buff, 55);
+
+    buff[56] =  (crc >> 8) & 0xFF;
+    buff[57] = (crc) & 0xFF;
 
 
 

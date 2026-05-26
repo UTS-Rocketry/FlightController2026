@@ -126,10 +126,10 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
                 printf("FSM: APOGEE\r\n");
                 /* ADD LORA TRANSMISSION */
                   if (ctx.apogee_alt < MAIN_DEPLOY_ALT_M) {
-                // pyro_fire_main();
-                ctx.main_fired = 1;
+                    pyro_fire_main();
+                    ctx.main_fired = 1;
                 } else {
-                    // pyro_fire_drogue();
+                    pyro_fire_drogue();
                     ctx.drogue_fired = 1;
                 }
                 FSM_transition(STATE_DROGUE);
@@ -146,7 +146,7 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
 
             if (sensorData->kalman_altitude < MAIN_DEPLOY_ALT_M && ctx.main_fired != 1) {
-                /*pyro fire main*/
+                pyro_fire_main();
                 ctx.main_fired = 1;
                 FSM_transition(STATE_PARAFOIL);
             }

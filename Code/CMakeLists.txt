@@ -63,6 +63,9 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/Outputs/Telemetry/telemetry.c
     Core/App/ApplicationLayer/ApplicationHALS/crc16.c
     Core/App/ApplicationLayer/ApplicationHALS/W25Q128_HAL.c
+    Core/App/ApplicationLayer/ApplicationHALS/pyro.c
+    Core/App/ApplicationLayer/ApplicationHALS/kalman.c
+    
 )
 
 # Add include paths
