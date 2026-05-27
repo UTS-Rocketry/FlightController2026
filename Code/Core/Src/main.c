@@ -35,6 +35,7 @@
 #include "Lora_App.h"
 #include "pyro.h"
 #include "flight_state.h"
+#include "kalman.h"
 
 
 
@@ -188,7 +189,7 @@ int main(void)
   kalman_init();
   pyro_init();
   FSM_init();
-  
+
 
   #ifdef DEBUG
   uint32_t last = HAL_GetTick();
@@ -207,6 +208,10 @@ int main(void)
   {
     /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
+    printf("raw kf alt: %.2f raw kf vel: %.2f\r\n", 
+        kalman_get_altitude(), 
+        kalman_get_velocity());
+     
 
     if (now - last_imu >= 10) {
       last_imu = now;
@@ -225,9 +230,12 @@ int main(void)
     }
 
     FSM_update(&sensorData);
-    sensorData.flight_state = FSM_get_State();
+    sensorData.flight_state = FSM_get_state();
 
     if (now - last_lora >= 200 && FSM_get_state() >= STATE_PAD) {
+      printf("raw kf alt: %.2f raw kf vel: %.2f\r\n", 
+        kalman_get_altitude(), 
+        kalman_get_velocity());
       last_lora = now;
       lora_tx_telemetry(&sensorData);
 

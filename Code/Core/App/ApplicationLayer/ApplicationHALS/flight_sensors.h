@@ -49,7 +49,7 @@ HAL_StatusTypeDef flight_sensors_init(void);
 
 /* Read + update all flight sensor values */
 HAL_StatusTypeDef flight_sensors_update_baro(FlightSensorData *sensordata);
-HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata)
+HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata);
 
 #ifdef __cplusplus
 }

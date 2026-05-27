@@ -2,6 +2,7 @@
 #define W25Q128_H
 
 #include "stm32f4xx_hal.h"
+#include "main.h"
 
 /* W25Q128 command set */
 #define W25Q_WRITE_ENABLE       0x06

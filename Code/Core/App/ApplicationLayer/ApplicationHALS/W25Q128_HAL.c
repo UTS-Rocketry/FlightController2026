@@ -1,7 +1,6 @@
 #include "W25Q128_HAL.h"
-#include "W25Q128.h"
 #include "main.h"
-#include "stm32f4xx_hal_def.h"
+#include "stm32f4xx_hal.h"
 
 #define FLASH_LOG_START_ADDR    0x000000
 #define FLASH_RECORD_SIZE       64         /*matches serializer output */ 
@@ -11,6 +10,7 @@ static uint32_t flash_write_addr = FLASH_LOG_START_ADDR;
 static uint32_t flash_record_count = 0;
 
 static W25Q128_Handle_t flash;
+extern SPI_HandleTypeDef hspi3;
 
 HAL_StatusTypeDef flash_memory_init() {
 

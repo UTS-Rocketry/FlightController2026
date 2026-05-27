@@ -65,6 +65,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/ApplicationLayer/ApplicationHALS/W25Q128_HAL.c
     Core/App/ApplicationLayer/ApplicationHALS/pyro.c
     Core/App/ApplicationLayer/ApplicationHALS/kalman.c
+    Core/App/ApplicationLayer/FlightStateMachine/flight_state.c
     
 )
 
@@ -81,6 +82,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/Outputs/DataLogger
     Core/App/Outputs/LED&buzzer
     Core/App/Outputs/Telemetry
+     Core/App/ApplicationLayer/FlightStateMachine/
 
 
 )
