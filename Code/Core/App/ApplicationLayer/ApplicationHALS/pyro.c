@@ -1,6 +1,7 @@
 #include "pyro.h"
 #include "main.h"
 #include "stm32f4xx_hal_gpio.h"
+#include <stdio.h>
 
 
 extern ADC_HandleTypeDef hadc1;
@@ -21,6 +22,7 @@ uint8_t pyro_check_drogue(void) {
     HAL_ADC_PollForConversion(&hadc1, 10);  // 10ms timeout
     uint32_t val = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
+
     return (val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
 }          
 uint8_t pyro_check_main(void) {
@@ -28,6 +30,7 @@ uint8_t pyro_check_main(void) {
     HAL_ADC_PollForConversion(&hadc2, 10);  // 10ms timeout
     uint32_t val = HAL_ADC_GetValue(&hadc2);
     HAL_ADC_Stop(&hadc2);
+
     return (val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
 }
 

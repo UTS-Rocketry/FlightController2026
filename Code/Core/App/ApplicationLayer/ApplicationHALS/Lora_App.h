@@ -10,40 +10,9 @@ extern "C" {
 #include <stdio.h>
 #include "flight_sensors.h"
 #include "crc16.h"
+#include "packets.h"
 
-typedef struct{
 
-    uint8_t sync_word;
-    uint8_t packet_type;
-    uint8_t sequence_number;
-    
-
-}HeaderPacket;
-
-typedef struct{
-
-    HeaderPacket header;
-    FlightSensorData sensordata;
-    uint8_t flight_State;
-    uint16_t crc;
-
-}TelemetryPacket;
-
-typedef struct{
-
-    HeaderPacket header;
-    /* Gps info */
-    uint8_t flight_State;
-    uint16_t crc;
-
-}GPSPacket;
-
-typedef enum {
-
-    telemetry_packet = 0x00,
-    gps_packet = 0x01
-
-}PacketType;
 
 typedef enum {
 
@@ -62,8 +31,6 @@ extern volatile uint8_t lora_tx_done_flag;
 
 void HAL_GPIOEXTI_Callback(uint16_t GPIO_PIN);
 HAL_StatusTypeDef lora_App_Init();
-
-void lora_telemetry_serializer(TelemetryPacket *packet, uint8_t *buff);
 
 #ifdef __cplusplus
 }

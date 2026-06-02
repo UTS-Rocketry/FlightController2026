@@ -7,6 +7,8 @@
 #include "stm32f4xx_hal_def.h"
 
 extern SPI_HandleTypeDef hspi1;
+
+
 static BMP388Handle_TypeDef bmp;
 static lsm6dso_HandleTypedef imu;
 static h3lis331dl_HandleTypeDef accel;

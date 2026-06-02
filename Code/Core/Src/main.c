@@ -39,7 +39,6 @@
 
 
 
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -155,9 +154,6 @@ int main(void)
   MX_SPI3_Init();
   // MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
-  
-  HAL_Delay(10);
-
   /*THIS IS FOR SD card but it is wired wrong*/
   /* FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
   printf("f_mount: %d\r\n", (int)fr); */
@@ -199,6 +195,7 @@ int main(void)
   uint32_t last_baro  = 0;
   uint32_t last_lora  = 0;
   uint32_t last_flash = 0;
+  uint32_t last_cont  = 0;
   
   /* USER CODE END 2 */
 
@@ -208,10 +205,7 @@ int main(void)
   {
     /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
-    printf("raw kf alt: %.2f raw kf vel: %.2f\r\n", 
-        kalman_get_altitude(), 
-        kalman_get_velocity());
-     
+    
 
     if (now - last_imu >= 10) {
       last_imu = now;
@@ -232,14 +226,21 @@ int main(void)
     FSM_update(&sensorData);
     sensorData.flight_state = FSM_get_state();
 
-    if (now - last_lora >= 200 && FSM_get_state() >= STATE_PAD) {
-      printf("raw kf alt: %.2f raw kf vel: %.2f\r\n", 
-        kalman_get_altitude(), 
-        kalman_get_velocity());
+  
+    if (now - last_cont >= 2000 && FSM_get_state() <= STATE_PAD) {
+      last_cont = now;
+      lora_tx_continuity();
+
+    } else if (now - last_lora >= 200 && FSM_get_state() >= STATE_PAD) {
+      
       last_lora = now;
       lora_tx_telemetry(&sensorData);
 
+      if (FSM_get_state() == STATE_PAD) {
+        lora_rx_command();
+      }
     }
+
     if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
         last_flash = now;
         flash_log_telemetry(&sensorData);

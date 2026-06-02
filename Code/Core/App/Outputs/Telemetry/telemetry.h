@@ -17,6 +17,8 @@ void serial_print(const FlightSensorData *sensordata);
 HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata);
 HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData);
 HAL_StatusTypeDef flash_dump_serial(void);
+HAL_StatusTypeDef lora_rx_command(void);
+HAL_StatusTypeDef lora_tx_continuity(void);
 
 #ifdef __cplusplus
 }
