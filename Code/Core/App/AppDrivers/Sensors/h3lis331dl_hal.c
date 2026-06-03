@@ -86,12 +86,20 @@ static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
                               uint16_t len)
 {
   h3lis331dl_HandleTypeDef *h3 = (h3lis331dl_HandleTypeDef*)handle;
-  
+  HAL_StatusTypeDef result;
   reg &= ~0x80; 
  
   HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(h3->hspi, &reg, 1, 1000);
-  HAL_SPI_Transmit(h3->hspi, (uint8_t*) bufp, len, 1000);
+  result = HAL_SPI_Transmit(h3->hspi, &reg, 1, 1000);
+  if (result != 0) {
+    HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
+  result = HAL_SPI_Transmit(h3->hspi, (uint8_t*) bufp, len, 1000);
+  if (result != 0) {
+    HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
   HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_SET);
 
   return 0;
@@ -103,10 +111,18 @@ static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
 
   h3lis331dl_HandleTypeDef *h3 = (h3lis331dl_HandleTypeDef*)handle;
   reg |= 0xC0;
-  
+  HAL_StatusTypeDef result;
   HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(h3->hspi, &reg, 1, 1000);
-  HAL_SPI_Receive(h3->hspi, bufp, len, 1000);
+  result = HAL_SPI_Transmit(h3->hspi, &reg, 1, 1000);
+  if (result != 0) {
+    HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
+  result = HAL_SPI_Receive(h3->hspi, bufp, len, 1000);
+  if (result != 0) {
+    HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
   HAL_GPIO_WritePin(h3->cs_port, h3->cs_pin, GPIO_PIN_SET);
 
   return 0;

@@ -110,12 +110,20 @@ static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
                               uint16_t len)
 {
   lsm6dso_HandleTypedef *l6 = (lsm6dso_HandleTypedef*)handle;
-
+  HAL_StatusTypeDef result;
   reg &= ~0x80;
  
   HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(l6->hspi, &reg, 1, 1000);
-  HAL_SPI_Transmit(l6->hspi, (uint8_t*) bufp, len, 1000);
+  result = HAL_SPI_Transmit(l6->hspi, &reg, 1, 1000);
+  if (result != 0) {
+    HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
+  result = HAL_SPI_Transmit(l6->hspi, (uint8_t*) bufp, len, 1000);
+  if (result != 0) {
+    HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
   HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_SET);
 
   return 0;
@@ -124,13 +132,25 @@ static int32_t platform_write(void *handle, uint8_t reg, const uint8_t *bufp,
 static int32_t platform_read(void *handle, uint8_t reg, uint8_t *bufp,
                               uint16_t len)
 {
-
+  HAL_StatusTypeDef result;
   lsm6dso_HandleTypedef *l6 = (lsm6dso_HandleTypedef*)handle;
   reg |= 0x80;
   
   HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_RESET);
-  HAL_SPI_Transmit(l6->hspi, &reg, 1, 1000);
-  HAL_SPI_Receive(l6->hspi, bufp, len, 1000);
+  result = HAL_SPI_Transmit(l6->hspi, &reg, 1, 1000);
+  
+  if (result != 0) {
+    HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_SET);
+    return 1;
+  } 
+
+  result = HAL_SPI_Receive(l6->hspi, bufp, len, 1000);
+  
+  if (result != 0) {
+    HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_SET);
+    return 1;
+  }
+
   HAL_GPIO_WritePin(l6->cs_port, l6->cs_pin, GPIO_PIN_SET);
 
   return 0;

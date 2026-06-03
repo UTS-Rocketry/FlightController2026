@@ -16,27 +16,39 @@
 > staged for deletion. New code added a LoRa **RX command path** and a **continuity
 > broadcast** (`telemetry.c`) plus a `packets.c/.h` serialization module — which introduce
 > findings **N1–N3** below. Everything else (C1–C8, M3, R3, R4) still stands.
+>
+> **🔄 Audit #3 (commit `f925c21`).** That commit fixed the **in-flight** sensor reads
+> (timeouts added to `lsm6dso_ExternalReader` 50 ms, `h3lis331dl_externalRead` 50 ms,
+> `BMP388_ReadRawPressTempTime` 250 ms, IMU reset 100 ms) and cut the RX timeout 1000→50 ms
+> (**N1** mitigated). The C4 fix intentionally left the two **calibration** loops
+> (`lsm6dso_Calib`, `h3lis331dl_Calibration`) unbounded — **accepted** as a pre-flight
+> fail-stop (see C4). New
+> this pass: **N4** (LoRa TX/RX mode handling) and **NR1** (a BMP388 sensortime regression).
 
 ---
 
 ## Severity & status at a glance
 
-**✅ Resolved since the last review:** **M1** (telemetry buffer is now `buff[62]`,
-`telemetry.c:37`), **R2** (Kalman `dt` is now computed from real elapsed time, `main.c:211`),
-and the unconditional per-pass hot-loop `printf` was removed (**R1** much reduced).
+**✅ Resolved / mitigated:** **M1** (`buff[62]`), **R2** (dynamic `dt`, `main.c:211`), the
+per-pass hot-loop `printf` (**R1** reduced), **C4 for the in-flight read paths** (timeouts in
+all three per-loop reads + IMU reset), and **N1** (RX timeout cut 1000→50 ms). *Caveats
+below: C4's calibration loops are still unbounded, and N1 still does a blocking 50 ms poll +
+`printf`.*
 
 | ID | Finding | Severity | Active now? |
 |----|---------|----------|-------------|
-| **C4** | Sensor reads busy-wait with **no timeout** → can hang the whole computer | 🔴 Critical | **Yes** |
+| **C4** | In-flight reads time out ✅. Calibration loops still block at boot — **accepted** (pre-flight fail-stop: if a sensor won't calibrate, you don't fly) | 🟢 Accepted | Boot only |
 | **M3** | Low-apogee deploy enters `DROGUE`, which can't exit once main is fired → FSM stuck | 🟠 High | **Yes** |
 | **C1** | `pyro_fire_*` / buzzer block the loop with `HAL_Delay` (500 ms) — now also reachable via remote `CMD_FIRE` | 🟠 High | **Yes** |
 | **C2** | `lora_TX` busy-polls (now ≤500 ms tx / ≤100 ms continuity) — still blocks the loop | 🟠 High | **Yes** |
-| **N1** | `lora_rx_command` busy-waits up to **1 s** on RX (+ heavy `printf`), stalling the loop at PAD | 🟠 High | **Yes** |
+| **N1** | `lora_rx_command` RX poll cut to 50 ms (was 1 s) ✅ — still a blocking poll + `printf` | 🟢 Low | Yes (minor) |
 | **C5** | Sensor SPI errors silently swallowed (`platform_*` always return 0) | 🟠 High | **Yes** |
 | **R3** | No independent watchdog to recover from a hang | 🟠 High | **Yes** |
 | **N2** | Remote `CMD_FIRE` fires pyro bypassing the FSM deploy flags & state guard | 🟡 Medium | **Yes** |
 | **C3** | LoRa TX-done interrupt set up but never consumed; prototype still misspelled | 🟡 Medium | Yes (waste) |
 | **C8** | Duplicate `IDLE/ARMED…` enums in `CAN.h` & `Lora_App.h` → won't compile together | 🟡 Medium | Latent |
+| **N4** | LoRa TX/RX error out unless already in STANDBY and don't restore it on timeout → correctness rides on chip auto-timeout + loop timing | 🟡 Medium | Latent |
+| **NR1** | BMP388 sensortime bytes now parsed from the wrong registers (regression in `f925c21`) | 🟢 Low | Yes (time unused) |
 | **R1** | `printf` still in error paths, FSM transitions, and the RX handler (per-pass print removed) | 🟡 Medium | **Yes** |
 | **R4** | Fault handlers spin forever without safing pyros | 🟡 Medium | **Yes** |
 | **C6** | Shared `sensorData` blackboard has no snapshot/atomicity | 🟡 Medium | Latent |
@@ -147,7 +159,21 @@ A closed-loop airbrake/fin controller needs a **fixed-rate, jitter-bounded** slo
 blocking call below injects latency into the one loop that would host it.
 
 ### 🔴 C4 — Unbounded sensor busy-waits with no timeout
-**Locations:**
+> **🔄 Audit #3 — partially fixed.** The **in-flight read paths are now FIXED** (commit
+> `f925c21`): `lsm6dso_ExternalReader` (50 ms), `h3lis331dl_externalRead` (50 ms),
+> `BMP388_ReadRawPressTempTime` (250 ms), and the `lsm6dso_init` reset (100 ms) all time out
+> and return `HAL_TIMEOUT`/`HAL_ERROR`. **Still unbounded — and they run at *boot* in
+> `flight_sensors_init`:** `lsm6dso_Calib` (`lsm6dsox_hal.c:159-161`) and
+> `h3lis331dl_Calibration` (`h3lis331dl_hal.c:154-156`); the latter also *lost* its
+> `HAL_Delay(1)`, so it now spins the CPU. **Accepted by design (maintainer call):** these run
+> only at boot in `flight_sensors_init`, so a dead/flaky sensor hangs *on the pad*, not in
+> flight — and since no telemetry/continuity ever comes up, the ground crew sees the board
+> never went "ready" and doesn't fly. That's a valid pre-flight fail-stop. It stays valid as
+> long as (1) a hung board is **ground-observable** (no telemetry = stuck — true today) and
+> (2) calibration/re-init never moves into the in-flight path. Restoring the dropped
+> `HAL_Delay` / adding a deadline is nice-to-have (stops the CPU spin) but not flight-critical.
+
+**Locations (the two calibration entries below are the ones still open):**
 - `Core/App/AppDrivers/Sensors/lsm6dsox_hal.c:195-197` — `lsm6dso_ExternalReader`: `do { status_get } while(!xlda || !gda);` — **no delay, no timeout**.
 - `Core/App/AppDrivers/Sensors/lsm6dsox_hal.c:58-60` — reset wait in `lsm6dso_init`: `do { reset_get } while (rst);`
 - `Core/App/AppDrivers/Sensors/lsm6dsox_hal.c:156-158` — same pattern in `lsm6dso_Calib`.
@@ -429,6 +455,41 @@ that byte to `0x00` (`packets.c:150`) — aux continuity isn't actually transmit
 `command_serializer`, even if only the ground station uses it) and reconcile the struct
 field order with the byte offsets the deserializer uses.
 
+### 🟡 N4 — LoRa TX/RX are order-dependent on radio mode (no forced standby)
+**Location:** `Core/App/AppDrivers/LoRa/LoRa.c` — `lora_TX:406`, `lora_RX:462`, and the
+timeout/error early-returns in both.
+
+Both `lora_TX` and `lora_RX` start with `if (mode != MODE_STAND_BY) return HAL_ERROR` — they
+*assume* the caller left the radio in standby rather than forcing it. Their timeout / CRC /
+SPI-error early-returns also leave the radio in `TRANSMIT` / `RX_SINGLE`, not standby. The new
+code now **interleaves TX (telemetry/continuity) and RX (command) in the main loop**, so the
+radio's mode is shared state across calls.
+
+Concretely: `lora_rx_command` calls `lora_RX(..., 50 ms)`. `REG_SYMB_TIMEOUT` is never set, so
+RX_SINGLE uses the chip default (~100 symbols ≈ 100 ms at SF7/BW125). The 50 ms driver poll
+expires *first*, so on the normal "no command" path `lora_RX` returns `HAL_TIMEOUT` with the
+radio **still in RX_SINGLE**. It recovers only because (a) the SX1276 auto-returns to standby
+when its own symbol-timeout fires ~50 ms later, and (b) the next TX is ~200 ms away. So it
+works today **by timing coincidence, not by design**: shorten the telemetry interval below
+~100 ms, or TX right after RX, and that next TX would hit the standby check and silently fail
+(dropped frame).
+
+**Fix:** make the mode explicit — call `lora_standby()` at the *start* of `lora_TX`/`lora_RX`
+(force a known mode instead of erroring out), and drive the radio back to standby on every
+timeout/error exit. Setting `REG_SYMB_TIMEOUT` to a defined value also makes RX_SINGLE
+deterministic.
+
+### 🟢 NR1 — BMP388 sensortime parsed from the wrong registers (regression in `f925c21`)
+**Location:** `Core/App/AppDrivers/Sensors/BMP388.c` — the `*time` assignment in
+`BMP388_ReadRawPressTempTime`.
+
+The commit changed the sensortime parse from `raw_data[10/9/8]` to `raw_data[8/7/6]`. The
+11-byte burst starts at `DATA_0` (0x04), so `SENSORTIME_0..2` (0x0C–0x0E) are indices
+**8, 9, 10** — the original was correct; indices 6/7/8 read `0x0A/0x0B/0x0C` (wrong registers).
+Pressure (idx 0–2) and temperature (idx 3–5) are unchanged and still correct, and `time` isn't
+consumed downstream, so this is **harmless today** — but it's a latent correctness bug if you
+ever use sensor time. **Fix:** restore `*time = raw_data[10]<<16 | raw_data[9]<<8 | raw_data[8]`.
+
 ---
 
 ## Target architecture for "concurrency-safe and atomic"
@@ -489,17 +550,19 @@ Adopt when you have several independent rates (control + comms + logging + CAN):
 
 ## Suggested order of work
 
-*(**M1** and **R2** from the previous list are now done.)*
+*(Done: **M1**, **R2**, **C4 for the in-flight reads**, **N1** mitigated.)*
 
-1. **C4 + C5** — bounded timeouts on every sensor wait; stop swallowing SPI errors. 🔴
+1. **C5** — stop swallowing SPI errors (`platform_*` should return the HAL status, not always 0). 🔴
+   *(C4's calibration-loop hang is **accepted** as a pre-flight fail-stop — see C4; no action.)*
 2. **M3** — fix the low-apogee FSM dead-end (`APOGEE` low branch → `PARAFOIL`, not `DROGUE`). 🔴/🟠
 3. **R3** — turn on the IWDG watchdog as a safety net behind #1. 🟠
 4. **C1 + N2** — non-blocking pyro fire; route remote `CMD_FIRE` through the same guarded
    deploy helper (sets fired-flags, state-checked). 🟠
-5. **C2 + C3 + N1** — interrupt/DMA-driven LoRa TX *and* RX; consume `lora_tx_done_flag`;
-   kill the 1 s RX busy-wait. 🟠
+5. **C2 + C3 + N4** — interrupt/DMA-driven LoRa TX *and* RX; consume `lora_tx_done_flag`;
+   force radio standby on entry/exit so TX and RX can't wedge each other. 🟠
 6. **R1** — gate the remaining `printf` (error paths, FSM transitions, RX handler) behind `DEBUG`. 🟡
-7. **C8 + N3** — unify the duplicate flight-state enums before implementing CAN; pin down the command wire format. 🟡
+7. **C8 + N3 + NR1** — unify the duplicate flight-state enums before CAN; pin down the command
+   wire format; restore the BMP388 sensortime bytes. 🟡/🟢
 8. **C6 + C7** — double-buffer `sensorData` and add an SPI1 mutex *as part of* going
    concurrent / adding a control task. 🟡/🟢
 9. **R4** — safe-state fault handlers (drive pyros low, then reset). 🟡

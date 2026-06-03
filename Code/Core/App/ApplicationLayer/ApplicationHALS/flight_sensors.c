@@ -38,9 +38,13 @@ static void BMP388_handleinit (BMP388Handle_TypeDef *bmp) {
   bmp->cs_pin = CSBarometer_Pin;
 
   if (BMP388_Init(bmp) != HAL_OK) {
+    #ifdef DEBUG
       printf("BMP388 init FAILED\r\n");
+    #endif
   } else {
-    printf("BMP388 OK\r\n");
+    #ifdef DEBUG
+      printf("BMP388 OK\r\n");
+    #endif
   }
 
 }
@@ -51,9 +55,13 @@ static void lsm6dso_handleinit(lsm6dso_HandleTypedef *imu) {
   imu->cs_port = CS_IMU_GPIO_Port;
   imu->cs_pin = CS_IMU_Pin;
   if (lsm6dso_init(imu) != HAL_OK) {
-    printf("IMU init FAILED\r\n");
+    #ifdef DEBUG
+      printf("IMU init FAILED\r\n");
+    #endif
   } else {
+    #ifdef DEBUG
       printf("IMU OK\r\n");
+    #endif
   }
 
 }
@@ -65,9 +73,13 @@ static void h3lis331dl_handleinit(h3lis331dl_HandleTypeDef *accel) {
   accel->cs_pin = CSAccelerometer_Pin;
 
   if (h3lis331dl_init(accel) != HAL_OK) {
-      printf("ACCEL init FAILED\r\n");
+      #ifdef DEBUG
+        printf("ACCEL init FAILED\r\n");
+      #endif
   } else {
-      printf("ACCEL OK\r\n");
+      #ifdef DEBUG
+        printf("ACCEL OK\r\n");
+      #endif
   }
 
 }
@@ -81,8 +93,11 @@ HAL_StatusTypeDef flight_sensors_init(void) {
   HAL_Delay(50);
   result = BMP388_FindGroundPressure(&bmp, &ground_pressure);
   if (result != HAL_OK) {
+    
+    #ifdef DEBUG
+      printf("Ground pressure error\r\n");
+    #endif
 
-    printf("Ground pressure error\r\n");
     return HAL_ERROR;
     
   } 
@@ -92,11 +107,11 @@ HAL_StatusTypeDef flight_sensors_init(void) {
   HAL_Delay(50);
   result = h3lis331dl_Calibration(accel_offset);
   
-  
   /* Beep OK! */
   if (result != HAL_OK) {
-
-    printf("Accelerometer Calibration Error\r\n");
+    #ifdef DEBUG
+      printf("Accelerometer Calibration Error\r\n");
+    #endif
     return HAL_ERROR;
   } 
 
@@ -105,8 +120,9 @@ HAL_StatusTypeDef flight_sensors_init(void) {
   HAL_Delay(50);
   result = lsm6dso_Calib(xl_Offset, gy_Offset);
   if (result != HAL_OK) {
-
-    printf("IMU Calibration Error\r\n");
+    #ifdef DEBUG
+      printf("IMU Calibration Error\r\n");
+    #endif
     return HAL_ERROR;
 
   }
@@ -124,8 +140,9 @@ HAL_StatusTypeDef flight_sensors_update_baro(FlightSensorData *sensordata) {
   
   result = BMP388_ExternalReadFunction(&bmp, &sensordata->pressure, &sensordata->temperature, &sensordata->altitude, &ground_pressure);
   if (result != HAL_OK) {
-    
-    printf("BMP388 Error\r\n");
+    #ifdef DEBUG
+      printf("BMP388 Error\r\n");
+    #endif
     return result;
 
   }
@@ -141,7 +158,9 @@ HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata) 
   result = h3lis331dl_externalRead(accel_val);
   if (result != HAL_OK) {
 
-    printf("h3lis331dl Error\r\n");
+    #ifdef DEBUG
+      printf("h3lis331dl Error\r\n");
+    #endif
     return result;
 
   } 
@@ -153,7 +172,9 @@ HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata) 
   result = lsm6dso_ExternalReader(xl_Val, gy_Val);
   if (result != HAL_OK) {
 
-    printf("lsm6dso Error\r\n");
+    #ifdef DEBUG
+      printf("lsm6dso Error\r\n");
+    #endif
     return result;
 
   } 
