@@ -205,12 +205,18 @@ int main(void)
   {
     /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
+    /*Non blocking pyro*/
+    pyro_service();
     
 
     if (now - last_imu >= 10) {
       float dt = (now - last_imu) / 1000.0f;
       last_imu = now;
-      if(flight_sensors_update_IMU_accel(&sensorData) != HAL_OK) printf(" sensor update failed\r\n");
+      HAL_StatusTypeDef imu_result = flight_sensors_update_IMU_accel(&sensorData);
+      #ifdef DEBUG
+          if (imu_result != HAL_OK) printf("sensor update failed\r\n");
+      #endif
+      
       kalman_predict(sensorData.z_mg_IMU, dt);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
@@ -218,7 +224,11 @@ int main(void)
 
     if (now - last_baro >= 40) {
       last_baro = now;
-      if(flight_sensors_update_baro(&sensorData)!= HAL_OK) printf("Baro sensor update failed\r\n") ;
+      HAL_StatusTypeDef baro_result = flight_sensors_update_baro(&sensorData);
+      #ifdef DEBUG
+          if (baro_result != HAL_OK) printf("Baro sensor update failed\r\n");
+      #endif
+
       kalman_update(sensorData.altitude);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
@@ -241,6 +251,7 @@ int main(void)
         lora_rx_command();
       }
     }
+    
 
     if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
         last_flash = now;

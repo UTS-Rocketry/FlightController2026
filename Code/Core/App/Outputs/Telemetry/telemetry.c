@@ -7,6 +7,8 @@
 #include "packets.h"
 #include "stm32f4xx_hal.h"
 #include <stdint.h>
+#include "pyro.h"
+
 
 void serial_print(const FlightSensorData *sensordata)
 {
@@ -166,10 +168,14 @@ HAL_StatusTypeDef lora_rx_command() {
                 case CMD_FIRE:
                     switch(channel) {
                         case 1:
+                            pyro_enable_test_mode();
                             pyro_fire_drogue();
+                            pyro_disable_test_mode();
                             break;
                         case 2:
+                            pyro_enable_test_mode();
                             pyro_fire_main();
+                            pyro_disable_test_mode();
                             break;
                     }
                     break;
