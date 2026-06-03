@@ -25,6 +25,10 @@ typedef struct {
     uint8_t drogue_fired;       // pyro flags
     uint8_t main_fired;
     uint8_t entry;              // true on first tick of a new state
+    
+    uint8_t launch_count;
+    uint8_t burnout_count;
+    uint8_t apogee_count;             
 } FSM_Context_t;
 
 HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData);
