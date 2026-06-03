@@ -1,4 +1,5 @@
 #include "flight_state.h"
+#include "pyro.h"
 #include "stm32f4xx_hal.h"
 #include "telemetry.h"
 #include "flight_config.h"
@@ -17,13 +18,15 @@ void FSM_init(void) {
 }
 
 HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
-
+    /*********************************************************************** */
     switch(ctx.state) {
+
         case STATE_IDLE:
-                
             if (ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: IDLE\r\n");
+                #ifdef DEBUG
+                    printf("FSM: IDLE\r\n");
+                #endif
             }
 
             /* Time base transition will move to lora arm later */
@@ -32,54 +35,59 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
             
             break;
+    /*********************************************************************** */
 
         case STATE_PAD:
             
             /* This runs the first time state entry */
             if(ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: ARMED\r\n");
+                #ifdef DEBUG
+                    printf("FSM: STATE-PAD\r\n");
+                #endif
             }
             
             /* If imu detects more threshold */
-            static uint8_t launch_count = 0;
+            
             if(sensorData->z_mg_IMU >= LAUNCH_ACCEL_THRESHOLD_MG) {
-                launch_count++;
+                ctx.launch_count++;
                 
             }
             else {
-                launch_count = 0;
+                ctx.launch_count = 0;
             }
 
-            if (launch_count >= LAUNCH_CONFIRM_SAMPLES) {
-                launch_count = 0;  
+            if (ctx.launch_count >= LAUNCH_CONFIRM_SAMPLES) {
+                ctx.launch_count = 0;  
                 FSM_transition(STATE_BOOST);
             }
 
 
             break;
+    /*********************************************************************** */
 
         case STATE_BOOST:
             
             if (ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: BOOST\r\n");
+                #ifdef DEBUG
+                    printf("FSM: BOOST\r\n");
+                #endif
             }
 
             //lock pyro
 
             // change when accel = around < 2 gs
-            static uint8_t burnout_count = 0;
             if(sensorData->z_mg_IMU <= BURNOUT_ACCEL_THRESHOLD_MG) {
-                burnout_count++;
+                ctx.burnout_count++;
                 
             }
             else {
-                burnout_count = 0;
+                ctx.burnout_count = 0;
             }
 
-            if (burnout_count >= BURNOUT_CONFIRM_SAMPLES) {
-                burnout_count = 0;  
+            if (ctx.burnout_count >= BURNOUT_CONFIRM_SAMPLES) {
+                ctx.burnout_count = 0;  
                 FSM_transition(STATE_COAST);
             }
 
@@ -88,26 +96,29 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
 
             break;
+    
+    /*********************************************************************** */
         case STATE_COAST:
             
             if (ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: COAST\r\n");
-                /* ADD LORA TRANSMISSION */
+                #ifdef DEBUG
+                    printf("FSM: COAST\r\n");
+                #endif
             }
             
             
             /*Apogee detected*/
 
-            static uint8_t apogee_count = 0;
+            
             if(sensorData->kalman_velocity < APOGEE_VELOCITY_THRESHOLD){
-                apogee_count++;
+                ctx.apogee_count++;
             }
             else {
-                apogee_count = 0;
+                ctx.apogee_count = 0;
             }
-            if(apogee_count >= APOGEE_CONFIRM_SAMPLES) {
-                apogee_count = 0; 
+            if(ctx.apogee_count >= APOGEE_CONFIRM_SAMPLES) {
+                ctx.apogee_count = 0; 
                 FSM_transition(STATE_APOGEE);
             }
 
@@ -117,31 +128,49 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             
                 
             break;
+    
+    /*********************************************************************** */
 
         case STATE_APOGEE:
             
             if (ctx.entry) {
                 ctx.entry = 0;
                 ctx.apogee_alt = sensorData->kalman_altitude;
-                printf("FSM: APOGEE\r\n");
+                
+                #ifdef DEBUG
+                    printf("FSM: APOGEE\r\n");
+                #endif
+                
+
                 /* ADD LORA TRANSMISSION */
-                  if (ctx.apogee_alt < MAIN_DEPLOY_ALT_M) {
-                    pyro_fire_main();
-                    ctx.main_fired = 1;
-                } else {
+                /* If apogee is less than Main deployment alt */
+                if (ctx.apogee_alt < MAIN_DEPLOY_ALT_M) {
+                    
                     pyro_fire_drogue();
                     ctx.drogue_fired = 1;
-                }
+                    
+                    pyro_fire_main();
+                    ctx.main_fired = 1;
+                    FSM_transition(STATE_PARAFOIL);
+                    break;
+
+                } 
+                
+                pyro_fire_drogue();
+                ctx.drogue_fired = 1;
                 FSM_transition(STATE_DROGUE);
 
             }
-
             //APPOGEE DETECTED FIRE PYRO
             break;
+
+
         case STATE_DROGUE:
             if (ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: DROUGE\r\n");
+                #ifdef DEBUG
+                    printf("FSM: DROUGE\r\n");
+                #endif
                 /* ADD LORA TRANSMISSION */
             }
 
@@ -152,15 +181,21 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
             if (HAL_GetTick() - ctx.state_entry_time > DROGUE_TIMEOUT_MS && ctx.main_fired != 1) {
                 /*pyro fire main*/
+                pyro_fire_main();
                 ctx.main_fired = 1;
                 FSM_transition(STATE_PARAFOIL);
             }
 
             break;
+
+    /*********************************************************************** */
+
         case STATE_PARAFOIL:
             if (ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: PARAFOIL\r\n");
+                #ifdef DEBUG
+                    printf("FSM: PARAFOIL\r\n");
+                #endif
                 /* ADD LORA TRANSMISSION */
             }
 
@@ -176,13 +211,17 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
 
             break;
+    
+    /*********************************************************************** */
+
          case STATE_LAND:
             if (ctx.entry) {
                 ctx.entry = 0;
-                printf("FSM: LANDED\r\n");
+                #ifdef DEBUG
+                    printf("FSM: LANDED\r\n");
+                #endif
                 /* ADD LORA TRANSMISSION */
             }
-
             //LANDED
             break;
 
