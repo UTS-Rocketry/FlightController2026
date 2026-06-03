@@ -55,9 +55,12 @@ HAL_StatusTypeDef lsm6dso_init(lsm6dso_HandleTypedef *l6)
   /* Restore default configuration */
   lsm6dsox_reset_set(&dev_ctx, PROPERTY_ENABLE);
 
+  uint32_t last = HAL_GetTick();
   do {
-    lsm6dsox_reset_get(&dev_ctx, &rst);
-  } while (rst);
+      lsm6dsox_reset_get(&dev_ctx, &rst);
+  } while (rst && (HAL_GetTick() - last) < 100);
+
+  if (rst) return HAL_ERROR;
 
   /* Disable I3C interface */
   resultINT = lsm6dsox_i3c_disable_set(&dev_ctx, LSM6DSOX_I3C_DISABLE);
@@ -191,10 +194,18 @@ HAL_StatusTypeDef lsm6dso_ExternalReader(int16_t *xl_Val, int16_t *gy_Val) {
 
   lsm6dsox_status_reg_t status = {0};
   int32_t result = 0;
+
+  uint32_t last = HAL_GetTick();
+	uint32_t timeout;
     
     do {
+      
+      uint32_t now = HAL_GetTick();
+		  timeout = now - last;
       lsm6dsox_status_reg_get(&dev_ctx, &status );
-    } while(!status.xlda || !status.gda);
+
+    } while((!status.xlda || !status.gda) && timeout < 50);
+    if (!status.xlda || !status.gda) return HAL_TIMEOUT;
 
     result = lsm6dsox_acceleration_raw_get(&dev_ctx, xl_Val);
     if (result != 0) return HAL_ERROR;

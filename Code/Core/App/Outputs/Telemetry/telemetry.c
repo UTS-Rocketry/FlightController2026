@@ -34,7 +34,7 @@ void serial_print(const FlightSensorData *sensordata)
 HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
     
     static uint8_t seq = 0;
-    uint8_t buff[58] = {0};
+    uint8_t buff[62] = {0};
     HAL_StatusTypeDef result;
     TelemetryPacket packet;
 
@@ -50,6 +50,8 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
     // LoRa driver consumes first 4 bytes internally (SX1276 FIFO header)
     // payload starts at buff + 4
     telemetry_serializer(&packet, buff + 4);
+
+    lora_tx_done_flag = 0;
 
     result = lora_TX(buff, 62, 500);
 
@@ -140,7 +142,7 @@ HAL_StatusTypeDef lora_rx_command() {
     uint8_t buff[13] = {0};
     uint8_t rxLength = 0;
 
-    result = lora_RX(buff, &rxLength, 13, 1000);
+    result = lora_RX(buff, &rxLength, 13, 50);
 
     printf("RX ret = %d, len = %d\r\n", result, rxLength);
 

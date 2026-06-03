@@ -26,7 +26,7 @@ static stmdev_ctx_t dev_ctx;
 
 HAL_StatusTypeDef h3lis331dl_init(h3lis331dl_HandleTypeDef *h3)
 {
-  h3lis331dl_int1_on_th_conf_t int_route;
+  
   int32_t resultINT = 0;
 
   /* Initialize mems driver interface */
@@ -44,14 +44,11 @@ HAL_StatusTypeDef h3lis331dl_init(h3lis331dl_HandleTypeDef *h3)
   whoamI = 0;
   resultINT = h3lis331dl_device_id_get(&dev_ctx, &whoamI);  
   if (resultINT != 0){
-
-    printf("error at whoami 1 ");
     return HAL_ERROR;
   }
 
   if ( whoamI != H3LIS331DL_ID )
   {
-    printf("error at whoami 2 ");
     return HAL_ERROR;
   }
 
@@ -63,24 +60,18 @@ HAL_StatusTypeDef h3lis331dl_init(h3lis331dl_HandleTypeDef *h3)
   /* Set full scale */
   resultINT = h3lis331dl_full_scale_set(&dev_ctx, H3LIS331DL_200g);
    if (resultINT != 0){
-    printf("set full scale");
     return HAL_ERROR;
   }
 
   /* Configure filtering chain */
   resultINT = h3lis331dl_hp_path_set(&dev_ctx, H3LIS331DL_HP_DISABLE);
    if (resultINT != 0){
-      
-    printf("HP");
-
     return HAL_ERROR;
   }
 
   /* Set Output Data Rate */
   resultINT = h3lis331dl_data_rate_set(&dev_ctx, H3LIS331DL_ODR_100Hz);
    if (resultINT != 0){
-        printf("Data Rate");
-
     return HAL_ERROR;
   }
 
@@ -129,12 +120,18 @@ static void platform_delay(uint32_t ms)
 HAL_StatusTypeDef h3lis331dl_externalRead(int16_t *val) {
 
   uint8_t status = 0;
+  uint32_t last = HAL_GetTick();
+	uint32_t timeout;
     
     // wait for data ready
     do {
-        HAL_Delay(1);
-        h3lis331dl_read_reg(&dev_ctx, H3LIS331DL_STATUS_REG, &status, 1);
-    } while (!(status & 0x08));  // wait for ZYXDA bit
+      
+      uint32_t now = HAL_GetTick();
+		  timeout = now - last;
+      h3lis331dl_read_reg(&dev_ctx, H3LIS331DL_STATUS_REG, &status, 1);
+
+    } while (!(status & 0x08) && timeout < 50);  // wait for ZYXDA bit
+    if (!(status & 0x08)) return HAL_TIMEOUT;
     
     int32_t result = h3lis331dl_acceleration_raw_get(&dev_ctx, val);
     
@@ -155,7 +152,6 @@ HAL_StatusTypeDef h3lis331dl_Calibration(float *offset) {
   for (x = 0; x < 100; x++) {
 
     do {
-        HAL_Delay(1);
         h3lis331dl_read_reg(&dev_ctx, H3LIS331DL_STATUS_REG, &status, 1);
     } while (!(status & 0x08));  // wait for ZYXDA bit
     

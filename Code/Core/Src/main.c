@@ -208,9 +208,10 @@ int main(void)
     
 
     if (now - last_imu >= 10) {
+      float dt = (now - last_imu) / 1000.0f;
       last_imu = now;
       if(flight_sensors_update_IMU_accel(&sensorData) != HAL_OK) printf(" sensor update failed\r\n");
-      kalman_predict(sensorData.z_mg_IMU, 0.01f);
+      kalman_predict(sensorData.z_mg_IMU, dt);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
     }

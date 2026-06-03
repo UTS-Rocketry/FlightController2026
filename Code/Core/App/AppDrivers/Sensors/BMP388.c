@@ -60,10 +60,26 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
         return HAL_ERROR;
     }
 
-    BMP388_SetTempOS(bmp, BMP388_OVERSAMPLING_2X);
-    BMP388_SetPressOS(bmp, BMP388_OVERSAMPLING_8X);
-    BMP388_SetIIRFilterCoeff(bmp, BMP3_IIR_FILTER_COEFF_3);
-    BMP388_SetOutputDataRate(bmp, BMP3_ODR_25_HZ);
+    result = BMP388_SetTempOS(bmp, BMP388_OVERSAMPLING_2X);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
+    result = BMP388_SetPressOS(bmp, BMP388_OVERSAMPLING_8X);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
+    result = BMP388_SetIIRFilterCoeff(bmp, BMP3_IIR_FILTER_COEFF_3);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
+    result = BMP388_SetOutputDataRate(bmp, BMP3_ODR_25_HZ);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
 
     data = bmp->osr;
 
@@ -97,8 +113,6 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
 
         return HAL_ERROR;
     }
-
-	BMP388_readRegister(bmp, PWR_CTRL, &data);
 
     return result;
 }
@@ -232,6 +246,9 @@ HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_
 	
     HAL_StatusTypeDef result;
 
+	uint32_t last = HAL_GetTick();
+	uint32_t timeout;
+
 	uint8_t status;
 
 	uint8_t raw_data[11];
@@ -239,9 +256,14 @@ HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_
 	
 	/* register checker to see if bits are ready */
 	do {
+
+		uint32_t now = HAL_GetTick();
+		timeout = now - last;
+
         result = BMP388_readBytes(bmp, 0x03, &status, 1);
         if (result != HAL_OK) return HAL_ERROR;
-    } while (!(status & (1 << 5)) || !(status & (1 << 6)));
+    } while ((!(status & (1 << 5)) || !(status & (1 << 6))) && timeout < 250);
+	if (!(status & (1 << 5)) || !(status & (1 << 6))) return HAL_TIMEOUT;
 	
 	result = BMP388_readBytes(bmp, DATA_0, raw_data, 11);
 	
@@ -258,7 +280,7 @@ HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_
 	*raw_temperature = (uint32_t)raw_data[5] << 16 | (uint32_t)raw_data[4] << 8 | (uint32_t)raw_data[3];
 
 	// Parsing time bytes
-	*time = (uint32_t)raw_data[10] << 16 | (uint32_t)raw_data[9] << 8 | (uint32_t)raw_data[8];
+	*time = (uint32_t)raw_data[8] << 16 | (uint32_t)raw_data[7] << 8 | (uint32_t)raw_data[6];
 
 
 	return result;
@@ -427,17 +449,11 @@ HAL_StatusTypeDef BMP388_FindGroundPressure (BMP388Handle_TypeDef *bmp, float *g
 
 	for (x = 0; x < 100; x++) {
 
-		uint8_t status = 0;
-		BMP388_readRegister(bmp, STATUS, &status);
-
 		result = BMP388_ReadRawPressTempTime(bmp, &raw_pressure, &raw_temperature, &time);
 		if (result != HAL_OK) {
 
 			return HAL_ERROR;
 		}
-
-		HAL_Delay(25); 
-
 
 		BMP388_CompensateRawPressTemp(bmp, raw_pressure, raw_temperature, &pressure, &temperature);
 
