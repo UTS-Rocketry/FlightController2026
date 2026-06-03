@@ -146,7 +146,7 @@ void continuity_serializer(ContinuityPacket *packet, uint8_t *buff) {
     buff[2] = packet->header.sequence_number;
 
     buff[3] = packet->main;
-    buff[4] = packet->drouge;
+    buff[4] = packet->drogue;
     buff[5] = 0x00;
 
     uint16_t crc = crc16(0, buff, 6);

@@ -29,28 +29,37 @@
 
 ## Severity & status at a glance
 
-**✅ Resolved / mitigated:** **M1** (`buff[62]`), **R2** (dynamic `dt`, `main.c:211`), the
-per-pass hot-loop `printf` (**R1** reduced), **C4 for the in-flight read paths** (timeouts in
-all three per-loop reads + IMU reset), and **N1** (RX timeout cut 1000→50 ms). *Caveats
-below: C4's calibration loops are still unbounded, and N1 still does a blocking 50 ms poll +
-`printf`.*
+**✅ Resolved / mitigated:** **M1** (`buff[62]`), **R2** (dynamic `dt`), **C4 in-flight reads**
+(timeouts), **N1** (RX 50 ms). **Audit #4 (commits `cecc113`, `7d3d9f5` + working tree) adds:**
+**C1** — pyro is now non-blocking via `pyro_service()` (timestamp deassert, `HAL_Delay` gone);
+**M3** — low-apogee path now fires drogue+main then → `STATE_PARAFOIL` (no dead-end); **C5** —
+`platform_*` now deassert CS and return an error code on SPI failure; **R4** — `Error_Handler`
+now safes the pyro GPIOs; and the FSM debounce counters moved into `FSM_Context_t` (no more
+switch-case statics). *(The C1/C5/M3/R4 detail sections further down describe the original
+problem and are now historical.)* 🎉
+
+> ⚠️ **Two of the claimed items do NOT hold in the current tree** (verified file-by-file):
+> **P1** — the new drogue fire-timer has a variable-name typo, so the drogue channel won't
+> build / never deasserts; and **R1** — `printf` is gated in the FSM/`main` but **still bare in
+> `telemetry.c`** (incl. `lora_rx_command`), so it is *not* absent from a release build.
 
 | ID | Finding | Severity | Active now? |
 |----|---------|----------|-------------|
-| **C4** | In-flight reads time out ✅. Calibration loops still block at boot — **accepted** (pre-flight fail-stop: if a sensor won't calibrate, you don't fly) | 🟢 Accepted | Boot only |
-| **M3** | Low-apogee deploy enters `DROGUE`, which can't exit once main is fired → FSM stuck | 🟠 High | **Yes** |
-| **C1** | `pyro_fire_*` / buzzer block the loop with `HAL_Delay` (500 ms) — now also reachable via remote `CMD_FIRE` | 🟠 High | **Yes** |
-| **C2** | `lora_TX` busy-polls (now ≤500 ms tx / ≤100 ms continuity) — still blocks the loop | 🟠 High | **Yes** |
-| **N1** | `lora_rx_command` RX poll cut to 50 ms (was 1 s) ✅ — still a blocking poll + `printf` | 🟢 Low | Yes (minor) |
-| **C5** | Sensor SPI errors silently swallowed (`platform_*` always return 0) | 🟠 High | **Yes** |
+| **P1** | `pyro_fire_drogue` sets `drouge_fire_start`, but only `drogue_fire_start` is declared → compile error, or (if built) the **drogue igniter line is never deasserted** | 🔴 Critical | **Yes** |
+| **C2** | `lora_TX` busy-polls (≤500 ms tx / ≤100 ms continuity) — still blocks the loop | 🟠 High | **Yes** |
 | **R3** | No independent watchdog to recover from a hang | 🟠 High | **Yes** |
-| **N2** | Remote `CMD_FIRE` fires pyro bypassing the FSM deploy flags & state guard | 🟡 Medium | **Yes** |
-| **C3** | LoRa TX-done interrupt set up but never consumed; prototype still misspelled | 🟡 Medium | Yes (waste) |
+| **C1** | ✅ Fixed — `pyro_fire_*` non-blocking via `pyro_service()` *(but see **P1** for the drogue path)* | 🟢 Resolved | — |
+| **C5** | ✅ Fixed — `platform_*` deassert CS + return non-zero on SPI error | 🟢 Resolved | — |
+| **M3** | ✅ Fixed — low-apogee fires drogue+main → `STATE_PARAFOIL` (no dead-end) | 🟢 Resolved | — |
+| **R4** | ✅ Improved — `Error_Handler` safes pyro GPIOs before `__disable_irq()` (still `while(1)`, no reset) | 🟢 Mostly | Minor |
+| **C4** | In-flight reads time out ✅. Calibration loops block at boot — **accepted** (pre-flight fail-stop) | 🟢 Accepted | Boot only |
+| **N1** | `lora_rx_command` RX poll 50 ms ✅ — still a blocking poll + `printf` | 🟢 Low | Yes (minor) |
+| **N2** | Remote `CMD_FIRE` now hits `pyro_fire_*` state guards — but the command path **enables test-mode to bypass them** for ground pops; remote fire still doesn't set the FSM fired-flags | 🟡 Medium | By design |
+| **C3** | `lora_tx_done_flag` now cleared before TX but still never *read* (TX still polls); prototype still misspelled | 🟡 Medium | Yes (waste) |
 | **C8** | Duplicate `IDLE/ARMED…` enums in `CAN.h` & `Lora_App.h` → won't compile together | 🟡 Medium | Latent |
-| **N4** | LoRa TX/RX error out unless already in STANDBY and don't restore it on timeout → correctness rides on chip auto-timeout + loop timing | 🟡 Medium | Latent |
-| **NR1** | BMP388 sensortime bytes now parsed from the wrong registers (regression in `f925c21`) | 🟢 Low | Yes (time unused) |
-| **R1** | `printf` still in error paths, FSM transitions, and the RX handler (per-pass print removed) | 🟡 Medium | **Yes** |
-| **R4** | Fault handlers spin forever without safing pyros | 🟡 Medium | **Yes** |
+| **N4** | LoRa TX/RX error out unless already in STANDBY and don't restore it on timeout → rides on chip auto-timeout + loop timing | 🟡 Medium | Latent |
+| **R1** | `printf` gated in FSM/`main` ✅ but **still bare in `telemetry.c`** (`serial_print`, `flash_dump_serial`, `lora_rx_command`) → ships in release (DEBUG set only in Debug config) | 🟡 Medium | **Yes (partial)** |
+| **NR1** | BMP388 sensortime bytes parsed from the wrong registers (regression) | 🟢 Low | Yes (time unused) |
 | **C6** | Shared `sensorData` blackboard has no snapshot/atomicity | 🟡 Medium | Latent |
 | **C7** | SPI1 shared by 3 sensors with no arbitration | 🟢 Low | Latent |
 | **N3** | `CommandPacket` struct layout disagrees with `command_deserializer` wire offsets | 🟢 Low | Yes (footgun) |
@@ -192,8 +201,33 @@ also pins the CPU).
 up so the caller can mark the sensor failed and continue on the remaining sensors. Pair
 with **R3** (watchdog) as a backstop.
 
+### 🔴 P1 — Drogue fire-timer variable typo (drogue channel never deasserts)
+**Location:** `Core/App/ApplicationLayer/ApplicationHALS/pyro.c` — `pyro_fire_drogue:62` vs the
+declaration at `:13` and `pyro_service:82-84`.
+
+The pyro refactor (good — see C1) deasserts each channel by timestamp in `pyro_service()`.
+But `pyro_fire_drogue` writes the start time to **`drouge_fire_start`** (line 62), while the
+only declared variable is **`drogue_fire_start`** (line 13) — which is what `pyro_service`
+checks (line 82). The spellings differ ("drouge" vs "drogue"):
+
+- If `drouge_fire_start` is undeclared, **the file does not compile** (the latest change may
+  not have been rebuilt yet).
+- If it *did* build, `pyro_service` watches `drogue_fire_start`, which `pyro_fire_drogue` never
+  sets — so after a drogue fire the GPIO is asserted and **never deasserted**: the drogue
+  igniter stays energized indefinitely.
+
+Either way the drogue path is broken, it's safety-critical (a pyro channel), and it runs on
+**every** apogee (both the normal and low-apogee branches call `pyro_fire_drogue`). **Fix:**
+use one spelling everywhere (`drogue_fire_start`). Building with `-Wall -Werror` would have
+caught this — worth enabling.
+
 ### 🟠 C1 — Pyro and buzzer block the loop with `HAL_Delay`
-**Locations:** `Core/App/ApplicationLayer/ApplicationHALS/pyro.c:34-48`
+> **✅ RESOLVED (audit #4).** `pyro_fire_*` now assert the GPIO + record a timestamp, and
+> `pyro_service()` (called each loop) deasserts after `PYRO_FIRE_DURATION_MS`; `HAL_Delay` is
+> gone from `pyro.c`. **Caveat: the drogue path is broken by a typo — see P1.** (The buzzer
+> `HAL_Delay` in `indicators.c` is unchanged, used only as a startup chirp.)
+
+**Locations (original):** `Core/App/ApplicationLayer/ApplicationHALS/pyro.c:34-48`
 (`pyro_fire_drogue/main/aux` each `HAL_Delay(500)`); `Core/App/Outputs/LED&buzzer/indicators.c:3-10`.
 
 **Why it matters:** firing a pyro freezes the superloop for **500 ms** — during descent

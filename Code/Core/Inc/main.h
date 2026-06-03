@@ -77,8 +77,8 @@ void Error_Handler(void);
 #define CSAccelerometer_GPIO_Port GPIOB
 #define PyroIgnite_Pin GPIO_PIN_14
 #define PyroIgnite_GPIO_Port GPIOB
-#define DrougeIgnite_Pin GPIO_PIN_6
-#define DrougeIgnite_GPIO_Port GPIOC
+#define DrogueIgnite_Pin GPIO_PIN_6
+#define DrogueIgnite_GPIO_Port GPIOC
 #define CSBarometer_Pin GPIO_PIN_7
 #define CSBarometer_GPIO_Port GPIOC
 #define GPS2ResetPin_Pin GPIO_PIN_9

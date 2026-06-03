@@ -38,7 +38,7 @@ typedef struct{
 
     HeaderPacket header;
     uint8_t main;
-    uint8_t drouge;
+    uint8_t drogue;
     uint8_t aux;
     uint16_t crc;
 

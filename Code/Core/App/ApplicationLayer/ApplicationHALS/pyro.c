@@ -19,7 +19,7 @@ static uint8_t pyro_test_mode = 0;
 
 void pyro_init(void) {
     
-    HAL_GPIO_WritePin(DrougeIgnite_GPIO_Port, DrougeIgnite_Pin, GPIO_PIN_RESET);
+    HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
     HAL_GPIO_WritePin(PyroIgnite_GPIO_Port,   PyroIgnite_Pin,   GPIO_PIN_RESET);
     HAL_GPIO_WritePin(AuxIgnite_GPIO_Port,    AuxIgnite_Pin,    GPIO_PIN_RESET);
     HAL_GPIO_WritePin(BuzzerControl_GPIO_Port, BuzzerControl_Pin, GPIO_PIN_RESET);
@@ -53,13 +53,14 @@ uint8_t pyro_check_main(void) {
 }
 
 void pyro_fire_drogue(void) {
+    
     if (!pyro_test_mode) {
         FlightState_t state = FSM_get_state();
         if (state != STATE_APOGEE) return;
     }
 
-    HAL_GPIO_WritePin(DrougeIgnite_GPIO_Port, DrougeIgnite_Pin, GPIO_PIN_SET);
-    drouge_fire_start = HAL_GetTick();
+    HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_SET);
+    drogue_fire_start = HAL_GetTick();
    
 }     
 void pyro_fire_main(void) {
@@ -80,7 +81,7 @@ void pyro_fire_aux(void) {
 void pyro_service(void) {
     uint32_t now = HAL_GetTick();
     if (drogue_fire_start && now - drogue_fire_start >= PYRO_FIRE_DURATION_MS) {
-        HAL_GPIO_WritePin(DrougeIgnite_GPIO_Port, DrougeIgnite_Pin, GPIO_PIN_RESET);
+        HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
         drogue_fire_start = 0;
     }
     if (main_fire_start && now - main_fire_start >= PYRO_FIRE_DURATION_MS) {

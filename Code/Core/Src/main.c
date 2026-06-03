@@ -160,6 +160,7 @@ int main(void)
   
 
   result = flight_sensors_init();
+  
   if (result != HAL_OK) printf("Sensors init failed\r\n");
 
   result = lora_App_Init();
@@ -216,7 +217,7 @@ int main(void)
       #ifdef DEBUG
           if (imu_result != HAL_OK) printf("sensor update failed\r\n");
       #endif
-      
+      (void)imu_result;
       kalman_predict(sensorData.z_mg_IMU, dt);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
@@ -228,7 +229,7 @@ int main(void)
       #ifdef DEBUG
           if (baro_result != HAL_OK) printf("Baro sensor update failed\r\n");
       #endif
-
+      (void) baro_result;
       kalman_update(sensorData.altitude);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
@@ -251,7 +252,7 @@ int main(void)
         lora_rx_command();
       }
     }
-    
+
 
     if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
         last_flash = now;
@@ -700,7 +701,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, AuxIgnite_Pin|GPS1ResetPin_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BuzzerControl_Pin|DrougeIgnite_Pin|GPS2ResetPin_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, BuzzerControl_Pin|DrogueIgnite_Pin|GPS2ResetPin_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOB, LoRaNssPin_Pin|CSAccelerometer_Pin, GPIO_PIN_SET);
@@ -711,9 +712,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS_IMU_GPIO_Port, CS_IMU_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : CSFlashmMemory_Pin CS_SD_Card_Pin BuzzerControl_Pin DrougeIgnite_Pin
+  /*Configure GPIO pins : CSFlashmMemory_Pin CS_SD_Card_Pin BuzzerControl_Pin DrogueIgnite_Pin
                            CSBarometer_Pin GPS2ResetPin_Pin */
-  GPIO_InitStruct.Pin = CSFlashmMemory_Pin|CS_SD_Card_Pin|BuzzerControl_Pin|DrougeIgnite_Pin
+  GPIO_InitStruct.Pin = CSFlashmMemory_Pin|CS_SD_Card_Pin|BuzzerControl_Pin|DrogueIgnite_Pin
                           |CSBarometer_Pin|GPS2ResetPin_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -775,6 +776,9 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_RESET);
   __disable_irq();
   while (1)
   {

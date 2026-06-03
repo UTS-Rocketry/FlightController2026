@@ -146,16 +146,13 @@ HAL_StatusTypeDef lora_rx_command() {
 
     result = lora_RX(buff, &rxLength, 13, 50);
 
-    printf("RX ret = %d, len = %d\r\n", result, rxLength);
 
     if(result == HAL_TIMEOUT) {
         return HAL_OK;
     }
 
     if(result == HAL_OK) {
-        printf("RX bytes: ");
-        for(int i = 0; i < 13; i++) printf("%02X ", buff[i]);
-        printf("\r\n");
+        
 
         uint8_t cmd_id;
         uint8_t channel;
@@ -205,7 +202,7 @@ HAL_StatusTypeDef lora_tx_continuity() {
     packet.header.sequence_number = seq;
 
     packet.main = pyro_check_main();
-    packet.drouge = pyro_check_drogue();
+    packet.drogue = pyro_check_drogue();
     
     // LoRa driver consumes first 4 bytes internally (SX1276 FIFO header)
     // payload starts at buff + 4

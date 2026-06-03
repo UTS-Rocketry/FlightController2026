@@ -169,7 +169,7 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             if (ctx.entry) {
                 ctx.entry = 0;
                 #ifdef DEBUG
-                    printf("FSM: DROUGE\r\n");
+                    printf("FSM: DROGUE\r\n");
                 #endif
                 /* ADD LORA TRANSMISSION */
             }
