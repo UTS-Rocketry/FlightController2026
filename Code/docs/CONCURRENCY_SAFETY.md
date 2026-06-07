@@ -38,14 +38,16 @@ now safes the pyro GPIOs; and the FSM debounce counters moved into `FSM_Context_
 switch-case statics). *(The C1/C5/M3/R4 detail sections further down describe the original
 problem and are now historical.)* 🎉
 
-> ⚠️ **Two of the claimed items do NOT hold in the current tree** (verified file-by-file):
-> **P1** — the new drogue fire-timer has a variable-name typo, so the drogue channel won't
-> build / never deasserts; and **R1** — `printf` is gated in the FSM/`main` but **still bare in
-> `telemetry.c`** (incl. `lora_rx_command`), so it is *not* absent from a release build.
+> ✅ **Both now fixed in commit `b545bfd`** (verified): **P1** — the drogue typo is gone
+> (`pyro.c` uses `drogue_fire_start` consistently; no `drouge` left anywhere, and the pin
+> defines / `ContinuityPacket` field all align); **R1** — that same commit gated the main-loop
+> sensor `printf`s behind `#ifdef DEBUG` (with `(void)` casts) and removed the per-RX prints in
+> `lora_rx_command`. *(Heads-up: `b545bfd`'s message says "rename," but it also bundled these
+> `printf`/`(void)` changes — worth splitting commits like that for traceability.)*
 
 | ID | Finding | Severity | Active now? |
 |----|---------|----------|-------------|
-| **P1** | `pyro_fire_drogue` sets `drouge_fire_start`, but only `drogue_fire_start` is declared → compile error, or (if built) the **drogue igniter line is never deasserted** | 🔴 Critical | **Yes** |
+| **P1** | ✅ Fixed (`b545bfd`) — `pyro_fire_drogue` now uses `drogue_fire_start`; drogue deasserts in `pyro_service` | 🟢 Resolved | — |
 | **C2** | `lora_TX` busy-polls (≤500 ms tx / ≤100 ms continuity) — still blocks the loop | 🟠 High | **Yes** |
 | **R3** | No independent watchdog to recover from a hang | 🟠 High | **Yes** |
 | **C1** | ✅ Fixed — `pyro_fire_*` non-blocking via `pyro_service()` *(but see **P1** for the drogue path)* | 🟢 Resolved | — |
@@ -58,7 +60,7 @@ problem and are now historical.)* 🎉
 | **C3** | `lora_tx_done_flag` now cleared before TX but still never *read* (TX still polls); prototype still misspelled | 🟡 Medium | Yes (waste) |
 | **C8** | Duplicate `IDLE/ARMED…` enums in `CAN.h` & `Lora_App.h` → won't compile together | 🟡 Medium | Latent |
 | **N4** | LoRa TX/RX error out unless already in STANDBY and don't restore it on timeout → rides on chip auto-timeout + loop timing | 🟡 Medium | Latent |
-| **R1** | `printf` gated in FSM/`main` ✅ but **still bare in `telemetry.c`** (`serial_print`, `flash_dump_serial`, `lora_rx_command`) → ships in release (DEBUG set only in Debug config) | 🟡 Medium | **Yes (partial)** |
+| **R1** | ✅ Largely fixed (`b545bfd`) — main-loop + FSM + RX `printf`s gated/removed. Remaining bare prints are debug-only callers / manual tools (`serial_print`, `flash_dump_serial`) + one "CMD valid" line | 🟢 Low | Minor |
 | **NR1** | BMP388 sensortime bytes parsed from the wrong registers (regression) | 🟢 Low | Yes (time unused) |
 | **C6** | Shared `sensorData` blackboard has no snapshot/atomicity | 🟡 Medium | Latent |
 | **C7** | SPI1 shared by 3 sensors with no arbitration | 🟢 Low | Latent |
@@ -202,7 +204,13 @@ up so the caller can mark the sensor failed and continue on the remaining sensor
 with **R3** (watchdog) as a backstop.
 
 ### 🔴 P1 — Drogue fire-timer variable typo (drogue channel never deasserts)
-**Location:** `Core/App/ApplicationLayer/ApplicationHALS/pyro.c` — `pyro_fire_drogue:62` vs the
+> **✅ RESOLVED in commit `b545bfd`** — the rename made `pyro.c` use `drogue_fire_start`
+> consistently (declared `:13`, set `:63`, cleared in `pyro_service` `:83`), so the drogue line
+> now deasserts after `PYRO_FIRE_DURATION_MS`. No `drouge` spelling remains anywhere (verified
+> across `Core/`, `FATFS/`, and the `.ioc`), and the pin defines + `ContinuityPacket` field
+> stayed aligned. Analysis kept below for reference.
+
+**Location (original):** `Core/App/ApplicationLayer/ApplicationHALS/pyro.c` — `pyro_fire_drogue:62` vs the
 declaration at `:13` and `pyro_service:82-84`.
 
 The pyro refactor (good — see C1) deasserts each channel by timestamp in `pyro_service()`.

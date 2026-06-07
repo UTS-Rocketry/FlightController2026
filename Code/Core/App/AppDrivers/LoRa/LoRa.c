@@ -38,55 +38,70 @@ static HAL_StatusTypeDef lora_get_mode(uint8_t *buff);
 HAL_StatusTypeDef lora_init(SX1276_HandleTypedef *sx1276, const LORA_CONFIG_TYPEDEF *lora_config) {
 
     HAL_StatusTypeDef result;
+    /* checks if the sx1276 struct is null this comes from lora app init it initializes both 
+       structs */
     if(sx1276 == NULL) return HAL_ERROR;
     if(lora_config == NULL) return HAL_ERROR;
     
+    /* This passes the values into static local variable as once that information is set it will
+       be used for the entire program */
     sx1 = *sx1276;
     lora_1 = *lora_config;
 
-    /*Hardware reset*/
+
+
+    /*Hardware reset required according to the data sheet
+      delays are ok here becuase not timing critical */
     HAL_GPIO_WritePin(sx1.rst_port , sx1.rst_pin, GPIO_PIN_RESET);
     HAL_Delay(1);
     HAL_GPIO_WritePin(sx1.rst_port , sx1.rst_pin, GPIO_PIN_SET);
     HAL_Delay(5);
 
-    /*checks address*/
+    
+    /*checks address return value is valis*/
     uint8_t buffer;
     result = platform_read(&sx1,REG_VERSION,&buffer,1);
+    
     if(result != HAL_OK) {
-        printf("read 1\r\n");
         return HAL_ERROR;
     }
 
     if(buffer != 0x12) {
-        printf("Incorrect version\r\n");
-        printf("%d", buffer);
-
         return HAL_ERROR;
     }
+
+
     /* Set LoRa Mode */
+    /* these masks dont overlap with eachother so you can combine them */
     buffer = MODE_LONG_RANGE | MODE_SLEEP;
+    /*Spi platform write external funcion*/
     result = platform_write(&sx1, REG_OPMODE, &buffer, 1);
     if(result != HAL_OK) return HAL_ERROR;
 
-    /*Set FIFO to bottom*/
+    /*Set FIFO to bottom, this is done as we need to set the first location of the FIFO
+      buffer so it at the correct location and we dont have undefined behavior */
     buffer = 0x00;
+
+    /* we do this for the RX and the TX FIFO buffer */
     result = platform_write(&sx1, REG_FIFO_RX_BASE_ADDR, &buffer, 1);
     if(result != HAL_OK) return HAL_ERROR;
 
     result = platform_write(&sx1, REG_FIFO_TX_BASE_ADDR, &buffer, 1);
     if(result != HAL_OK) return HAL_ERROR;
 
-    /* Set LORA FREQUENCY */
+
+    /* Set LORA FREQUENCY, from the struct */
     result = lora_set_frequency(lora_1.frequency);
     if(result != HAL_OK) return HAL_ERROR;
     
-    /* Setting LNA gain and boost */
+    
+    /* Setting LNA gain and boost, the value is the standard high sensitifity RX on the sx1276 for 915MHz */
     buffer = 0x23;
     result = platform_write(&sx1,REG_LNA, &buffer, 1);
     if(result != HAL_OK) return HAL_ERROR;
 
-    /* setting bandwith coding rate and implicit header */
+
+    /* setting bandwith coding rate and implicit header from the struct */
     result = lora_set_modem_1(lora_1.bandwidth, lora_1.coding_Rate, lora_1.implicit_header);
     if(result != HAL_OK) return HAL_ERROR;
 

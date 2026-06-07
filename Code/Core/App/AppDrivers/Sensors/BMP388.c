@@ -438,6 +438,7 @@ HAL_StatusTypeDef BMP388_GetCalibData(BMP388Handle_TypeDef *bmp){
 
 HAL_StatusTypeDef BMP388_FindGroundPressure (BMP388Handle_TypeDef *bmp, float *ground_pressure) {
 
+
 	HAL_StatusTypeDef result;
 	int x = 0;
 	float accumulator = 0;
@@ -447,17 +448,23 @@ HAL_StatusTypeDef BMP388_FindGroundPressure (BMP388Handle_TypeDef *bmp, float *g
 	float temperature;
 	float pressure;
 
+	/* This just runs 100 time according to the data sheet that is enough samples to obtain a relaiable ground pressure
+		we then average that value to find a ground pressu r*/
 	for (x = 0; x < 100; x++) {
 
+		/* Returns HAL_Stataus typedef
+		   this function reads the raw values from the Barometer and returns them as pointers to use in the next function */
 		result = BMP388_ReadRawPressTempTime(bmp, &raw_pressure, &raw_temperature, &time);
 		if (result != HAL_OK) {
 
 			return HAL_ERROR;
 		}
 
+		/* This function takes the raw readings and converts them into normalized pressure and temp values this is taken from the
+		   data sheet */
 		BMP388_CompensateRawPressTemp(bmp, raw_pressure, raw_temperature, &pressure, &temperature);
 
-
+		
 		accumulator += pressure;
 		
 	}

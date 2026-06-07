@@ -164,6 +164,8 @@ HAL_StatusTypeDef h3lis331dl_Calibration(float *offset) {
   int x = 0;
   
   int32_t val[3] = {0};
+
+  /* take 100 readings average them and find the offset and remove it from the each sensor read */
   
   for (x = 0; x < 100; x++) {
 
@@ -180,6 +182,8 @@ HAL_StatusTypeDef h3lis331dl_Calibration(float *offset) {
 
   }
 
+  /* this function is provided by the driver it converts the values from the sensor 
+     into floats to be used as the offset */
   offset[0] = h3lis331dl_from_fs200_to_mg((int16_t)(val[0] / 100)) - 0.0f;
   offset[1] = h3lis331dl_from_fs200_to_mg((int16_t)(val[1] / 100)) - 0.0f;
   offset[2] = h3lis331dl_from_fs200_to_mg((int16_t)(val[2] / 100)) - 1000.0f;

@@ -22,6 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
 #include "BMP388.h"
 #include <stdint.h>
 #include <stdio.h>
@@ -57,6 +58,9 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
+/* Thesea the periferial structs that are passed into the drivers for SPI,
+   ADC and  UART, USB is currently deactivated due to board layout issues */
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
@@ -89,18 +93,24 @@ static void MX_UART5_Init(void);
 static void MX_SPI3_Init(void);
 /* USER CODE BEGIN PFP */
 
+/* sensor data is declared in main and it is used for FSM decisions
+   it also is passed to telemetry.c to pass telemetry to ground station */
 FlightSensorData sensorData;
-extern volatile uint16_t Timer1, Timer2;
+// extern volatile uint16_t Timer1, Timer2;
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+/* This is a debug printf that exposes uart through the gps header pins*/
+#ifdef DEBUG
 int _write(int file, char *ptr, int len) {
     HAL_UART_Transmit(&huart4, (uint8_t*)ptr, len, HAL_MAX_DELAY);
     return len;
 }
+
+#endif
 
 /* Removed because sd doesnt work
 void HAL_SYSTICK_Callback(void)
@@ -120,7 +130,8 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+  
+  /* result is used to check status of any HAL functions and return error codes */
   HAL_StatusTypeDef result;
 
   /* USER CODE END 1 */
@@ -153,40 +164,61 @@ int main(void)
   MX_UART5_Init();
   MX_SPI3_Init();
   // MX_FATFS_Init();
+  
   /* USER CODE BEGIN 2 */
+
+
   /*THIS IS FOR SD card but it is wired wrong*/
   /* FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
   printf("f_mount: %d\r\n", (int)fr); */
   
-
-  result = flight_sensors_init();
   
-  if (result != HAL_OK) printf("Sensors init failed\r\n");
+ result = flight_sensors_init();
+ 
+ #ifdef DEBUG
+ if (result != HAL_OK) {
 
+    printf("Flight sensors Init Failed\r\n");
+
+  } else {
+    printf("Flight sensors  Init Successfull\r\n");
+  }
+  #endif
   result = lora_App_Init();
+  
+  #ifdef DEBUG
   if (result != HAL_OK) {
 
     printf("Lora Init Failed\r\n");
-    while(1);
 
   } else {
     printf("Lora Init Successfull\r\n");
   }
+  #endif
 
   result = flash_memory_init();
+  #ifdef DEBUG
   if (result != HAL_OK) {
     printf("flash memory failed\r\n");
   } else { 
     printf("Flash memory OK");
   }
+  #ifdef DEBUG
 
   result = flash_sanity_check();
-  if (result != HAL_OK) printf("flash sanity check failed\r\n");
+  
+  #ifdef DEBUG
+  if (result != HAL_OK) {
+    printf("flash memory failed\r\n");
+  } else { 
+    printf("Flash memory OK");
+  }
+  #ifdef DEBUG
+
 
   kalman_init();
   pyro_init();
   FSM_init();
-
 
   #ifdef DEBUG
   uint32_t last = HAL_GetTick();

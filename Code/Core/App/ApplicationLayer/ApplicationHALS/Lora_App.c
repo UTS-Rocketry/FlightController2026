@@ -15,9 +15,11 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     }
 }
 
-
+/* This function Stores all the LoRa radio functions if you change values here make sure the values
+   at the ground station are the same or it wont work together */
 HAL_StatusTypeDef lora_App_Init() {
 
+    /* Use a struct to organize and set values so it is portable */
     sx_t.hspi = &hspi2;
     sx_t.nss_port = LoRaNssPin_GPIO_Port;
     sx_t.nss_pin = LoRaNssPin_Pin;
@@ -35,8 +37,6 @@ HAL_StatusTypeDef lora_App_Init() {
     lora_t.implicit_header = 0;
     lora_t.sync_Word       = 0x12;
     lora_t.preamble_Length = 8;
-
-    
     
     return lora_init(&sx_t, &lora_t);
     

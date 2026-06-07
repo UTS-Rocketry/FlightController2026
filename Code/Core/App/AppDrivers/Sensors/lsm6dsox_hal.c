@@ -162,7 +162,7 @@ static void platform_delay(uint32_t ms)
     HAL_Delay(ms);
 }
 
-
+/* this function calibrates the offset to be used agains the sensor gyro and accelerometer readings */
 HAL_StatusTypeDef lsm6dso_Calib(float *xl_Offset, float *gy_Offset) {
 
   lsm6dsox_status_reg_t status = {0};
@@ -174,18 +174,24 @@ HAL_StatusTypeDef lsm6dso_Calib(float *xl_Offset, float *gy_Offset) {
   int32_t xl_Store[3] = {0};
   int32_t gy_Store[3] = {0};
   
+  /* Take average over 100 readings */
   for (x = 0; x < 100; x++) {
     
+    /* this is sa blocking function however if it doesnt start it is a nogo as our primary
+       functions rely on the lsm */
     do {
       lsm6dsox_status_reg_get(&dev_ctx, &status );
     } while(!status.xlda || !status.gda);
 
+    /* Raw getter for accelereomter*/
     result = lsm6dsox_acceleration_raw_get(&dev_ctx, xl_Buff);
     if (result != 0) return HAL_ERROR;
     
+    /* raw getter for the gyro*/
     result = lsm6dsox_angular_rate_raw_get(&dev_ctx, gy_Buff);
     if (result != 0) return HAL_ERROR;
 
+    /* these arrays store the average values of the offset they will then be divided by 100 to get accual offset */
     xl_Store[0] += xl_Buff[0];
     xl_Store[1] += xl_Buff[1];
     xl_Store[2] += xl_Buff[2];
@@ -196,6 +202,7 @@ HAL_StatusTypeDef lsm6dso_Calib(float *xl_Offset, float *gy_Offset) {
 
   }
 
+  /* driver provided functions to convert to float*/
   xl_Offset[0] = lsm6dsox_from_fs16_to_mg((int16_t)(xl_Store[0] / 100)) - 0.0f;
   xl_Offset[1] = lsm6dsox_from_fs16_to_mg((int16_t)(xl_Store[1] / 100)) - 0.0f;
   xl_Offset[2] = lsm6dsox_from_fs16_to_mg((int16_t)(xl_Store[2] / 100)) - 1000.0f;

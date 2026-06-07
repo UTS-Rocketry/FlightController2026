@@ -31,11 +31,20 @@ static void lsm6dso_handleinit(lsm6dso_HandleTypedef *imu);
 static void h3lis331dl_handleinit(h3lis331dl_HandleTypeDef *accel);
 
 
+/* This function takes initializes the pins for the BMP388 Barometer
+   Parameters: BMP388Handle_TypeDef
+   returns: void 
+   Maybe change later to return a HAL_StatusTypedef for debuging*/
 static void BMP388_handleinit (BMP388Handle_TypeDef *bmp) {
   
-  bmp->hspi = &hspi1;  // confirm this is correct
+  /*Set pins and spi*/
+  bmp->hspi = &hspi1; 
   bmp->cs_port = CSBarometer_GPIO_Port;
   bmp->cs_pin = CSBarometer_Pin;
+
+  /*This is just for debuging 
+    however future implemetation will send status
+    over LoRa*/
 
   if (BMP388_Init(bmp) != HAL_OK) {
     #ifdef DEBUG
@@ -50,10 +59,12 @@ static void BMP388_handleinit (BMP388Handle_TypeDef *bmp) {
 }
 
 static void lsm6dso_handleinit(lsm6dso_HandleTypedef *imu) {
-
+  /* sets the sensor bus and pins */
   imu->hspi = &hspi1;
   imu->cs_port = CS_IMU_GPIO_Port;
   imu->cs_pin = CS_IMU_Pin;
+
+  /* debug statements */
   if (lsm6dso_init(imu) != HAL_OK) {
     #ifdef DEBUG
       printf("IMU init FAILED\r\n");
@@ -68,10 +79,13 @@ static void lsm6dso_handleinit(lsm6dso_HandleTypedef *imu) {
 
 static void h3lis331dl_handleinit(h3lis331dl_HandleTypeDef *accel) {
 
+  /*Sets the struct values from main.h same accoss all senssor and perifierials 
+    so we can use the code just need to change the values if ported */
   accel->hspi = &hspi1;
   accel->cs_port = CSAccelerometer_GPIO_Port;
   accel->cs_pin = CSAccelerometer_Pin;
 
+  /* Debug statements */
   if (h3lis331dl_init(accel) != HAL_OK) {
       #ifdef DEBUG
         printf("ACCEL init FAILED\r\n");
@@ -84,29 +98,45 @@ static void h3lis331dl_handleinit(h3lis331dl_HandleTypeDef *accel) {
 
 }
 
+/* This Function is called in main
+   Parameters: void
+   returns: HAL_StatusTypedef (HAL_OK or HAL_ERROR)
+   This function initializes all the sensors on ODIN
+   and does calls their calibration functions */
+
 HAL_StatusTypeDef flight_sensors_init(void) {
   
+
   HAL_StatusTypeDef result;
+  
   /*SENSOR INITS*/
   /* BAROMETER INIT */
+
   BMP388_handleinit(&bmp);
   HAL_Delay(50);
+
+
+  /* This function is a calibration to find the ground pressure so we dont set altitude to sea level it is to the actuall
+     elevation we are at returns a HAL_StatusTypeDef */
+
   result = BMP388_FindGroundPressure(&bmp, &ground_pressure);
-  if (result != HAL_OK) {
-    
+  
+  /* Debug statements*/
+  if (result != HAL_OK) {  
     #ifdef DEBUG
       printf("Ground pressure error\r\n");
     #endif
-
     return HAL_ERROR;
-    
   } 
   
   /*ACCEL INIT*/
   h3lis331dl_handleinit(&accel);
   HAL_Delay(50);
+  /* This does the same as barometer however this is due to sensor error and we will average and compensate again to 
+     calibrate the sensor */
   result = h3lis331dl_Calibration(accel_offset);
   
+  /* debug statements */
   /* Beep OK! */
   if (result != HAL_OK) {
     #ifdef DEBUG
@@ -115,10 +145,15 @@ HAL_StatusTypeDef flight_sensors_init(void) {
     return HAL_ERROR;
   } 
 
+
   /*IMU INIT*/
   lsm6dso_handleinit(&imu);
   HAL_Delay(50);
+
+  /* creates an offset to be used against sensor values to account for sensor error */
   result = lsm6dso_Calib(xl_Offset, gy_Offset);
+
+  /* debug */
   if (result != HAL_OK) {
     #ifdef DEBUG
       printf("IMU Calibration Error\r\n");
@@ -127,6 +162,7 @@ HAL_StatusTypeDef flight_sensors_init(void) {
 
   }
 
+  /*return HAL_Status Typedef */
   return result;
 
   
