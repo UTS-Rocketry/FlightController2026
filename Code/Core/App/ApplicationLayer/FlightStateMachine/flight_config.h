@@ -15,7 +15,7 @@
 
 /* ── Deployment altitudes ──────────────────────────── */
 #define MAIN_DEPLOY_ALT_M               300.0f    /* AGL meters */
-#define MAIN_ALT_CONFIRM SAMPLES        5
+#define MAIN_ALT_CONFIRM_SAMPLES        5
 
 /* ── Landing detect ────────────────────────────────── */
 #define LAND_VELOCITY_THRESHOLD         0.5f      /* m/s absolute */

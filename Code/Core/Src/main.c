@@ -162,8 +162,7 @@ int main(void)
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
-  //MX_FATFS_Init();
-  MX_IWDG_Init();
+  // MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
 
@@ -220,6 +219,8 @@ int main(void)
   FSM_init();
   buzzer_init();
 
+  MX_IWDG_Init();
+
   #ifdef DEBUG
   uint32_t last = HAL_GetTick();
   #endif
@@ -235,13 +236,14 @@ int main(void)
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
+  { 
+    /* Watch dog woof woof*/
+    HAL_IWDG_Refresh(&hiwdg);
     /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
     
     /*Non blocking pyro*/
     pyro_service();
-    
     indicators_service();
     
     if (now - last_imu >= 10) {
@@ -520,8 +522,8 @@ static void MX_IWDG_Init(void)
 
   /* USER CODE END IWDG_Init 1 */
   hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_4;
-  hiwdg.Init.Reload = 4095;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Reload = 2047;
   if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
   {
     Error_Handler();

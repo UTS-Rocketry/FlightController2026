@@ -179,7 +179,7 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
                 ctx.main_alt_count = 0;
             }
 
-            if(ctx.main_alt_count > MAIN_ALT_CONFIRM) {
+            if(ctx.main_alt_count > MAIN_ALT_CONFIRM_SAMPLES) {
                 pyro_fire_main();
                 ctx.main_fired = 1;
                 FSM_transition(STATE_PARAFOIL);

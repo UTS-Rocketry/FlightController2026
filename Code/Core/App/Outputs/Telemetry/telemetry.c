@@ -55,7 +55,7 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
 
     lora_tx_done_flag = 0;
 
-    result = lora_TX(buff, 62, 500);
+    result = lora_TX(buff, 62, 100);
 
     seq++;
 
@@ -168,11 +168,16 @@ HAL_StatusTypeDef lora_rx_command() {
                     
                     if (FSM_get_state() != STATE_PAD) break;   // only fire on the pad, post-arm
                             switch (channel) {
-                                case 1: pyro_fire_drogue_ground(); break;
-                                case 2: pyro_fire_main_ground();   break;
+                                case 1: 
+                                    pyro_fire_drogue_ground();
+                                    FSM_disarm();
+                                    break;
+                                case 2: 
+                                    pyro_fire_main_ground();
+                                    FSM_disarm();   
+                                    break;
                             }
                     
-                    FSM_disarm();
                     break;
                   
                 case CMD_DISARM:
