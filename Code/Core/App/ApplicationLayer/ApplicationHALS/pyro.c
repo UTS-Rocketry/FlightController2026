@@ -41,15 +41,14 @@ uint8_t pyro_check_drogue(void) {
     uint32_t val = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
 
-    return (val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
+    return (st == HAL_OK && val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
 }          
 uint8_t pyro_check_main(void) {
     HAL_ADC_Start(&hadc2);
     HAL_ADC_PollForConversion(&hadc2, 10);  // 10ms timeout
     uint32_t val = HAL_ADC_GetValue(&hadc2);
     HAL_ADC_Stop(&hadc2);
-
-    return (val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
+    return (st == HAL_OK && val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
 }
 
 void pyro_fire_drogue(void) {
@@ -64,6 +63,7 @@ void pyro_fire_drogue(void) {
    
 }     
 void pyro_fire_main(void) {
+    
     if (!pyro_test_mode) {
         FlightState_t state = FSM_get_state();
         if (state != STATE_APOGEE && state != STATE_DROGUE) return;
@@ -71,12 +71,26 @@ void pyro_fire_main(void) {
     HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_SET);
     main_fire_start = HAL_GetTick();
    
-}        
+}
+
+void pyro_fire_drogue_ground(void) {
+    if (FSM_get_state() != STATE_PAD) return;   // armed-on-pad only
+    HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_SET);
+    drogue_fire_start = HAL_GetTick();
+}
+
+void pyro_fire_main_ground(void) {
+    if (FSM_get_state() != STATE_PAD) return;
+    HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_SET);
+    main_fire_start = HAL_GetTick();
+}
+
+/*
 void pyro_fire_aux(void) {
     HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_SET);
     aux_fire_start = HAL_GetTick();
-   
 }
+*/
 
 void pyro_service(void) {
     uint32_t now = HAL_GetTick();
@@ -92,12 +106,4 @@ void pyro_service(void) {
         HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_RESET);
         aux_fire_start = 0;
     }
-}
-
-void pyro_buzzer_on(void) {
-    HAL_GPIO_WritePin(BuzzerControl_GPIO_Port, BuzzerControl_Pin, GPIO_PIN_SET);
-}
-
-void pyro_buzzer_off(void) {
-    HAL_GPIO_WritePin(BuzzerControl_GPIO_Port, BuzzerControl_Pin, GPIO_PIN_RESET);
 }

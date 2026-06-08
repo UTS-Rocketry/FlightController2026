@@ -1,21 +1,21 @@
 #ifndef INDICATORS_H
 #define INDICATORS_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-#include "main.h"
-#include "stm32f4xx_hal.h"
 #include <stdint.h>
+#include "stm32f4xx_hal.h"
 
-/* Buzzer function
-   time = buzzer on/off delay in ms
-*/
-void buzzer_function(int time);
+typedef struct {
+    GPIO_TypeDef *port;
+    uint16_t pin;
+    uint32_t on_ms, off_ms, beep_count, pause_ms;
+    uint8_t active, is_on, in_pause;
+    uint32_t beeps_done, last_toggle;
+} Buzzer_t;
 
-#ifdef __cplusplus
-}
-#endif
+extern Buzzer_t buzzer;
+
+void buzzer_init(void);
+void buzzer_Set(uint32_t on, uint32_t off, uint32_t count, uint32_t pause);
+void buzzer_Service(void);
+void indicators_service(void);
 
 #endif

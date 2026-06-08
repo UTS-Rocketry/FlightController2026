@@ -160,23 +160,23 @@ HAL_StatusTypeDef lora_rx_command() {
             printf("CMD valid: id=%d ch=%d\r\n", cmd_id, channel);
             switch (cmd_id) {
                 case CMD_ARM:
+                    FSM_arm();
                     /*arm rocket*/
                     break;
+                
                 case CMD_FIRE:
-                    switch(channel) {
-                        case 1:
-                            pyro_enable_test_mode();
-                            pyro_fire_drogue();
-                            pyro_disable_test_mode();
-                            break;
-                        case 2:
-                            pyro_enable_test_mode();
-                            pyro_fire_main();
-                            pyro_disable_test_mode();
-                            break;
-                    }
+                    
+                    if (FSM_get_state() != STATE_PAD) break;   // only fire on the pad, post-arm
+                            switch (channel) {
+                                case 1: pyro_fire_drogue_ground(); break;
+                                case 2: pyro_fire_main_ground();   break;
+                            }
+                    
+                    FSM_disarm();
                     break;
+                  
                 case CMD_DISARM:
+                    FSM_disarm();
                     /*disarm rocket*/
                     break;
 

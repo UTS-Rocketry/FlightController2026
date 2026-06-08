@@ -19,6 +19,8 @@ HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData);
 HAL_StatusTypeDef flash_dump_serial(void);
 HAL_StatusTypeDef lora_rx_command(void);
 HAL_StatusTypeDef lora_tx_continuity(void);
+void pyro_fire_drogue_ground(void);
+void pyro_fire_main_ground(void);
 
 #ifdef __cplusplus
 }

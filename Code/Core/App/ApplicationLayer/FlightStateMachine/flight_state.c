@@ -30,9 +30,6 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
 
             /* Time base transition will move to lora arm later */
-            if (HAL_GetTick() > ARM_AUTO_DELAY_MS) {
-                FSM_transition(STATE_PAD);
-            }
             
             break;
     /*********************************************************************** */
@@ -164,7 +161,7 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             //APPOGEE DETECTED FIRE PYRO
             break;
 
-
+    /*********************************************************************** */        
         case STATE_DROGUE:
             if (ctx.entry) {
                 ctx.entry = 0;
@@ -173,8 +170,16 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
                 #endif
                 /* ADD LORA TRANSMISSION */
             }
+            
 
             if (sensorData->kalman_altitude < MAIN_DEPLOY_ALT_M && ctx.main_fired != 1) {
+                ctx.main_alt_count++;
+            }
+            else {
+                ctx.main_alt_count = 0;
+            }
+
+            if(ctx.main_alt_count > MAIN_ALT_CONFIRM) {
                 pyro_fire_main();
                 ctx.main_fired = 1;
                 FSM_transition(STATE_PARAFOIL);
@@ -241,4 +246,14 @@ FlightState_t FSM_get_state(void) {
 
     return ctx.state;
 
-}   
+}
+void FSM_arm(void) {
+    if(ctx.state == STATE_IDLE ) {
+        FSM_transition(STATE_PAD);
+    }
+}
+void FSM_disarm(void) {
+    if(ctx.state == STATE_PAD ) {
+        FSM_transition(STATE_IDLE);
+    }
+}

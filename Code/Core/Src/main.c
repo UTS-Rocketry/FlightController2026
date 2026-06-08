@@ -39,7 +39,6 @@
 #include "kalman.h"
 
 
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -176,49 +175,50 @@ int main(void)
  result = flight_sensors_init();
  
  #ifdef DEBUG
- if (result != HAL_OK) {
-
+  if (result != HAL_OK) {
     printf("Flight sensors Init Failed\r\n");
-
   } else {
     printf("Flight sensors  Init Successfull\r\n");
   }
-  #endif
-  result = lora_App_Init();
   
-  #ifdef DEBUG
-  if (result != HAL_OK) {
+ #endif
+ 
+ result = lora_App_Init();
+ 
+ #ifdef DEBUG
+    if (result != HAL_OK) {
 
-    printf("Lora Init Failed\r\n");
+      printf("Lora Init Failed\r\n");
 
-  } else {
-    printf("Lora Init Successfull\r\n");
-  }
+    } else {
+      printf("Lora Init Successfull\r\n");
+    }
   #endif
 
   result = flash_memory_init();
   #ifdef DEBUG
-  if (result != HAL_OK) {
-    printf("flash memory failed\r\n");
-  } else { 
-    printf("Flash memory OK");
-  }
-  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash memory failed\r\n");
+    } else { 
+      printf("Flash memory OK");
+    }
+  #endif
 
   result = flash_sanity_check();
   
   #ifdef DEBUG
-  if (result != HAL_OK) {
-    printf("flash memory failed\r\n");
-  } else { 
-    printf("Flash memory OK");
-  }
-  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash memory failed\r\n");
+    } else { 
+      printf("Flash memory OK");
+    }
+  #endif
 
 
   kalman_init();
   pyro_init();
   FSM_init();
+  buzzer_init();
 
   #ifdef DEBUG
   uint32_t last = HAL_GetTick();
@@ -238,17 +238,21 @@ int main(void)
   {
     /*This is to get timing loop*/
     uint32_t now = HAL_GetTick();
+    
     /*Non blocking pyro*/
     pyro_service();
     
-
+    indicators_service();
+    
     if (now - last_imu >= 10) {
       float dt = (now - last_imu) / 1000.0f;
       last_imu = now;
       HAL_StatusTypeDef imu_result = flight_sensors_update_IMU_accel(&sensorData);
+      
       #ifdef DEBUG
           if (imu_result != HAL_OK) printf("sensor update failed\r\n");
       #endif
+      
       (void)imu_result;
       kalman_predict(sensorData.z_mg_IMU, dt);
       sensorData.kalman_altitude = kalman_get_altitude();
@@ -275,14 +279,21 @@ int main(void)
       last_cont = now;
       lora_tx_continuity();
 
-    } else if (now - last_lora >= 200 && FSM_get_state() >= STATE_PAD) {
+    }
+    
+    if (now - last_lora >= 200 && FSM_get_state() <= STATE_PAD) {
       
       last_lora = now;
       lora_tx_telemetry(&sensorData);
 
-      if (FSM_get_state() == STATE_PAD) {
+      if (FSM_get_state() == STATE_IDLE || FSM_get_state() == STATE_PAD) {
         lora_rx_command();
       }
+    }
+
+    else if(now - last_lora >= 200 && FSM_get_state() > STATE_PAD) {
+      last_lora = now;
+      lora_tx_telemetry(&sensorData);
     }
 
 

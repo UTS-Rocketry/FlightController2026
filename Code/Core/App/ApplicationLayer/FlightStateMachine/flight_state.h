@@ -28,11 +28,15 @@ typedef struct {
     
     uint8_t launch_count;
     uint8_t burnout_count;
-    uint8_t apogee_count;             
+    uint8_t apogee_count;        
+    uint8_t main_alt_count;
+
 } FSM_Context_t;
 
 HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData);
 void FSM_init(void);
 FlightState_t FSM_get_state(void);
+void FSM_arm(void);
+void FSM_disarm(void);
 
 #endif
