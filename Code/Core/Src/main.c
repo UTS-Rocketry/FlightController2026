@@ -162,7 +162,7 @@ int main(void)
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
-  MX_FATFS_Init();
+  //MX_FATFS_Init();
   MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
