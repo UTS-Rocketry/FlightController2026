@@ -73,6 +73,9 @@ UART_HandleTypeDef huart5;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
+static uint8_t imu_sensor_read = 0;
+static uint8_t baro_sensor_read = 0;
+
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -259,6 +262,7 @@ int main(void)
       kalman_predict(sensorData.z_mg_IMU, dt);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
+      imu_sensor_read = 1;
     }
 
     if (now - last_baro >= 40) {
@@ -271,11 +275,16 @@ int main(void)
       kalman_update(sensorData.altitude);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
+      baro_sensor_read = 1;
     }
 
-    FSM_update(&sensorData);
-    sensorData.flight_state = FSM_get_state();
+    if(imu_sensor_read || baro_sensor_read) {
+      FSM_update(&sensorData, imu_sensor_read, baro_sensor_read);
+      imu_sensor_read = 0; 
+      baro_sensor_read = 0;
+    }
 
+    sensorData.flight_state = FSM_get_state();
   
     if (now - last_cont >= 2000 && FSM_get_state() <= STATE_PAD) {
       last_cont = now;

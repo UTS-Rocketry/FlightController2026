@@ -17,7 +17,7 @@ void FSM_init(void) {
     ctx.entry = 1;
 }
 
-HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
+HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uint8_t baro_read) {
     /*********************************************************************** */
     switch(ctx.state) {
 
@@ -28,8 +28,6 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
                     printf("FSM: IDLE\r\n");
                 #endif
             }
-
-            /* Time base transition will move to lora arm later */
             
             break;
     /*********************************************************************** */
@@ -45,20 +43,20 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             }
             
             /* If imu detects more threshold */
-            
-            if(sensorData->z_mg_IMU >= LAUNCH_ACCEL_THRESHOLD_MG) {
-                ctx.launch_count++;
-                
-            }
-            else {
-                ctx.launch_count = 0;
-            }
 
-            if (ctx.launch_count >= LAUNCH_CONFIRM_SAMPLES) {
-                ctx.launch_count = 0;  
-                FSM_transition(STATE_BOOST);
-            }
+            if(imu_read) {
+                if(sensorData->z_mg_IMU >= LAUNCH_ACCEL_THRESHOLD_MG) {
+                    ctx.launch_count++;
+                }
+                else {
+                    ctx.launch_count = 0;
+                }
 
+                if (ctx.launch_count >= LAUNCH_CONFIRM_SAMPLES) {
+                    ctx.launch_count = 0;  
+                    FSM_transition(STATE_BOOST);
+                }
+            }
 
             break;
     /*********************************************************************** */
@@ -75,19 +73,24 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             //lock pyro
 
             // change when accel = around < 2 gs
-            if(sensorData->z_mg_IMU <= BURNOUT_ACCEL_THRESHOLD_MG) {
+            if(imu_read) {
+                
+                if(sensorData->z_mg_IMU <= BURNOUT_ACCEL_THRESHOLD_MG) {
                 ctx.burnout_count++;
                 
-            }
-            else {
-                ctx.burnout_count = 0;
-            }
+                }
+                else {
+                    ctx.burnout_count = 0;
+                }
 
-            if (ctx.burnout_count >= BURNOUT_CONFIRM_SAMPLES) {
-                ctx.burnout_count = 0;  
-                FSM_transition(STATE_COAST);
-            }
+                if (ctx.burnout_count >= BURNOUT_CONFIRM_SAMPLES) {
+                    ctx.burnout_count = 0;  
+                    FSM_transition(STATE_COAST);
+                }
 
+
+            }
+            
             if (HAL_GetTick() - ctx.state_entry_time > BOOST_TIMEOUT_MS) {
                 FSM_transition(STATE_COAST);
             }
@@ -107,22 +110,23 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
             
             /*Apogee detected*/
 
-            
-            if(sensorData->kalman_velocity < APOGEE_VELOCITY_THRESHOLD){
+            if(baro_read) {
+                if(sensorData->kalman_velocity < APOGEE_VELOCITY_THRESHOLD){
                 ctx.apogee_count++;
-            }
-            else {
-                ctx.apogee_count = 0;
-            }
-            if(ctx.apogee_count >= APOGEE_CONFIRM_SAMPLES) {
-                ctx.apogee_count = 0; 
-                FSM_transition(STATE_APOGEE);
-            }
+                }
+                else {
+                    ctx.apogee_count = 0;
+                }
+                if(ctx.apogee_count >= APOGEE_CONFIRM_SAMPLES) {
+                    ctx.apogee_count = 0; 
+                    FSM_transition(STATE_APOGEE);
+                }
 
+            }
+            
             if(HAL_GetTick() - ctx.state_entry_time > COAST_TIMEOUT_MS) {
                 FSM_transition(STATE_APOGEE);
             }
-            
                 
             break;
     
@@ -171,19 +175,23 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
                 /* ADD LORA TRANSMISSION */
             }
             
-
-            if (sensorData->kalman_altitude < MAIN_DEPLOY_ALT_M && ctx.main_fired != 1) {
+            
+            if(baro_read) {
+                
+                if (sensorData->kalman_altitude < MAIN_DEPLOY_ALT_M && ctx.main_fired != 1) {
                 ctx.main_alt_count++;
-            }
-            else {
-                ctx.main_alt_count = 0;
-            }
+                }
+                else {
+                    ctx.main_alt_count = 0;
+                }
 
-            if(ctx.main_alt_count > MAIN_ALT_CONFIRM_SAMPLES) {
-                pyro_fire_main();
-                ctx.main_fired = 1;
-                FSM_transition(STATE_PARAFOIL);
+                if(ctx.main_alt_count > MAIN_ALT_CONFIRM_SAMPLES) {
+                    pyro_fire_main();
+                    ctx.main_fired = 1;
+                    FSM_transition(STATE_PARAFOIL);
+                }
             }
+          
             if (HAL_GetTick() - ctx.state_entry_time > DROGUE_TIMEOUT_MS && ctx.main_fired != 1) {
                 /*pyro fire main*/
                 pyro_fire_main();
@@ -204,13 +212,14 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData) {
                 /* ADD LORA TRANSMISSION */
             }
 
-           
-            if (sensorData->kalman_altitude < LAND_ALT_THRESHOLD_M && 
-                fabsf(sensorData->kalman_velocity) < LAND_VELOCITY_THRESHOLD) {
-                
-                FSM_transition(STATE_LAND);
-
+            if(baro_read) {
+                if (sensorData->kalman_altitude < LAND_ALT_THRESHOLD_M && 
+                    fabsf(sensorData->kalman_velocity) < LAND_VELOCITY_THRESHOLD) {
+                    
+                    FSM_transition(STATE_LAND);
+                }
             }
+
             if(HAL_GetTick() - ctx.state_entry_time > PARAFOIL_TIMEOUT_MS) {
                 FSM_transition(STATE_LAND);
             }
