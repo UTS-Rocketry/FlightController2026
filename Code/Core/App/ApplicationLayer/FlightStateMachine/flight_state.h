@@ -36,6 +36,7 @@ typedef struct {
 HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uint8_t baro_read);
 void FSM_init(void);
 FlightState_t FSM_get_state(void);
+
 void FSM_arm(void);
 void FSM_disarm(void);
 

@@ -56,7 +56,7 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
 
     lora_tx_done_flag = 0;
 
-    result = lora_TX(buff, 62, 100);
+    result = lora_TX(buff, 62, 200);
 
     seq++;
 
@@ -145,7 +145,7 @@ HAL_StatusTypeDef lora_rx_command() {
     uint8_t buff[13] = {0};
     uint8_t rxLength = 0;
 
-    result = lora_RX(buff, &rxLength, 13, 50);
+    result = lora_RX(buff, &rxLength, 13, 150);
 
 
     if(result == HAL_TIMEOUT) {
@@ -153,23 +153,34 @@ HAL_StatusTypeDef lora_rx_command() {
     }
 
     if(result == HAL_OK) {
+    
+    #ifdef DEBUG
+        printf("RX ok: %02X %02X id=%02X ch=%02X auth=%02X\r\n",
+            buff[4], buff[5], buff[7], buff[8], buff[10]);
+    #endif
         
 
         uint8_t cmd_id;
         uint8_t channel;
         if(command_deserializer(buff+4, &cmd_id, &channel)) {
-            printf("CMD valid: id=%d ch=%d\r\n", cmd_id, channel);
             switch (cmd_id) {
+                
                 case CMD_ARM:
+                     #ifdef DEBUG
+                        printf("CMD_ARM rx, before=%d\r\n", FSM_get_state());
+                    #endif
                     FSM_arm();
-                    /*arm rocket*/
+                    #ifdef DEBUG
+                        printf("after=%d\r\n", FSM_get_state());
+                    #endif
                     break;
                 
                 case CMD_FIRE:
                     
                     if (FSM_get_state() != STATE_PAD) break;   // only fire on the pad, post-arm
                             switch (channel) {
-                                case 1: 
+                                case 1:
+                                    printf("CMD_ARM rx, before=%d\r\n", FSM_get_state());
                                     pyro_fire_drogue_ground();
                                     FSM_disarm();
                                     break;

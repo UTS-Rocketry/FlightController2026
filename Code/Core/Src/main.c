@@ -203,7 +203,7 @@ int main(void)
     if (result != HAL_OK) {
       printf("flash memory failed\r\n");
     } else { 
-      printf("Flash memory OK");
+      printf("Flash memory OK\r\n");
     }
   #endif
 
@@ -224,6 +224,11 @@ int main(void)
   uint32_t last_lora  = 0;
   uint32_t last_flash = 0;
   uint32_t last_cont  = 0;
+  uint32_t last_RX    = 0;
+  #ifdef DEBUG
+    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) printf("!!! IWDG RESET !!!\r\n");
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+  #endif
   
   /* USER CODE END 2 */
 
@@ -282,18 +287,10 @@ int main(void)
       lora_tx_continuity();
 
     }
-    
-    if (now - last_lora >= 200 && FSM_get_state() <= STATE_PAD) {
-      
-      last_lora = now;
-      lora_tx_telemetry(&sensorData);
+    if (FSM_get_state() <= STATE_PAD && now - last_RX >= 400) { last_RX = now; lora_rx_command(); }
 
-      if (FSM_get_state() == STATE_IDLE || FSM_get_state() == STATE_PAD) {
-        lora_rx_command();
-      }
-    }
 
-    else if(now - last_lora >= 200 && FSM_get_state() > STATE_PAD) {
+    if(now - last_lora >= 300 && FSM_get_state() >= STATE_PAD) {
       last_lora = now;
       lora_tx_telemetry(&sensorData);
     }
@@ -304,13 +301,13 @@ int main(void)
         flash_log_telemetry(&sensorData);
     }
 
-    #ifdef DEBUG
+    /*#ifdef DEBUG
       serial_print(&sensorData);
       uint32_t dt = now - last;
       last = now;
       printf("Sensor loop dt: %lums\r\n", dt);
     #endif
-  
+    */
      
     /* USER CODE END WHILE */
 
