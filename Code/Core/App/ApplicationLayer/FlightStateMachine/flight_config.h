@@ -11,7 +11,7 @@
 
 /* ── Apogee detect ─────────────────────────────────── */
 #define APOGEE_VELOCITY_THRESHOLD       -0.5f     /* m/s, negative = descending */
-#define APOGEE_CONFIRM_SAMPLES          10
+#define APOGEE_CONFIRM_SAMPLES          5
 
 /* ── Deployment altitudes ──────────────────────────── */
 #define MAIN_DEPLOY_ALT_M               300.0f    /* AGL meters */
@@ -27,8 +27,6 @@
 #define DROGUE_TIMEOUT_MS               5000      /* 5s to confirm drogue */
 #define PARAFOIL_TIMEOUT_MS             300000    /* 5 min max descent */
 
-/* ── Arming ────────────────────────────────────────── */
-#define ARM_AUTO_DELAY_MS               10000     /* temp: auto arm after 10s */
 
 
 #endif
