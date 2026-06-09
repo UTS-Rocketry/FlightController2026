@@ -73,8 +73,12 @@ UART_HandleTypeDef huart5;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-static uint8_t imu_sensor_read = 0;
-static uint8_t baro_sensor_read = 0;
+/* sensor data is declared in main and it is used for FSM decisions
+   it also is passed to telemetry.c to pass telemetry to ground station */
+FlightSensorData sensorData;
+
+uint8_t imu_sensor_read = 0;
+uint8_t baro_sensor_read = 0;
 
 /* USER CODE BEGIN PV */
 
@@ -95,11 +99,6 @@ static void MX_SPI3_Init(void);
 static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
-/* sensor data is declared in main and it is used for FSM decisions
-   it also is passed to telemetry.c to pass telemetry to ground station */
-FlightSensorData sensorData;
-// extern volatile uint16_t Timer1, Timer2;
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -113,14 +112,6 @@ int _write(int file, char *ptr, int len) {
 }
 
 #endif
-
-/* Removed because sd doesnt work
-void HAL_SYSTICK_Callback(void)
-{
-    if (Timer1 > 0) Timer1--;
-    if (Timer2 > 0) Timer2--;
-}
-*/
 
 /* USER CODE END 0 */
 
@@ -165,7 +156,7 @@ int main(void)
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
-  // MX_FATFS_Init();
+  //MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
 

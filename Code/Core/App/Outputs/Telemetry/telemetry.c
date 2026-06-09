@@ -8,6 +8,7 @@
 #include "stm32f4xx_hal.h"
 #include <stdint.h>
 #include "pyro.h"
+#include "flight_state.h"
 
 
 void serial_print(const FlightSensorData *sensordata)

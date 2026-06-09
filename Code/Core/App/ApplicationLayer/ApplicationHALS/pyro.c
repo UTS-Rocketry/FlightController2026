@@ -15,7 +15,6 @@ static uint32_t drogue_fire_start = 0;
 static uint32_t main_fire_start = 0;
 static uint32_t aux_fire_start = 0;
 
-static uint8_t pyro_test_mode = 0;
 
 
 void pyro_init(void) {

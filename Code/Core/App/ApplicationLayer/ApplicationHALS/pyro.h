@@ -11,12 +11,8 @@ void pyro_fire_main(void);
 void pyro_fire_aux(void);              
 uint8_t pyro_check_drogue(void);          
 uint8_t pyro_check_main(void);            
-void pyro_buzzer_on(void);            
-void pyro_buzzer_off(void);
 void pyro_service(void);
-void pyro_enable_test_mode(void);
-void pyro_disable_test_mode(void);
-
-
+void pyro_fire_drogue_ground(void);
+void pyro_fire_main_ground(void);
 
 #endif
