@@ -1,9 +1,12 @@
 #include "BMP388.h"
+#include "stm32_hal_legacy.h"
+#include "stm32f4xx_hal.h"
 #include "stm32f4xx_hal_def.h"
 #include "stm32f4xx_hal_gpio.h"
 #include "stm32f4xx_hal_spi.h"
 #include <math.h>
 #include <stdint.h>
+#include <string.h>
 
 HAL_StatusTypeDef BMP388_readBytes(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *data, uint8_t length);
 HAL_StatusTypeDef BMP388_GetCalibData(BMP388Handle_TypeDef *bmp);
@@ -21,10 +24,8 @@ void BMP388_CompensateRawPressTemp(BMP388Handle_TypeDef *bmp, uint32_t raw_press
 float BMP388_CompensateTemp(BMP388Handle_TypeDef *bmp, uint32_t raw_temp, float *temp);
 float BMP388_CompensatePress(BMP388Handle_TypeDef *bmp, float temp, uint32_t raw_press, float *press);
 
-                                                        
-
-
-
+HAL_StatusTypeDef BMP388_ExternalReadFunction(BMP388Handle_TypeDef *bmp, float *pressure, float *temperature, float *altitude, float *ground_pressure);  
+HAL_StatusTypeDef BMP388_FindGroundPressure (BMP388Handle_TypeDef *bmp, float *ground_pressure);
 
 HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
 
@@ -32,12 +33,13 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
     uint8_t data;
     
     result = BMP388_readRegister(bmp,CHIP_ID,&data);
+
     
     if (result != HAL_OK) {
 
         return HAL_ERROR;
     }
-    if (data != BMP3_ADDR) {
+    if (data != BMP3_CHIP_ID) {
         return HAL_ERROR;
     }
 
@@ -48,6 +50,9 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
         return HAL_ERROR;
     }
 
+    HAL_Delay(10);
+
+
     result = BMP388_GetCalibData(bmp);
 
      if (result != HAL_OK) {
@@ -55,11 +60,26 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
         return HAL_ERROR;
     }
 
+    result = BMP388_SetTempOS(bmp, BMP388_OVERSAMPLING_2X);
+	if (result != HAL_OK) {
 
-    BMP388_SetTempOS(bmp, BMP388_OVERSAMPLING_2X);
-    BMP388_SetPressOS(bmp, BMP388_OVERSAMPLING_8X);
-    BMP388_SetIIRFilterCoeff(bmp, BMP3_IIR_FILTER_COEFF_3);
-    BMP388_SetOutputDataRate(bmp, BMP3_ODR_50_HZ);
+        return HAL_ERROR;
+    }
+    result = BMP388_SetPressOS(bmp, BMP388_OVERSAMPLING_8X);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
+    result = BMP388_SetIIRFilterCoeff(bmp, BMP3_IIR_FILTER_COEFF_3);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
+    result = BMP388_SetOutputDataRate(bmp, BMP3_ODR_25_HZ);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
 
     data = bmp->osr;
 
@@ -86,7 +106,7 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
         return HAL_ERROR;
     }
 
-    data = BMP3_PWR_CTRL_MODE_NORMAL;
+    data = BMP3_PWR_CTRL_PRESS_ON | BMP3_PWR_CTRL_TEMP_ON | BMP3_PWR_CTRL_MODE_NORMAL;;
     result = BMP388_WriteRegister(bmp, PWR_CTRL, &data);
     
     if (result != HAL_OK) {
@@ -94,7 +114,6 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
         return HAL_ERROR;
     }
 
-    
     return result;
 }
 
@@ -103,8 +122,8 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
 HAL_StatusTypeDef BMP388_readRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *data) {
 
     //Buffers to store what is in the register
-    uint8_t txBuff[2];
-    uint8_t rxBuff[2];
+    uint8_t txBuff[3];
+    uint8_t rxBuff[3];
 
     //sets the register to read
     txBuff[0] = BitSet(reg, 7);
@@ -112,11 +131,11 @@ HAL_StatusTypeDef BMP388_readRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg
 
     HAL_GPIO_WritePin(bmp->cs_port, bmp->cs_pin, GPIO_PIN_RESET);
 
-    HAL_StatusTypeDef result = HAL_SPI_TransmitReceive(bmp->hspi, txBuff, rxBuff, 2, HAL_MAX_DELAY);
+    HAL_StatusTypeDef result = HAL_SPI_TransmitReceive(bmp->hspi, txBuff, rxBuff, 3, HAL_MAX_DELAY);
 
     HAL_GPIO_WritePin(bmp->cs_port, bmp->cs_pin, GPIO_PIN_SET);
 
-    *data = rxBuff[1];
+    *data = rxBuff[2];
 
     return result;
 
@@ -126,9 +145,11 @@ HAL_StatusTypeDef BMP388_readRegister(BMP388Handle_TypeDef *bmp, BMP388_regs reg
 HAL_StatusTypeDef BMP388_readBytes(BMP388Handle_TypeDef *bmp, BMP388_regs reg, uint8_t *buff, uint8_t length) {
     
     //Buffers to store what is in the register
-    uint8_t txBuff[2];
+    uint8_t txBuff[length + 2];
     uint8_t rxBuff[length + 2];
 
+
+    memset(txBuff, 0, length + 2);
     //sets the register to read
     txBuff[0] = BitSet(reg, 7);
     txBuff[1] = 0x00;
@@ -181,16 +202,6 @@ HAL_StatusTypeDef BMP388_resetRegister(BMP388Handle_TypeDef *bmp) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
 HAL_StatusTypeDef BMP388_SetTempOS(BMP388Handle_TypeDef *bmp, uint8_t oversample){
 	if(oversample > BMP388_OVERSAMPLING_32X){
 		return HAL_ERROR;
@@ -231,18 +242,29 @@ HAL_StatusTypeDef BMP388_SetOutputDataRate(BMP388Handle_TypeDef *bmp, uint8_t od
 
 
 
-
-
-
-
-
-
 HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_t *raw_pressure, uint32_t *raw_temperature, uint32_t *time){
 	
     HAL_StatusTypeDef result;
 
+	uint32_t last = HAL_GetTick();
+	uint32_t timeout;
+
+	uint8_t status;
+
 	uint8_t raw_data[11];
-	// Get raw data for pressure and temperature
+	/* Get raw data for pressure and temperature */
+	
+	/* register checker to see if bits are ready */
+	do {
+
+		uint32_t now = HAL_GetTick();
+		timeout = now - last;
+
+        result = BMP388_readBytes(bmp, 0x03, &status, 1);
+        if (result != HAL_OK) return HAL_ERROR;
+    } while ((!(status & (1 << 5)) || !(status & (1 << 6))) && timeout < 250);
+	if (!(status & (1 << 5)) || !(status & (1 << 6))) return HAL_TIMEOUT;
+	
 	result = BMP388_readBytes(bmp, DATA_0, raw_data, 11);
 	
     if(result != HAL_OK){
@@ -258,7 +280,7 @@ HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_
 	*raw_temperature = (uint32_t)raw_data[5] << 16 | (uint32_t)raw_data[4] << 8 | (uint32_t)raw_data[3];
 
 	// Parsing time bytes
-	*time = (uint32_t)raw_data[10] << 16 | (uint32_t)raw_data[9] << 8 | (uint32_t)raw_data[8];
+	*time = (uint32_t)raw_data[8] << 16 | (uint32_t)raw_data[7] << 8 | (uint32_t)raw_data[6];
 
 
 	return result;
@@ -312,6 +334,8 @@ float BMP388_CompensatePress(BMP388Handle_TypeDef *bmp, float temp, uint32_t raw
     partial_data4 = partial_data3 + ((float)raw_press * (float)raw_press * (float)raw_press) * bmp->calib_data.par_p11;
 
     *press = partial_out1 + partial_out2 + partial_data4;
+
+	
 
     return *press;
 }
@@ -408,5 +432,73 @@ HAL_StatusTypeDef BMP388_GetCalibData(BMP388Handle_TypeDef *bmp){
 		raw_par_p11 = (int8_t)calib_buff[20];
 		bmp->calib_data.par_p11 = (float)raw_par_p11 / temp_var;
 	}
+	
 	return rslt;
 }
+
+HAL_StatusTypeDef BMP388_FindGroundPressure (BMP388Handle_TypeDef *bmp, float *ground_pressure) {
+
+
+	HAL_StatusTypeDef result;
+	int x = 0;
+	float accumulator = 0;
+	uint32_t raw_pressure;
+	uint32_t raw_temperature;
+	uint32_t time;
+	float temperature;
+	float pressure;
+
+	/* This just runs 100 time according to the data sheet that is enough samples to obtain a relaiable ground pressure
+		we then average that value to find a ground pressu r*/
+	for (x = 0; x < 100; x++) {
+
+		/* Returns HAL_Stataus typedef
+		   this function reads the raw values from the Barometer and returns them as pointers to use in the next function */
+		result = BMP388_ReadRawPressTempTime(bmp, &raw_pressure, &raw_temperature, &time);
+		if (result != HAL_OK) {
+
+			return HAL_ERROR;
+		}
+
+		/* This function takes the raw readings and converts them into normalized pressure and temp values this is taken from the
+		   data sheet */
+		BMP388_CompensateRawPressTemp(bmp, raw_pressure, raw_temperature, &pressure, &temperature);
+
+		
+		accumulator += pressure;
+		
+	}
+
+	*ground_pressure = accumulator/100;
+
+	return HAL_OK;
+
+
+}
+
+HAL_StatusTypeDef BMP388_ExternalReadFunction(BMP388Handle_TypeDef *bmp, float *pressure, float *temperature, 
+											  float *altitude, float *ground_pressure) {
+
+	HAL_StatusTypeDef result;
+	uint32_t raw_pressure;
+	uint32_t raw_temperature;
+	uint32_t time;
+	
+
+
+	result = BMP388_ReadRawPressTempTime(bmp, &raw_pressure, &raw_temperature, &time);
+	if (result != HAL_OK) {
+
+        return HAL_ERROR;
+    }
+
+	BMP388_CompensateRawPressTemp(bmp, raw_pressure, raw_temperature, pressure, temperature);
+
+
+	*altitude = BMP388_FindAltitude(*ground_pressure, *pressure);
+
+	return result;
+
+
+}
+

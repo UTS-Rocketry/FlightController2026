@@ -31,6 +31,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>          // pull in the real printf DECLARATION first
+#ifndef DEBUG
+#undef printf
+#define printf(...) ((void)0)
+#endif
 
 /* USER CODE END Includes */
 
@@ -77,8 +82,8 @@ void Error_Handler(void);
 #define CSAccelerometer_GPIO_Port GPIOB
 #define PyroIgnite_Pin GPIO_PIN_14
 #define PyroIgnite_GPIO_Port GPIOB
-#define DrougeIgnite_Pin GPIO_PIN_6
-#define DrougeIgnite_GPIO_Port GPIOC
+#define DrogueIgnite_Pin GPIO_PIN_6
+#define DrogueIgnite_GPIO_Port GPIOC
 #define CSBarometer_Pin GPIO_PIN_7
 #define CSBarometer_GPIO_Port GPIOC
 #define GPS2ResetPin_Pin GPIO_PIN_9
@@ -89,13 +94,14 @@ void Error_Handler(void);
 #define CS_IMU_GPIO_Port GPIOA
 #define LoRaDIO0_Pin GPIO_PIN_6
 #define LoRaDIO0_GPIO_Port GPIOB
+#define LoRaDIO0_EXTI_IRQn EXTI9_5_IRQn
 #define LoRaDIO2_Pin GPIO_PIN_7
 #define LoRaDIO2_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
-#define BitSet(reg,x) (reg |= (1 << x))
-#define BitClear(reg,x) (reg &= ~(1 << x))
+#define BitSet(reg, x) (reg |= (1 << x))
+#define BitClear(reg, x) (reg & ~(1 << x))
 
 
 /* USER CODE END Private defines */

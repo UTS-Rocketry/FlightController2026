@@ -1,11 +1,11 @@
-
 //Header Guards means it wont double compile if header has been defined before
 #ifndef BMP388_H
 #define BMP388_H
 
 #include "stm32f405xx.h"
-#include "stm32f4xx_hal_def.h"
 #include <stdint.h>
+#include "main.h"
+#include "stm32f4xx_hal.h"
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -71,13 +71,13 @@
 
 /* ----- REGISTER MACROS ----- */
 
-#define BMP3_PWR_CTRL_PRESS_ON                          1U
+#define BMP3_PWR_CTRL_PRESS_ON                          (1U)
 #define BMP3_PWR_CTRL_PRESS_OFF                         0U
 #define BMP3_PWR_CTRL_TEMP_ON                           (1U << 1)
 #define BMP3_PWR_CTRL_TEMP_OFF                          0U
 #define BMP3_PWR_CTRL_MODE_SLEEP                        0U
 #define BMP3_PWR_CTRL_MODE_FORCED                       (1U << 4)
-#define BMP3_PWR_CTRL_MODE_NORMAL                       (0x03U << 4)
+#define BMP3_PWR_CTRL_MODE_NORMAL                       (3U << 4)
 
 #define BMP3_FIFO_CONFIG_1_FIFO_MODE_ON                 1U
 #define BMP3_FIFO_CONFIG_1_FIFO_MODE_OFF                0U
@@ -162,8 +162,12 @@ typedef struct{
 HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp);
 
 HAL_StatusTypeDef BMP388_ReadRawPressTempTime(BMP388Handle_TypeDef *bmp, uint32_t *raw_pressure, uint32_t *raw_temperature, uint32_t *time);
-BMP388_CompensateRawPressTemp(BMP388Handle_TypeDef *bmp, uint32_t raw_pressure, uint32_t raw_temperature, float *pressure, float *temperature);
-BMP388_FindAltitude(float ground_pressure, float pressure);
+void BMP388_CompensateRawPressTemp(BMP388Handle_TypeDef *bmp, uint32_t raw_pressure, uint32_t raw_temperature, float *pressure, float *temperature);
+float BMP388_FindAltitude(float ground_pressure, float pressure);
+HAL_StatusTypeDef BMP388_FindGroundPressure (BMP388Handle_TypeDef *bmp, float *ground_pressure);
+HAL_StatusTypeDef BMP388_ExternalReadFunction(BMP388Handle_TypeDef *bmp, float *pressure, float *temperature, 
+											  float *altitude, float *ground_pressure);
+
 
 
 #ifdef __cplusplus

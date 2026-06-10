@@ -18,9 +18,26 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "fatfs.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+
+#include "BMP388.h"
+#include <stdint.h>
+#include <stdio.h>
+#include "lsm6dsox_reg.h"
+#include "h3lis331dl_reg.h"
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_def.h"
+#include "flight_sensors.h"
+#include "indicators.h"
+#include "telemetry.h"
+#include "Lora_App.h"
+#include "pyro.h"
+#include "flight_state.h"
+#include "kalman.h"
+
 
 /* USER CODE END Includes */
 
@@ -45,6 +62,8 @@ ADC_HandleTypeDef hadc2;
 
 CAN_HandleTypeDef hcan2;
 
+IWDG_HandleTypeDef hiwdg;
+
 SPI_HandleTypeDef hspi1;
 SPI_HandleTypeDef hspi2;
 SPI_HandleTypeDef hspi3;
@@ -53,6 +72,13 @@ UART_HandleTypeDef huart4;
 UART_HandleTypeDef huart5;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
+
+/* sensor data is declared in main and it is used for FSM decisions
+   it also is passed to telemetry.c to pass telemetry to ground station */
+FlightSensorData sensorData;
+
+uint8_t imu_sensor_read = 0;
+uint8_t baro_sensor_read = 0;
 
 /* USER CODE BEGIN PV */
 
@@ -70,12 +96,22 @@ static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_UART4_Init(void);
 static void MX_UART5_Init(void);
 static void MX_SPI3_Init(void);
+static void MX_IWDG_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+
+/* This is a debug printf that exposes uart through the gps header pins*/
+#ifdef DEBUG
+int _write(int file, char *ptr, int len) {
+    HAL_UART_Transmit(&huart4, (uint8_t*)ptr, len, HAL_MAX_DELAY);
+    return len;
+}
+
+#endif
 
 /* USER CODE END 0 */
 
@@ -87,6 +123,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+  
+  /* result is used to check status of any HAL functions and return error codes */
+  HAL_StatusTypeDef result;
 
   /* USER CODE END 1 */
 
@@ -117,14 +156,176 @@ int main(void)
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
+  //MX_FATFS_Init();
   /* USER CODE BEGIN 2 */
 
+
+  /*THIS IS FOR SD card but it is wired wrong*/
+  /* FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
+  printf("f_mount: %d\r\n", (int)fr); */
+  
+  
+ result = flight_sensors_init();
+ 
+ #ifdef DEBUG
+  if (result != HAL_OK) {
+    printf("Flight sensors Init Failed\r\n");
+  } else {
+    printf("Flight sensors  Init Successfull\r\n");
+  }
+  
+ #endif
+ #ifdef BARO_NOISE_TEST
+  // after flight_sensors_init(), loop and just print raw altitude
+  while (1) {
+      flight_sensors_update_baro(&sensorData);
+      printf("%.4f\r\n", sensorData.altitude);   // one value per line
+      HAL_Delay(40);   // match your baro rate
+  }
+ #endif
+ 
+ result = lora_App_Init();
+ 
+ #ifdef DEBUG
+    if (result != HAL_OK) {
+
+      printf("Lora Init Failed\r\n");
+
+    } else {
+      printf("Lora Init Successfull\r\n");
+    }
+  #endif
+
+  result = flash_memory_init();
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash memory failed\r\n");
+    } else { 
+      printf("Flash memory OK");
+    }
+  #endif
+
+  result = flash_sanity_check();
+  
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash memory failed\r\n");
+    } else { 
+      printf("Flash memory OK\r\n");
+    }
+  #endif
+
+
+  kalman_init();
+  pyro_init();
+  FSM_init();
+  buzzer_init();
+
+  MX_IWDG_Init();
+
+  #ifdef DEBUG
+  uint32_t last = HAL_GetTick();
+  #endif
+
+  uint32_t last_imu   = 0;
+  uint32_t last_baro  = 0;
+  uint32_t last_lora  = 0;
+  uint32_t last_flash = 0;
+  uint32_t last_cont  = 0;
+  uint32_t last_RX    = 0;
+  #ifdef DEBUG
+    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) printf("!!! IWDG RESET !!!\r\n");
+    __HAL_RCC_CLEAR_RESET_FLAGS();
+  #endif
+  
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
-  {
+  { 
+    /* Watch dog woof woof*/
+    HAL_IWDG_Refresh(&hiwdg);
+    /*This is to get timing loop*/
+    uint32_t now = HAL_GetTick();
+    
+    /*Non blocking pyro*/
+    pyro_service();
+    indicators_service();
+    
+    if (now - last_imu >= 10) {
+      float dt = (now - last_imu) / 1000.0f;
+      last_imu = now;
+      HAL_StatusTypeDef imu_result = flight_sensors_update_IMU_accel(&sensorData);
+      
+      #ifdef DEBUG
+          if (imu_result != HAL_OK) printf("sensor update failed\r\n");
+      #endif
+      
+      (void)imu_result;
+      kalman_predict(sensorData.z_mg_IMU, dt);
+      sensorData.kalman_altitude = kalman_get_altitude();
+      sensorData.kalman_velocity = kalman_get_velocity();
+      imu_sensor_read = 1;
+    }
+
+    if (now - last_baro >= 40) {
+      last_baro = now;
+      HAL_StatusTypeDef baro_result = flight_sensors_update_baro(&sensorData);
+      #ifdef DEBUG
+          if (baro_result != HAL_OK) printf("Baro sensor update failed\r\n");
+      #endif
+      (void) baro_result;
+      kalman_update(sensorData.altitude);
+      sensorData.kalman_altitude = kalman_get_altitude();
+      sensorData.kalman_velocity = kalman_get_velocity();
+      baro_sensor_read = 1;
+      #ifdef DEBUG
+        if(FSM_get_state() >= STATE_BOOST) {
+          printf("st=%d alt=%.1f vel=%.1f acc=%.0f\r\n",
+              FSM_get_state(),
+              sensorData.kalman_altitude,
+              sensorData.kalman_velocity,
+              sensorData.z_mg_IMU);
+        }
+      #endif
+    }
+
+    if(imu_sensor_read || baro_sensor_read) {
+      FSM_update(&sensorData, imu_sensor_read, baro_sensor_read);
+      imu_sensor_read = 0; 
+      baro_sensor_read = 0;
+    }
+
+    sensorData.flight_state = FSM_get_state();
+  
+    if (now - last_cont >= 2000 && FSM_get_state() <= STATE_PAD) {
+      last_cont = now;
+      lora_tx_continuity();
+
+    }
+    if (FSM_get_state() <= STATE_PAD && now - last_RX >= 400) { last_RX = now; lora_rx_command(); }
+
+
+    if(now - last_lora >= 300 && FSM_get_state() >= STATE_PAD) {
+      last_lora = now;
+      lora_tx_telemetry(&sensorData);
+    }
+
+
+    if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
+        last_flash = now;
+        flash_log_telemetry(&sensorData);
+    }
+
+    /*#ifdef DEBUG
+      serial_print(&sensorData);
+      uint32_t dt = now - last;
+      last = now;
+      printf("Sensor loop dt: %lums\r\n", dt);
+    #endif
+    */
+     
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -149,10 +350,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI|RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -168,12 +368,12 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
   RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
   {
     Error_Handler();
   }
@@ -321,6 +521,34 @@ static void MX_CAN2_Init(void)
 }
 
 /**
+  * @brief IWDG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IWDG_Init(void)
+{
+
+  /* USER CODE BEGIN IWDG_Init 0 */
+
+  /* USER CODE END IWDG_Init 0 */
+
+  /* USER CODE BEGIN IWDG_Init 1 */
+
+  /* USER CODE END IWDG_Init 1 */
+  hiwdg.Instance = IWDG;
+  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
+  hiwdg.Init.Reload = 2047;
+  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IWDG_Init 2 */
+
+  /* USER CODE END IWDG_Init 2 */
+
+}
+
+/**
   * @brief SPI1 Initialization Function
   * @param None
   * @retval None
@@ -340,10 +568,10 @@ static void MX_SPI1_Init(void)
   hspi1.Init.Mode = SPI_MODE_MASTER;
   hspi1.Init.Direction = SPI_DIRECTION_2LINES;
   hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
+  hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -381,7 +609,7 @@ static void MX_SPI2_Init(void)
   hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -419,7 +647,7 @@ static void MX_SPI3_Init(void)
   hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
   hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
   hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -561,21 +789,20 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOA, AuxIgnite_Pin|GPS1ResetPin_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BuzzerControl_Pin|DrougeIgnite_Pin|GPS2ResetPin_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOC, BuzzerControl_Pin|DrogueIgnite_Pin|GPS2ResetPin_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LoRaNssPin_Pin|LoRaDIO1_Pin|LoRaResetPin_Pin|PyroIgnite_Pin
-                          |LoRaDIO0_Pin|LoRaDIO2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LoRaNssPin_Pin|CSAccelerometer_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CSAccelerometer_GPIO_Port, CSAccelerometer_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(GPIOB, LoRaResetPin_Pin|PyroIgnite_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(CS_IMU_GPIO_Port, CS_IMU_Pin, GPIO_PIN_SET);
 
-  /*Configure GPIO pins : CSFlashmMemory_Pin CS_SD_Card_Pin BuzzerControl_Pin DrougeIgnite_Pin
+  /*Configure GPIO pins : CSFlashmMemory_Pin CS_SD_Card_Pin BuzzerControl_Pin DrogueIgnite_Pin
                            CSBarometer_Pin GPS2ResetPin_Pin */
-  GPIO_InitStruct.Pin = CSFlashmMemory_Pin|CS_SD_Card_Pin|BuzzerControl_Pin|DrougeIgnite_Pin
+  GPIO_InitStruct.Pin = CSFlashmMemory_Pin|CS_SD_Card_Pin|BuzzerControl_Pin|DrogueIgnite_Pin
                           |CSBarometer_Pin|GPS2ResetPin_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
@@ -597,14 +824,28 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LoRaNssPin_Pin LoRaDIO1_Pin LoRaResetPin_Pin CSAccelerometer_Pin
-                           PyroIgnite_Pin LoRaDIO0_Pin LoRaDIO2_Pin */
-  GPIO_InitStruct.Pin = LoRaNssPin_Pin|LoRaDIO1_Pin|LoRaResetPin_Pin|CSAccelerometer_Pin
-                          |PyroIgnite_Pin|LoRaDIO0_Pin|LoRaDIO2_Pin;
+  /*Configure GPIO pins : LoRaNssPin_Pin LoRaResetPin_Pin CSAccelerometer_Pin PyroIgnite_Pin */
+  GPIO_InitStruct.Pin = LoRaNssPin_Pin|LoRaResetPin_Pin|CSAccelerometer_Pin|PyroIgnite_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LoRaDIO1_Pin LoRaDIO2_Pin */
+  GPIO_InitStruct.Pin = LoRaDIO1_Pin|LoRaDIO2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LoRaDIO0_Pin */
+  GPIO_InitStruct.Pin = LoRaDIO0_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(LoRaDIO0_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -623,6 +864,9 @@ void Error_Handler(void)
 {
   /* USER CODE BEGIN Error_Handler_Debug */
   /* User can add his own implementation to report the HAL error return state */
+  HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_RESET);
   __disable_irq();
   while (1)
   {
