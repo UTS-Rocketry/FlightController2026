@@ -36,6 +36,9 @@ uint8_t pyro_check_drogue(void) {
     st = HAL_ADC_PollForConversion(&hadc1, 10);  // 10mss timeout
     uint32_t val = HAL_ADC_GetValue(&hadc1);
     HAL_ADC_Stop(&hadc1);
+    #ifdef DEBUG
+        printf("drogue ADC=%lu thresh=%d\r\n", val, (int)PYRO_CONTINUITY_THRESHOLD);
+    #endif
 
     return (st == HAL_OK && val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
 }          
@@ -46,6 +49,9 @@ uint8_t pyro_check_main(void) {
     st = HAL_ADC_PollForConversion(&hadc2, 10);  // 10ms timeout
     uint32_t val = HAL_ADC_GetValue(&hadc2);
     HAL_ADC_Stop(&hadc2);
+    #ifdef DEBUG
+        printf("Main ADC=%lu thresh=%d\r\n", val, (int)PYRO_CONTINUITY_THRESHOLD);
+    #endif
     return (st == HAL_OK && val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
 }
 

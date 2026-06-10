@@ -23,8 +23,8 @@
 
 /* ── State timeouts ────────────────────────────────── */
 #define BOOST_TIMEOUT_MS                10000     /* 10s max burn */
-#define COAST_TIMEOUT_MS                30000     /* 30s max coast */
-#define DROGUE_TIMEOUT_MS               5000      /* 5s to confirm drogue */
+#define COAST_TIMEOUT_MS                60000     /* 30s max coast */
+#define DROGUE_TIMEOUT_MS               300000     
 #define PARAFOIL_TIMEOUT_MS             300000    /* 5 min max descent */
 
 

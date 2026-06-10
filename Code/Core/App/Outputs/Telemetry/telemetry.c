@@ -9,29 +9,31 @@
 #include <stdint.h>
 #include "pyro.h"
 #include "flight_state.h"
+#include "main.h"
 
 
 void serial_print(const FlightSensorData *sensordata)
 {
     if (sensordata == NULL) return;
+    #ifdef DEBUG
+        printf("Alt: %.2fm | H3LIS X:%.1f Y:%.1f Z:%.1f mg | "
+            "IMU XL X:%.1f Y:%.1f Z:%.1f mg | "
+            "GY X:%.1f Y:%.1f Z:%.1f mdps\r\n",
 
-    printf("Alt: %.2fm | H3LIS X:%.1f Y:%.1f Z:%.1f mg | "
-           "IMU XL X:%.1f Y:%.1f Z:%.1f mg | "
-           "GY X:%.1f Y:%.1f Z:%.1f mdps\r\n",
+            sensordata->kalman_altitude,
 
-           sensordata->kalman_altitude,
+            sensordata->x_mg,
+            sensordata->y_mg,
+            sensordata->z_mg,
 
-           sensordata->x_mg,
-           sensordata->y_mg,
-           sensordata->z_mg,
+            sensordata->x_mg_IMU,
+            sensordata->y_mg_IMU,
+            sensordata->z_mg_IMU,
 
-           sensordata->x_mg_IMU,
-           sensordata->y_mg_IMU,
-           sensordata->z_mg_IMU,
-
-           sensordata->x_gy,
-           sensordata->y_gy,
-           sensordata->z_gy);
+            sensordata->x_gy,
+            sensordata->y_gy,
+            sensordata->z_gy);
+    #endif
 }
 
 HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
@@ -82,23 +84,27 @@ HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData) {
     return flash_log_packet(buff, 64);
 
 }
-
+#ifdef MEMORY_DUMP
 HAL_StatusTypeDef flash_dump_serial(void) {
     
     uint32_t count = flash_get_record_count();
 
     if (count == 0) {
-        printf("No records logged\r\n");
+        
+            printf("No records logged\r\n");
+
         return HAL_OK;
     }
 
-    printf("Dumping %lu records\r\n", count);
+  
+        printf("Dumping %lu records\r\n", count);
 
     uint8_t buff[64] = {0};
 
     for (uint32_t i = 0; i < count; i++) {
         HAL_StatusTypeDef ret = flash_read_record(i, buff, 64);
         if (ret != HAL_OK) {
+            
             printf("Read failed at record %lu\r\n", i);
             return ret;
         }
@@ -138,6 +144,7 @@ HAL_StatusTypeDef flash_dump_serial(void) {
 
     return HAL_OK;
 }
+#endif
 
 HAL_StatusTypeDef lora_rx_command() {
     HAL_StatusTypeDef result;
@@ -180,7 +187,6 @@ HAL_StatusTypeDef lora_rx_command() {
                     if (FSM_get_state() != STATE_PAD) break;   // only fire on the pad, post-arm
                             switch (channel) {
                                 case 1:
-                                    printf("CMD_ARM rx, before=%d\r\n", FSM_get_state());
                                     pyro_fire_drogue_ground();
                                     FSM_disarm();
                                     break;

@@ -31,6 +31,11 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include <stdio.h>          // pull in the real printf DECLARATION first
+#ifndef DEBUG
+#undef printf
+#define printf(...) ((void)0)
+#endif
 
 /* USER CODE END Includes */
 

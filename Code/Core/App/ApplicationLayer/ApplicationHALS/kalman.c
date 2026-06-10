@@ -17,7 +17,7 @@ void kalman_init(void) {
     kf.Q_altitude = 0.1f;
     kf.Q_velocity = 0.1f;
     kf.Q_bias     = 0.01f;
-    kf.R_altitude = 2.5f;
+    kf.R_altitude = 2.5f; /* static noise var measured at 0.70 (std 0.835m); inflated */
 }
 
 void kalman_predict(float accel_z_mg, float dt) {
@@ -27,6 +27,7 @@ void kalman_predict(float accel_z_mg, float dt) {
 
     // z_mg_IMU reads ~1000mg at rest (1g), subtract gravity
     float accel_ms2  = (accel_z_mg / 1000.0f) * 9.81f;
+    // float accel_true = accel_ms2 - 9.81f;
     float accel_true = accel_ms2 - 9.81f - kf.accel_bias;
 
     // Clamp accel to ±160 m/s² (±16g) — rejects any residual garbage

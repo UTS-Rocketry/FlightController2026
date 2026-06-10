@@ -92,8 +92,10 @@ static uint8_t SD_ReadyWait(void)
 
 /* power on */
 static void SD_PowerOn(void) 
-{
-    printf("SD_PowerOn starting\r\n"); 
+{   
+    #ifdef DEBUG
+        printf("SD_PowerOn starting\r\n"); 
+    #endif
     uint8_t args[6];
     uint32_t cnt = 0x1FFF;
 
@@ -123,8 +125,9 @@ static void SD_PowerOn(void)
         cnt--;
     } 
     
-    printf("SD_PowerOn cnt remaining: %lu\r\n", cnt);  // 0 = no response
-
+    #ifdef DEBUG
+        printf("SD_PowerOn cnt remaining: %lu\r\n", cnt);  // 0 = no response
+    #endif
 
     DESELECT();
     SPI_TxByte(0XFF);

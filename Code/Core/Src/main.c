@@ -175,6 +175,14 @@ int main(void)
   }
   
  #endif
+ #ifdef BARO_NOISE_TEST
+  // after flight_sensors_init(), loop and just print raw altitude
+  while (1) {
+      flight_sensors_update_baro(&sensorData);
+      printf("%.4f\r\n", sensorData.altitude);   // one value per line
+      HAL_Delay(40);   // match your baro rate
+  }
+ #endif
  
  result = lora_App_Init();
  
@@ -272,6 +280,15 @@ int main(void)
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
       baro_sensor_read = 1;
+      #ifdef DEBUG
+        if(FSM_get_state() >= STATE_BOOST) {
+          printf("st=%d alt=%.1f vel=%.1f acc=%.0f\r\n",
+              FSM_get_state(),
+              sensorData.kalman_altitude,
+              sensorData.kalman_velocity,
+              sensorData.z_mg_IMU);
+        }
+      #endif
     }
 
     if(imu_sensor_read || baro_sensor_read) {

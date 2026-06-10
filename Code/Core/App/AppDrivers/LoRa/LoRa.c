@@ -515,7 +515,9 @@ HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint8_t max_length,
     if(buffer & IRQ_PAYLOAD_CRC_ERR_MASK) return HAL_ERROR;
 
     result = platform_read(&sx1, REG_RX_NB_BYTES, &buffer, 1);
-    printf("RX_NB_BYTES = %d\r\n", buffer);
+    #ifdef DEBUG
+        printf("RX_NB_BYTES = %d\r\n", buffer);
+    #endif
     if(result != HAL_OK) return HAL_ERROR;
 
     if (buffer > max_length) return HAL_ERROR;

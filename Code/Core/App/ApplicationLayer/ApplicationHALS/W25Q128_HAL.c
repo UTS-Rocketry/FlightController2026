@@ -23,8 +23,9 @@ HAL_StatusTypeDef flash_memory_init() {
     result = W25Q128_Init(&flash);
     if(result != HAL_OK) {
 
-        printf("FLash memory init failed\r\n");
-
+        #ifdef DEBUG
+            printf("FLash memory init failed\r\n");
+        #endif
         return HAL_ERROR;
     }
 
@@ -42,14 +43,17 @@ HAL_StatusTypeDef flash_sanity_check() {
 
     if(result != HAL_OK) {
 
-        printf("FLash JEDECID failed\r\n");
+        #ifdef DEBUG
+            printf("FLash JEDECID failed\r\n");
+        #endif
 
         return HAL_ERROR;
     }
 
     // Should print EF 40 18
-    printf("JEDEC: %02X %02X %02X\r\n", m, t, c);
-    
+    #ifdef DEBUG
+        printf("JEDEC: %02X %02X %02X\r\n", m, t, c);
+    #endif
     return result;
 
     
@@ -58,21 +62,28 @@ HAL_StatusTypeDef flash_sanity_check() {
 HAL_StatusTypeDef flash_log_packet(uint8_t *buff, uint16_t len)
 {
     if (flash_record_count >= FLASH_MAX_RECORDS) {
-        printf("Flash full\r\n");
+        #ifdef DEBUG
+            printf("Flash full\r\n");
+        #endif
+
         return HAL_ERROR;
     }
 
     if ((flash_write_addr % W25Q128_SECTOR_SIZE) == 0) {
         HAL_StatusTypeDef ret = W25Q128_SectorErase(&flash, flash_write_addr);
         if (ret != HAL_OK) {
-            printf("Sector erase failed at 0x%06lX\r\n", flash_write_addr);
+            #ifdef DEBUG
+                printf("Sector erase failed at 0x%06lX\r\n", flash_write_addr);
+            #endif
             return ret;
         }
     }
 
     HAL_StatusTypeDef ret = W25Q128_PageProgram(&flash, flash_write_addr, buff, len);
     if (ret != HAL_OK) {
-        printf("Flash write failed at 0x%06lX\r\n", flash_write_addr);
+        #ifdef DEBUG
+            printf("Flash write failed at 0x%06lX\r\n", flash_write_addr);
+        #endif
         return ret;
     }
 

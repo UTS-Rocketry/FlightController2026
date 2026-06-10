@@ -126,7 +126,9 @@ HAL_StatusTypeDef flight_sensors_init(void) {
     #ifdef DEBUG
       printf("Ground pressure error\r\n");
     #endif
-    return HAL_ERROR;
+    #ifndef HIL_SIM
+      return HAL_ERROR;
+    #endif
   } 
   
   /*ACCEL INIT*/
@@ -142,7 +144,9 @@ HAL_StatusTypeDef flight_sensors_init(void) {
     #ifdef DEBUG
       printf("Accelerometer Calibration Error\r\n");
     #endif
-    return HAL_ERROR;
+    #ifndef HIL_SIM
+      return HAL_ERROR;
+    #endif
   } 
 
 
@@ -158,16 +162,25 @@ HAL_StatusTypeDef flight_sensors_init(void) {
     #ifdef DEBUG
       printf("IMU Calibration Error\r\n");
     #endif
-    return HAL_ERROR;
+    
+    #ifndef HIL_SIM
+      return HAL_ERROR;
+    #endif
 
   }
 
+  
   /*return HAL_Status Typedef */
-  return result;
-
+  #ifdef HIL_SIM
+    return HAL_OK;   /* under sim, ignore sensor init failures */
+  #else
+    return result;
+  #endif
   
 }
 
+
+#ifndef HIL_SIM
 
 HAL_StatusTypeDef flight_sensors_update_baro(FlightSensorData *sensordata) {
 
@@ -222,7 +235,27 @@ HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata) 
   sensordata->x_gy = lsm6dsox_from_fs2000_to_mdps(gy_Val[0]) - gy_Offset[0];
   sensordata->y_gy = lsm6dsox_from_fs2000_to_mdps(gy_Val[1]) - gy_Offset[1];
   sensordata->z_gy = lsm6dsox_from_fs2000_to_mdps(gy_Val[2]) - gy_Offset[2];
-
+  
   return HAL_OK;
 
 }
+
+#else
+#include "sim_profile.h"
+#include "flight_state.h"
+static uint32_t sim_idx = 0;
+
+HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *d) {
+    // hold on the pad sample until armed (FSM reaches PAD), then play the flight
+    if (FSM_get_state() >= STATE_PAD && sim_idx < SIM_LEN - 1) {
+        sim_idx++;
+    }
+    d->z_mg_IMU = sim_accel_mg[sim_idx];
+    return HAL_OK;
+}
+
+HAL_StatusTypeDef flight_sensors_update_baro(FlightSensorData *d) {
+    d->altitude = sim_alt[sim_idx];
+    return HAL_OK;
+}
+#endif
