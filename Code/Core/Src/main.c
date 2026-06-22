@@ -229,6 +229,7 @@ int main(void)
   pyro_init();
   FSM_init();
   buzzer_init();
+  
 
   MX_IWDG_Init();
   reset_cause_check();
@@ -237,12 +238,16 @@ int main(void)
   uint32_t last = HAL_GetTick();
   #endif
 
-  uint32_t last_imu   = 0;
-  uint32_t last_baro  = 0;
-  uint32_t last_lora  = 0;
-  uint32_t last_flash = 0;
-  uint32_t last_cont  = 0;
-  uint32_t last_RX    = 0;
+  static uint32_t last_imu   = 0;
+  static uint32_t last_baro  = 0;
+  static uint32_t last_lora  = 0;
+  static uint32_t last_flash = 0;
+  static uint32_t last_cont  = 0;
+  static uint32_t last_RX    = 0;
+  static uint32_t last_hb_ms = 0;
+  
+  /* NULL Placeholder for CAN heartbeat */
+  uint8_t dummy = 0;
  
   
   /* USER CODE END 2 */
@@ -323,6 +328,11 @@ int main(void)
     if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
         last_flash = now;
         flash_log_telemetry(&sensorData);
+    }
+
+    if (now - last_hb_ms >= 500) {
+      last_hb_ms = now;
+      can_transmit(ODIN, HEARTBEAT_MSG, &dummy, 0);
     }
 
     #ifdef DEBUG_TIMING
