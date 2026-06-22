@@ -37,7 +37,8 @@
 #include "pyro.h"
 #include "flight_state.h"
 #include "kalman.h"
-
+#include "watchdog.h"
+#include "CAN.h"
 
 /* USER CODE END Includes */
 
@@ -175,6 +176,7 @@ int main(void)
   }
   
  #endif
+ 
  #ifdef BARO_NOISE_TEST
   // after flight_sensors_init(), loop and just print raw altitude
   while (1) {
@@ -188,9 +190,7 @@ int main(void)
  
  #ifdef DEBUG
     if (result != HAL_OK) {
-
       printf("Lora Init Failed\r\n");
-
     } else {
       printf("Lora Init Successfull\r\n");
     }
@@ -215,6 +215,15 @@ int main(void)
     }
   #endif
 
+    
+  result = Can_init(void);
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("CAN init failed\r\n");
+    } else { 
+      printf("CAN OK\r\n");
+    }
+  #endif
 
   kalman_init();
   pyro_init();
@@ -222,8 +231,9 @@ int main(void)
   buzzer_init();
 
   MX_IWDG_Init();
+  reset_cause_check();
 
-  #ifdef DEBUG
+  #ifdef DEBUG_TIMING
   uint32_t last = HAL_GetTick();
   #endif
 
@@ -233,10 +243,7 @@ int main(void)
   uint32_t last_flash = 0;
   uint32_t last_cont  = 0;
   uint32_t last_RX    = 0;
-  #ifdef DEBUG
-    if (__HAL_RCC_GET_FLAG(RCC_FLAG_IWDGRST)) printf("!!! IWDG RESET !!!\r\n");
-    __HAL_RCC_CLEAR_RESET_FLAGS();
-  #endif
+ 
   
   /* USER CODE END 2 */
 
@@ -318,13 +325,13 @@ int main(void)
         flash_log_telemetry(&sensorData);
     }
 
-    /*#ifdef DEBUG
-      serial_print(&sensorData);
+    #ifdef DEBUG_TIMING
+      // serial_print(&sensorData);
       uint32_t dt = now - last;
       last = now;
-      printf("Sensor loop dt: %lums\r\n", dt);
+      // printf("Sensor loop dt: %lums\r\n", dt);
     #endif
-    */
+    
      
     /* USER CODE END WHILE */
 

@@ -9,10 +9,6 @@
 #endif
 
 
-/* Includes ------------------------------------------------------------------*/
-#include "stm32f4xx_hal.h"
-/* Defines ------------------------------------------------------------------*/
-
 #define CAN_ID(node,msg) ((node << 7) | msg)
 
 typedef enum {
@@ -33,30 +29,16 @@ typedef enum {
     ACK             = 0x05,
     ACTUATOR_STATUS = 0x06,
     CAMERA_STATUS   = 0x07,
-    CAN_ERROR           = 0x08
+    CAN_ERROR       = 0x08
 
 } MESSAGE_TYPE;
 
 
 typedef enum {
 
-    IDLE            = 0x00,
-    ARMED           = 0x01,
-    POWERED_ASCENT  = 0x02,
-    COASTING        = 0x03,
-    APOGEE          = 0x04,
-    DESCENT         = 0x05,
-    LANDED          = 0x06,
-    FAULT           = 0x07,
-    BENCHTEST       = 0x08
-
-} FLIGHT_STATE;
-
-typedef enum {
-
     ACTIVATE        = 0x01,
     DEACTIVATE      = 0x02,
-    DEPLOY_PARAFOIL = 0x03
+    PARAFOIL_DEPLOYED = 0x03
 
 }KESTREL_COM_T;
 
@@ -112,7 +94,8 @@ typedef struct {
 }ERROR_S;
 
 
-HAL_StatusTypeDef Can_init(CAN_HandleTypeDef *hcan);
+HAL_StatusTypeDef Can_init(void);
+HAL_StatusTypeDef can_transmit(uint8_t nodeID, uint8_t msgType, uint8_t *payload, uint8_t length);
 
 
 

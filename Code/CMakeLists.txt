@@ -67,6 +67,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/ApplicationLayer/ApplicationHALS/kalman.c
     Core/App/ApplicationLayer/FlightStateMachine/flight_state.c
     Core/App/ApplicationLayer/ApplicationHALS/packets.c
+    Core/App/ApplicationLayer/Watchdog_log/watchdog.c
     
 )
 
@@ -84,6 +85,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/Outputs/LED&buzzer
     Core/App/Outputs/Telemetry
     Core/App/ApplicationLayer/FlightStateMachine/
+    Core/App/ApplicationLayer/Watchdog_log
 
 
 )
@@ -91,8 +93,8 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
-    #DEBUG
-    HIL_SIM # uncomment for HIL testing only
+    # DEBUG_TIMING
+    # HIL_SIM 
     
 )
 
