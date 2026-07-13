@@ -2,6 +2,7 @@
 #include "stm32f4xx_hal.h"
 #include <stdio.h>
 
+
 #define RESET_BKP_MAGIC   0x5A00u            /* validity tag in upper 16 bits */
 #define RESET_BKP_MASK    0xFFFF0000u
 

@@ -95,6 +95,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
     # DEBUG_TIMING
     # HIL_SIM 
+    DEBUG
     
 )
 

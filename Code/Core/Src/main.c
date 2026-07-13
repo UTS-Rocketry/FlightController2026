@@ -61,8 +61,6 @@
 ADC_HandleTypeDef hadc1;
 ADC_HandleTypeDef hadc2;
 
-CAN_HandleTypeDef hcan2;
-
 IWDG_HandleTypeDef hiwdg;
 
 SPI_HandleTypeDef hspi1;
@@ -74,14 +72,11 @@ UART_HandleTypeDef huart5;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
 
-/* sensor data is declared in main and it is used for FSM decisions
-   it also is passed to telemetry.c to pass telemetry to ground station */
-FlightSensorData sensorData;
+/* USER CODE BEGIN PV */
 
+FlightSensorData sensorData;
 uint8_t imu_sensor_read = 0;
 uint8_t baro_sensor_read = 0;
-
-/* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
 
@@ -90,7 +85,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
 static void MX_ADC2_Init(void);
-static void MX_CAN2_Init(void);
+//static void MX_CAN2_Init(void);
 static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
@@ -150,14 +145,15 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
-  MX_CAN2_Init();
+  //MX_CAN2_Init();
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
-  //MX_FATFS_Init();
+  // MX_FATFS_Init();
+  //MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
 
@@ -216,7 +212,8 @@ int main(void)
   #endif
 
     
-  result = Can_init(void);
+  result = Can_init();
+
   #ifdef DEBUG
     if (result != HAL_OK) {
       printf("CAN init failed\r\n");
@@ -330,9 +327,15 @@ int main(void)
         flash_log_telemetry(&sensorData);
     }
 
-    if (now - last_hb_ms >= 500) {
+    if (now - last_hb_ms >= 500 && FSM_get_state() <= STATE_PAD) {
       last_hb_ms = now;
-      can_transmit(ODIN, HEARTBEAT_MSG, &dummy, 0);
+      HAL_StatusTypeDef can_result = can_transmit(ODIN, HEARTBEAT_MSG, &dummy, 0);
+
+      #ifdef DEBUG
+        if (can_result != HAL_OK) {
+          printf("CAN TX failed: %d\r\n", can_result);
+        }
+      #endif
     }
 
     #ifdef DEBUG_TIMING
@@ -505,37 +508,37 @@ static void MX_ADC2_Init(void)
   * @param None
   * @retval None
   */
-static void MX_CAN2_Init(void)
-{
+// static void MX_CAN2_Init(void)
+// {
 
-  /* USER CODE BEGIN CAN2_Init 0 */
+//   /* USER CODE BEGIN CAN2_Init 0 */
 
-  /* USER CODE END CAN2_Init 0 */
+//   /* USER CODE END CAN2_Init 0 */
 
-  /* USER CODE BEGIN CAN2_Init 1 */
+//   /* USER CODE BEGIN CAN2_Init 1 */
 
-  /* USER CODE END CAN2_Init 1 */
-  hcan2.Instance = CAN2;
-  hcan2.Init.Prescaler = 16;
-  hcan2.Init.Mode = CAN_MODE_NORMAL;
-  hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
-  hcan2.Init.TimeSeg1 = CAN_BS1_1TQ;
-  hcan2.Init.TimeSeg2 = CAN_BS2_1TQ;
-  hcan2.Init.TimeTriggeredMode = DISABLE;
-  hcan2.Init.AutoBusOff = DISABLE;
-  hcan2.Init.AutoWakeUp = DISABLE;
-  hcan2.Init.AutoRetransmission = DISABLE;
-  hcan2.Init.ReceiveFifoLocked = DISABLE;
-  hcan2.Init.TransmitFifoPriority = DISABLE;
-  if (HAL_CAN_Init(&hcan2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN CAN2_Init 2 */
+//   /* USER CODE END CAN2_Init 1 */
+//   hcan2.Instance = CAN2;
+//   hcan2.Init.Prescaler = 6;
+//   hcan2.Init.Mode = CAN_MODE_NORMAL;
+//   hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
+//   hcan2.Init.TimeSeg1 = CAN_BS1_9TQ;
+//   hcan2.Init.TimeSeg2 = CAN_BS2_2TQ;
+//   hcan2.Init.TimeTriggeredMode = DISABLE;
+//   hcan2.Init.AutoBusOff = DISABLE;
+//   hcan2.Init.AutoWakeUp = DISABLE;
+//   hcan2.Init.AutoRetransmission = DISABLE;
+//   hcan2.Init.ReceiveFifoLocked = DISABLE;
+//   hcan2.Init.TransmitFifoPriority = DISABLE;
+//   if (HAL_CAN_Init(&hcan2) != HAL_OK)
+//   {
+//     Error_Handler();
+//   }
+//   /* USER CODE BEGIN CAN2_Init 2 */
 
-  /* USER CODE END CAN2_Init 2 */
+//   /* USER CODE END CAN2_Init 2 */
 
-}
+// }
 
 /**
   * @brief IWDG Initialization Function
