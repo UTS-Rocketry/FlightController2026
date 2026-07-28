@@ -21,6 +21,7 @@ void kalman_init(void) {
 }
 
 void kalman_predict(float accel_z_mg, float dt) {
+    
     // Sanity check inputs — reject garbage on first call
     if (isnan(accel_z_mg) || isinf(accel_z_mg)) return;
     if (dt <= 0.0f || dt > 1.0f) return;

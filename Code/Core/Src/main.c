@@ -102,11 +102,10 @@ static void MX_IWDG_Init(void);
 
 /* This is a debug printf that exposes uart through the gps header pins*/
 #ifdef DEBUG
-int _write(int file, char *ptr, int len) {
-    HAL_UART_Transmit(&huart4, (uint8_t*)ptr, len, HAL_MAX_DELAY);
-    return len;
-}
-
+  int _write(int file, char *ptr, int len) {
+      HAL_UART_Transmit(&huart4, (uint8_t*)ptr, len, HAL_MAX_DELAY);
+      return len;
+  }
 #endif
 
 /* USER CODE END 0 */
@@ -145,15 +144,22 @@ int main(void)
   MX_GPIO_Init();
   MX_ADC1_Init();
   MX_ADC2_Init();
+  
+  //Uses written can init
   //MX_CAN2_Init();
+  
   MX_SPI1_Init();
   MX_SPI2_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_UART4_Init();
   MX_UART5_Init();
   MX_SPI3_Init();
+
+  //Fats is not init becasue sd card doesnt work
   // MX_FATFS_Init();
-  //MX_IWDG_Init();
+
+  // Init this later
+  // MX_IWDG_Init();
   /* USER CODE BEGIN 2 */
 
 
@@ -165,12 +171,13 @@ int main(void)
  result = flight_sensors_init();
  
  #ifdef DEBUG
+
   if (result != HAL_OK) {
     printf("Flight sensors Init Failed\r\n");
   } else {
     printf("Flight sensors  Init Successfull\r\n");
   }
-  
+
  #endif
  
  #ifdef BARO_NOISE_TEST
@@ -182,8 +189,10 @@ int main(void)
   }
  #endif
  
+
+/* LORA init --------------------------------------------------------*/
+
  result = lora_App_Init();
- 
  #ifdef DEBUG
     if (result != HAL_OK) {
       printf("Lora Init Failed\r\n");
@@ -192,6 +201,7 @@ int main(void)
     }
   #endif
 
+/* FLash init --------------------------------------------------------*/
   result = flash_memory_init();
   #ifdef DEBUG
     if (result != HAL_OK) {
@@ -211,7 +221,7 @@ int main(void)
     }
   #endif
 
-    
+/* CAN init --------------------------------------------------------*/    
   result = Can_init();
 
   #ifdef DEBUG
@@ -222,6 +232,8 @@ int main(void)
     }
   #endif
 
+
+/* APP inits init --------------------------------------------------------*/
   kalman_init();
   pyro_init();
   FSM_init();
@@ -232,7 +244,7 @@ int main(void)
   reset_cause_check();
 
   #ifdef DEBUG_TIMING
-  uint32_t last = HAL_GetTick();
+    uint32_t last = HAL_GetTick();
   #endif
 
   static uint32_t last_imu   = 0;
@@ -245,14 +257,13 @@ int main(void)
   
   /* NULL Placeholder for CAN heartbeat */
   uint8_t dummy = 0;
- 
-  
   /* USER CODE END 2 */
 
   /* Infinite loop */
+
   /* USER CODE BEGIN WHILE */
-  while (1)
-  { 
+  while (1) { 
+
     /* Watch dog woof woof*/
     HAL_IWDG_Refresh(&hiwdg);
     /*This is to get timing loop*/
@@ -262,6 +273,7 @@ int main(void)
     pyro_service();
     indicators_service();
     
+    /* Predict Stage based on IMU  --------------------------------------------------------*/
     if (now - last_imu >= 10) {
       float dt = (now - last_imu) / 1000.0f;
       last_imu = now;
@@ -277,18 +289,22 @@ int main(void)
       sensorData.kalman_velocity = kalman_get_velocity();
       imu_sensor_read = 1;
     }
-
+    
+    /* Correction Stage based on Barometer  --------------------------------------------------------*/
     if (now - last_baro >= 40) {
+      
       last_baro = now;
       HAL_StatusTypeDef baro_result = flight_sensors_update_baro(&sensorData);
       #ifdef DEBUG
           if (baro_result != HAL_OK) printf("Baro sensor update failed\r\n");
       #endif
+      
       (void) baro_result;
       kalman_update(sensorData.altitude);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
       baro_sensor_read = 1;
+      
       #ifdef DEBUG
         if(FSM_get_state() >= STATE_BOOST) {
           printf("st=%d alt=%.1f vel=%.1f acc=%.0f\r\n",
@@ -300,6 +316,7 @@ int main(void)
       #endif
     }
 
+    /* Predict Stage based on IMU  --------------------------------------------------------*/
     if(imu_sensor_read || baro_sensor_read) {
       FSM_update(&sensorData, imu_sensor_read, baro_sensor_read);
       imu_sensor_read = 0; 
@@ -307,26 +324,38 @@ int main(void)
     }
 
     sensorData.flight_state = FSM_get_state();
-  
+    
+    /* Checks Continutity  --------------------------------------------------------*/
     if (now - last_cont >= 2000 && FSM_get_state() <= STATE_PAD) {
       last_cont = now;
       lora_tx_continuity();
 
     }
-    if (FSM_get_state() <= STATE_PAD && now - last_RX >= 400) { last_RX = now; lora_rx_command(); }
 
+    /* This is for arming and dearming  --------------------------------------------------------*/
+    if (FSM_get_state() <= STATE_PAD && now - last_RX >= 400) { 
+      
+      last_RX = now; 
+      
+      lora_rx_command();
 
-    if(now - last_lora >= 300 && FSM_get_state() >= STATE_PAD) {
-      last_lora = now;
-      lora_tx_telemetry(&sensorData);
     }
 
+    /* Transmit Flight Telemetry --------------------------------------------------------*/
+    if(now - last_lora >= 300 && FSM_get_state() >= STATE_PAD) {
+      
+      last_lora = now;
+      lora_tx_telemetry(&sensorData);
 
+    }
+
+    /* Log Telemetry  --------------------------------------------------------*/
     if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
         last_flash = now;
         flash_log_telemetry(&sensorData);
     }
-
+    
+    /* HeartBeat for Can --------------------------------------------------------*/
     if (now - last_hb_ms >= 500 && FSM_get_state() <= STATE_PAD) {
       last_hb_ms = now;
       HAL_StatusTypeDef can_result = can_transmit(ODIN, HEARTBEAT_MSG, &dummy, 0);
@@ -337,12 +366,14 @@ int main(void)
         }
       #endif
     }
-
+    
+    /* Debug timing --------------------------------------------------------*/
     #ifdef DEBUG_TIMING
-      // serial_print(&sensorData);
+      serial_print(&sensorData);
       uint32_t dt = now - last;
       last = now;
-      // printf("Sensor loop dt: %lums\r\n", dt);
+      printf("Sensor loop dt: %lums\r\n", dt);
+
     #endif
     
      
