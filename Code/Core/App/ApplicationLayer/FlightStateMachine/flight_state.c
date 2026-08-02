@@ -111,7 +111,7 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uin
             /*Apogee detected*/
 
             if(baro_read) {
-                if(sensorData->kalman_velocity < APOGEE_VELOCITY_THRESHOLD){
+                if(sensorData->kalman_velocity < APOGEE_VELOCITY_THRESHOLD && HAL_GetTick() - ctx.state_entry_time > SONIC_TIMOUT_MS){
                 ctx.apogee_count++;
                 }
                 else {

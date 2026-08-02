@@ -22,10 +22,11 @@
 #define LAND_ALT_THRESHOLD_M            10.0f     /* AGL meters */
 
 /* ── State timeouts ────────────────────────────────── */
-#define BOOST_TIMEOUT_MS                10000     /* 10s max burn */
-#define COAST_TIMEOUT_MS                60000     /* 60s max coast */
-#define DROGUE_TIMEOUT_MS               300000    /* 5 min max descent */
-#define PARAFOIL_TIMEOUT_MS             300000    /* 5 min max descent */
+#define BOOST_TIMEOUT_MS                10000     
+#define COAST_TIMEOUT_MS                60000     
+#define DROGUE_TIMEOUT_MS               300000    
+#define PARAFOIL_TIMEOUT_MS             300000    
+#define SONIC_TIMOUT_MS                 3500
 
 
 
