@@ -36,8 +36,8 @@ typedef struct
     float y_gy;
     float z_gy;
 
-    float kalman_altitude;   // add
-    float kalman_velocity;   // add
+    float kalman_altitude;   
+    float kalman_velocity;  
 
     /*Flight State*/
     uint8_t flight_state;

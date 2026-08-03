@@ -58,7 +58,6 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/AppDrivers/USB/USBC.c
     Core/App/ApplicationLayer/ApplicationHALS/flight_sensors.c
     Core/App/ApplicationLayer/ApplicationHALS/Lora_App.c
-    Core/App/Outputs/DataLogger/logger.c
     Core/App/Outputs/LED&buzzer/indicators.c
     Core/App/Outputs/Telemetry/telemetry.c
     Core/App/ApplicationLayer/ApplicationHALS/crc16.c
@@ -81,7 +80,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Core/App/AppDrivers/Memory
     Core/App/AppDrivers/USB
     Core/App/ApplicationLayer/ApplicationHALS/
-    Core/App/Outputs/DataLogger
     Core/App/Outputs/LED&buzzer
     Core/App/Outputs/Telemetry
     Core/App/ApplicationLayer/FlightStateMachine/
@@ -94,7 +92,10 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
     # DEBUG_TIMING
-    # HIL_SIM 
+    # HIL_SIM
+    
+    MEMORY_DUMP
+    # FLASH_ERASE_BUILD
     DEBUG
     
 )

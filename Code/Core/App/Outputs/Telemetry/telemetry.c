@@ -12,6 +12,8 @@
 #include "main.h"
 
 
+static float read_be_float(const uint8_t *b);
+
 void serial_print(const FlightSensorData *sensordata)
 {
     if (sensordata == NULL) return;
@@ -115,21 +117,21 @@ HAL_StatusTypeDef flash_dump_serial(void) {
         float x_gy, y_gy, z_gy;
         float velocity;
 
-        memcpy(&altitude,    &buff[3],  4);
-        memcpy(&pressure,    &buff[7],  4);
-        memcpy(&temperature, &buff[11], 4);
-        memcpy(&x_mg,        &buff[15], 4);
-        memcpy(&y_mg,        &buff[19], 4);
-        memcpy(&z_mg,        &buff[23], 4);
-        memcpy(&x_mg_IMU,    &buff[27], 4);
-        memcpy(&y_mg_IMU,    &buff[31], 4);
-        memcpy(&z_mg_IMU,    &buff[35], 4);
-        memcpy(&x_gy,        &buff[39], 4);
-        memcpy(&y_gy,        &buff[43], 4);
-        memcpy(&z_gy,        &buff[47], 4);
-        memcpy(&velocity,    &buff[51], 4);
-
+        altitude    = read_be_float(&buff[3]);
+        pressure    = read_be_float(&buff[7]);
+        temperature = read_be_float(&buff[11]);
+        x_mg        = read_be_float(&buff[15]);
+        y_mg        = read_be_float(&buff[19]);
+        z_mg        = read_be_float(&buff[23]);
+        x_mg_IMU    = read_be_float(&buff[27]);
+        y_mg_IMU    = read_be_float(&buff[31]);
+        z_mg_IMU    = read_be_float(&buff[35]);
+        x_gy        = read_be_float(&buff[39]);
+        y_gy        = read_be_float(&buff[43]);
+        z_gy        = read_be_float(&buff[47]);
+        velocity    = read_be_float(&buff[51]);
         uint8_t state = buff[55];
+
 
         printf("[%lu] alt=%.2f pres=%.2f temp=%.2f velocity=%.2f | "
                "hg=%.1f,%.1f,%.1f | "
@@ -144,6 +146,7 @@ HAL_StatusTypeDef flash_dump_serial(void) {
 
     return HAL_OK;
 }
+
 #endif
 
 HAL_StatusTypeDef lora_rx_command() {
@@ -237,4 +240,13 @@ HAL_StatusTypeDef lora_tx_continuity() {
 
     return result;
 
+}
+
+static float read_be_float(const uint8_t *b)
+{
+    uint32_t raw = ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) |
+                   ((uint32_t)b[2] << 8)  |  (uint32_t)b[3];
+    float f;
+    memcpy(&f, &raw, 4);
+    return f;
 }

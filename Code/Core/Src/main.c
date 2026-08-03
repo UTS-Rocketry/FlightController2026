@@ -75,6 +75,7 @@ PCD_HandleTypeDef hpcd_USB_OTG_FS;
 /* USER CODE BEGIN PV */
 
 FlightSensorData sensorData;
+
 uint8_t imu_sensor_read = 0;
 uint8_t baro_sensor_read = 0;
 
@@ -188,6 +189,7 @@ int main(void)
       HAL_Delay(40);   // match your baro rate
   }
  #endif
+
  
 
 /* LORA init --------------------------------------------------------*/
@@ -205,7 +207,7 @@ int main(void)
   result = flash_memory_init();
   #ifdef DEBUG
     if (result != HAL_OK) {
-      printf("flash memory failed\r\n");
+      printf("flash memory failed init\r\n");
     } else { 
       printf("Flash memory OK");
     }
@@ -215,11 +217,77 @@ int main(void)
   
   #ifdef DEBUG
     if (result != HAL_OK) {
-      printf("flash memory failed\r\n");
+      printf("flash memory failed sanity check\r\n");
     } else { 
       printf("Flash memory OK\r\n");
     }
   #endif
+
+  #ifdef MEMORY_DUMP
+
+    result = flash_recover_write_pointer();
+    #ifdef DEBUG
+      if (result != HAL_OK) {
+        printf("flash recovery failed\r\n");
+      }
+    #endif
+
+    result = flash_dump_serial();
+
+    #ifdef DEBUG
+      if (result != HAL_OK) {
+        printf("flash memory dump failed\r\n");
+      } else { 
+        printf("Flash memory OK printed reflash and power on\r\n");
+      }
+    #endif
+
+    while(1) {};
+
+    
+
+  #endif
+
+  #ifdef FLASH_ERASE_BUILD
+    
+    result = flash_full_chip_erase();
+      #ifdef DEBUG
+        if (result != HAL_OK) {
+          printf("Chip erase failed\r\n");
+        } else {
+          printf("Chip erase complete — safe to power off\r\n");
+        }
+      #endif
+      if (result == HAL_OK) {
+        buzzer_Set(100, 100, 5, 800);   // 5 quick beeps, repeating — success pattern
+      } else {
+        buzzer_Set(600, 600, 0, 0);     // long continuous beep — failure pattern
+      }
+      while (1) {
+        buzzer_Service();
+      }
+
+  #endif /* FLASH_ERASE_BUILD */
+
+  result = flash_recover_write_pointer(); 
+
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash memory failed find start address\r\n");
+    } else { 
+      printf("Flash memory OK\r\n");
+    }
+  #endif
+
+  result = flash_prepare_log_region(150);   // <-- add here, e.g. ~6 min of logging headroom
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash pre-erase failed\r\n");
+    } else {
+      printf("Flash pre-erase OK\r\n");
+    }
+  #endif
+
 
 /* CAN init --------------------------------------------------------*/    
   result = Can_init();
