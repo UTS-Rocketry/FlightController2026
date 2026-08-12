@@ -92,9 +92,20 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined symbols
     # DEBUG_TIMING
-    # HIL_SIM
     
-    MEMORY_DUMP
+    # SIMS 
+    
+    HIL_SIM
+    
+    # J435
+    # K1200
+      L820
+    # L1400
+    # L1365
+    # M2050
+
+    
+    # MEMORY_DUMP
     # FLASH_ERASE_BUILD
     DEBUG
     

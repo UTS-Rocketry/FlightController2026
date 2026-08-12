@@ -14,7 +14,7 @@
 #define APOGEE_CONFIRM_SAMPLES          5
 
 /* ── Deployment altitudes ──────────────────────────── */
-#define MAIN_DEPLOY_ALT_M               300.0f    /* AGL meters */
+#define MAIN_DEPLOY_ALT_M               100.0f    /* AGL meters */
 #define MAIN_ALT_CONFIRM_SAMPLES        5
 
 /* ── Landing detect ────────────────────────────────── */
