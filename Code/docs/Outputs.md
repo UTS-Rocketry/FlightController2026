@@ -34,13 +34,14 @@ console. Frames use the 58-byte format produced by
 | Function | Purpose | Notes |
 |---|---|---|
 | `serial_print(sensorData)` | Human-readable dump over UART (debug) | Blocking UART; keep behind `DEBUG` ([R1](CONCURRENCY_SAFETY.md#-r1--printf-in-the-hot-loop)) |
-| `lora_tx_telemetry(sensorData)` | Build a packet, serialize, transmit over LoRa (5 Hz, state ≥ PAD) | ✅ `buff[62]` now (M1 fixed) |
+| `lora_tx_telemetry(sensorData)` | Build a packet, serialize, transmit over LoRa (3.3 Hz, state ≥ PAD) | ✅ `buff[62]` now (M1 fixed) |
+| `lora_tx_gps(fix, state)` | Send the latest GPS fix/status at 1 Hz in a distinct 33-byte payload | Scheduled with all other radio traffic and a 25 ms guard |
 | `lora_tx_continuity()` | Broadcast pyro continuity (main/drogue) every 2 s pre-launch (state ≤ PAD) | 12-byte packet, fits `buff[12]` |
 | `lora_rx_command()` | Poll for an authenticated ground command at PAD; dispatch ARM/FIRE/DISARM | ⚠️ blocks ≤1 s + remote FIRE bypasses FSM flags ([N1](CONCURRENCY_SAFETY.md#-n1--lora_rx_command-blocks-the-loop-up-to-1-second)/[N2](CONCURRENCY_SAFETY.md#-n2--remote-cmd_fire-bypasses-the-fsm-deploy-flags-and-state-guard)) |
 | `flash_log_telemetry(sensorData)` | Build a packet, serialize, append a 64-byte record to flash (25 Hz, state ≥ PAD) | ✅ correct buffer sizing |
 | `flash_dump_serial()` | Read every flash record back and print decoded fields over UART | Post-flight analysis tool |
 
-**Telemetry vs. logging — same data, two sinks, two rates:** the downlink runs at 5 Hz
+**Telemetry vs. logging — same data, two sinks, two rates:** the downlink runs at 3.3 Hz
 (bandwidth-limited radio) while flash logging runs at 25 Hz (full-resolution post-flight
 record). Both are gated to `state ≥ PAD` so the log isn't filled with idle pad data.
 
@@ -99,7 +100,8 @@ Minimal today. Two notes:
 
 | Sink | Module | Rate | Format | Status |
 |---|---|---|---|---|
-| LoRa downlink | `telemetry.c` → `Lora_App` → `LoRa.c` | 5 Hz (≥ PAD) | 58-byte CRC16 frame | ✅ 🟡 (M1) |
+| LoRa downlink | `telemetry.c` → `Lora_App` → `LoRa.c` | 3.3 Hz (≥ PAD) | 58-byte CRC16 frame | ✅ 🟡 (M1) |
+| GPS downlink | `GPS.c` → `telemetry.c` → `LoRa.c` | 1 Hz (all states, after first NMEA sentence) | 33-byte CRC16 frame | ✅ |
 | Flash log | `telemetry.c` → `W25Q128_HAL` → `W25Q128.c` | 25 Hz (≥ PAD) | 64-byte records | ✅ |
 | Console / replay | `serial_print`, `flash_dump_serial` | debug / on-demand | text | ✅ (keep behind DEBUG) |
 | Buzzer | `indicators.c` / `pyro.c` | events | GPIO | ✅ (C1) |

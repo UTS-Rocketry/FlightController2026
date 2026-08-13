@@ -12,7 +12,7 @@ AppDrivers/
 ├── LoRa/        SX1276 radio                                            ── SPI2 + EXTI
 ├── Memory/      W25Q128 NOR flash · fatfs_sd (SD, disabled)            ── SPI3 / SPI
 ├── CAN/         vehicle-bus protocol definitions                       ── CAN2  🧩
-├── GPS/         🧩 empty stub                                           ── UART5
+├── GPS/         NMEA GGA/RMC receiver                                  ── UART5
 └── USB/         🧩 empty stub
 ```
 
@@ -166,11 +166,14 @@ for the enum-collision fix needed before implementing it.
 
 ---
 
-## GPS/ and USB/  🧩
+## GPS/ and USB/
 
-Empty stubs (`GPS.c/.h`, `USBC.c/.h`). GPS is intended on **UART5**; a `GPSPacket` type
-is already reserved in `Lora_App.h` for when position data joins the downlink. USB is a
-placeholder (the USB OTG peripheral is initialized in `main.c` but unused).
+`GPS.c/.h` receives NMEA 0183 GGA/RMC sentences from the GPS JST connector on **UART5
+(9600 baud, PC12 TX / PD2 RX)**. Reception is interrupt-driven into a ring buffer, while
+checksum validation and parsing run in the main loop. Position uses signed degrees × 10^7;
+altitude, speed, course, UTC, satellite count, fix quality, and receiver status are retained
+for the GPS LoRa packet. `GPS2ResetPin` is pulsed low during initialization. `USBC.c/.h`
+remains a placeholder.
 
 ---
 
@@ -185,4 +188,5 @@ placeholder (the USB OTG peripheral is initialized in `main.c` but unused).
 | W25Q128 flash | SPI3 | ✅ (reference impl) |
 | fatfs_sd | SPI | 🧩 disabled |
 | CAN | CAN2 | 🧩 protocol only |
-| GPS / USB | UART5 / USB | 🧩 stubs |
+| GPS | UART5 | ✅ NMEA GGA/RMC |
+| USB | USB | 🧩 stub |

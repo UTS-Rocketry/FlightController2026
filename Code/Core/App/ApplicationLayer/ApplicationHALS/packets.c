@@ -1,5 +1,20 @@
 #include "packets.h"
 #include "crc16.h"
+#include <string.h>
+
+static void write_be_u16(uint8_t *buff, uint16_t value)
+{
+    buff[0] = (uint8_t)(value >> 8);
+    buff[1] = (uint8_t)value;
+}
+
+static void write_be_u32(uint8_t *buff, uint32_t value)
+{
+    buff[0] = (uint8_t)(value >> 24);
+    buff[1] = (uint8_t)(value >> 16);
+    buff[2] = (uint8_t)(value >> 8);
+    buff[3] = (uint8_t)value;
+}
 
 void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
 
@@ -137,6 +152,27 @@ void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff) {
     buff[57] =  (crc) & 0xFF;
 
 
+}
+
+void gps_serializer(const GPSPacket *packet, uint8_t *buff)
+{
+    buff[0] = packet->header.sync_word;
+    buff[1] = packet->header.packet_type;
+    buff[2] = packet->header.sequence_number;
+    buff[3] = packet->fix.status_flags;
+    buff[4] = packet->fix.fix_quality;
+    buff[5] = packet->fix.satellites;
+    write_be_u32(&buff[6], (uint32_t)packet->fix.latitude_e7);
+    write_be_u32(&buff[10], (uint32_t)packet->fix.longitude_e7);
+    write_be_u32(&buff[14], (uint32_t)packet->fix.altitude_mm);
+    write_be_u32(&buff[18], packet->fix.ground_speed_cms);
+    write_be_u32(&buff[22], packet->fix.utc_ms);
+    write_be_u16(&buff[26], packet->fix.course_cdeg);
+    write_be_u16(&buff[28], packet->age_ms);
+    buff[30] = packet->flight_State;
+
+    uint16_t crc = crc16(0, buff, 31U);
+    write_be_u16(&buff[31], crc);
 }
 
 void continuity_serializer(ContinuityPacket *packet, uint8_t *buff) {

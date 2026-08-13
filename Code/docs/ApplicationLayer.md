@@ -129,6 +129,7 @@ enums, and the (de)serializers:
 | Function | Purpose |
 |---|---|
 | `telemetry_serializer` | 58-byte big-endian telemetry frame + CRC16 |
+| `gps_serializer` | 33-byte big-endian GPS fix/status frame + CRC16 |
 | `continuity_serializer` | 8-byte pyro-continuity frame + CRC16 |
 | `command_deserializer` | Validate + decode a ground command (sync + type + `0xBE` auth + CRC16) |
 

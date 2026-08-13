@@ -10,11 +10,13 @@ extern "C" {
 #include <stdint.h>
 #include <stdio.h>
 #include "flight_sensors.h"
+#include "GPS.h"
 #include "W25Q128_HAL.h"
 
 /* Serial print for flight sensor values */
 void serial_print(const FlightSensorData *sensordata);
 HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata);
+HAL_StatusTypeDef lora_tx_gps(const GPSFix *fix, uint8_t flight_state);
 HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData);
 HAL_StatusTypeDef flash_dump_serial(void);
 HAL_StatusTypeDef lora_rx_command(void);

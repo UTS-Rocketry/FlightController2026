@@ -56,6 +56,7 @@
 
 /* External variables --------------------------------------------------------*/
 extern CAN_HandleTypeDef hcan2;
+extern UART_HandleTypeDef huart5;
 /* USER CODE BEGIN EV */
 extern volatile uint16_t Timer1, Timer2;
 /* USER CODE END EV */
@@ -225,6 +226,14 @@ void CAN2_RX0_IRQHandler(void)
   /* USER CODE BEGIN CAN2_RX0_IRQn 1 */
 
   /* USER CODE END CAN2_RX0_IRQn 1 */
+}
+
+/**
+  * @brief This function handles UART5 interrupts from the GPS JST connector.
+  */
+void UART5_IRQHandler(void)
+{
+  HAL_UART_IRQHandler(&huart5);
 }
 
 /* USER CODE BEGIN 1 */

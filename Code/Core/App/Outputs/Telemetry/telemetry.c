@@ -10,6 +10,7 @@
 #include "pyro.h"
 #include "flight_state.h"
 #include "main.h"
+#include <string.h>
 
 
 static float read_be_float(const uint8_t *b);
@@ -39,14 +40,15 @@ void serial_print(const FlightSensorData *sensordata)
 }
 
 HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
+    if (sensordata == NULL) return HAL_ERROR;
     
     static uint8_t seq = 0;
-    uint8_t buff[62] = {0};
+    uint8_t buff[LORA_RECEIVER_HEADER_SIZE + TELEMETRY_PAYLOAD_SIZE] = {0};
     HAL_StatusTypeDef result;
     TelemetryPacket packet;
 
     packet.header.sync_word = 0xAA;
-    packet.header.packet_type = 0x01;
+    packet.header.packet_type = telemetry_packet;
     packet.header.sequence_number = seq;
 
     packet.sensordata = *sensordata;
@@ -54,13 +56,13 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
     packet.flight_State = sensordata->flight_state;
 
     
-    // LoRa driver consumes first 4 bytes internally (SX1276 FIFO header)
-    // payload starts at buff + 4
-    telemetry_serializer(&packet, buff + 4);
+    // Four leading zero bytes are the receiver-routing header used by this protocol.
+    // The application payload starts after that header.
+    telemetry_serializer(&packet, buff + LORA_RECEIVER_HEADER_SIZE);
 
     lora_tx_done_flag = 0;
 
-    result = lora_TX(buff, 62, 200);
+    result = lora_TX(buff, sizeof(buff), 200);
 
     seq++;
 
@@ -69,14 +71,36 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
 
 }
 
+HAL_StatusTypeDef lora_tx_gps(const GPSFix *fix, uint8_t flight_state)
+{
+    if (fix == NULL) return HAL_ERROR;
+
+    static uint8_t seq = 0U;
+    uint8_t buff[LORA_RECEIVER_HEADER_SIZE + GPS_PAYLOAD_SIZE] = {0};
+    GPSPacket packet = {0};
+
+    packet.header.sync_word = 0xAA;
+    packet.header.packet_type = gps_packet;
+    packet.header.sequence_number = seq++;
+    packet.fix = *fix;
+    packet.flight_State = flight_state;
+
+    uint32_t age_ms = HAL_GetTick() - fix->last_update_ms;
+    packet.age_ms = age_ms > UINT16_MAX ? UINT16_MAX : (uint16_t)age_ms;
+
+    gps_serializer(&packet, buff + LORA_RECEIVER_HEADER_SIZE);
+    return lora_TX(buff, sizeof(buff), 150U);
+}
+
 HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData) {
+    if (sensorData == NULL) return HAL_ERROR;
     
     static uint16_t seq = 0;
     uint8_t buff[64] = {0};
     TelemetryPacket packet;
 
     packet.header.sync_word = 0xAA;
-    packet.header.packet_type = 0x01;
+    packet.header.packet_type = telemetry_packet;
     packet.header.sequence_number = seq++;
     packet.sensordata = *sensorData;
     packet.flight_State = sensorData->flight_state;
@@ -219,7 +243,7 @@ HAL_StatusTypeDef lora_rx_command() {
 HAL_StatusTypeDef lora_tx_continuity() {
     
     static uint8_t seq = 0;
-    uint8_t buff[12] = {0};
+    uint8_t buff[LORA_RECEIVER_HEADER_SIZE + CONTINUITY_PAYLOAD_SIZE] = {0};
     HAL_StatusTypeDef result;
     ContinuityPacket packet;
 
@@ -230,11 +254,11 @@ HAL_StatusTypeDef lora_tx_continuity() {
     packet.main = pyro_check_main();
     packet.drogue = pyro_check_drogue();
     
-    // LoRa driver consumes first 4 bytes internally (SX1276 FIFO header)
-    // payload starts at buff + 4
-    continuity_serializer(&packet, buff + 4);
+    // Four leading zero bytes are the receiver-routing header used by this protocol.
+    // The application payload starts after that header.
+    continuity_serializer(&packet, buff + LORA_RECEIVER_HEADER_SIZE);
 
-    result = lora_TX(buff, 12, 100);
+    result = lora_TX(buff, sizeof(buff), 100);
 
     seq++;
 

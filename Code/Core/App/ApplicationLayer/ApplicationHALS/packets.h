@@ -3,8 +3,13 @@
 
 #include <stdint.h>
 #include "flight_sensors.h"
+#include "GPS.h"
 
 #define CMD_AUTH_BYTE 0xBE
+#define TELEMETRY_PAYLOAD_SIZE 58U
+#define GPS_PAYLOAD_SIZE 33U
+#define CONTINUITY_PAYLOAD_SIZE 8U
+#define LORA_RECEIVER_HEADER_SIZE 4U
 
 typedef struct{
 
@@ -28,7 +33,8 @@ typedef struct{
 typedef struct{
 
     HeaderPacket header;
-    /* Gps info */
+    GPSFix fix;
+    uint16_t age_ms;
     uint8_t flight_State;
     uint16_t crc;
 
@@ -69,6 +75,7 @@ typedef enum {
 } CommandID;
 
 void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff);
+void gps_serializer(const GPSPacket *packet, uint8_t *buff);
 void continuity_serializer(ContinuityPacket *packet, uint8_t *buff);
 uint8_t command_deserializer(uint8_t *buff, uint8_t *cmd_id, uint8_t *channel);
 

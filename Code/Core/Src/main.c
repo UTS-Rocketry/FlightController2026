@@ -39,6 +39,7 @@
 #include "kalman.h"
 #include "watchdog.h"
 #include "CAN.h"
+#include "GPS.h"
 
 /* USER CODE END Includes */
 
@@ -49,6 +50,12 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+
+#define RADIO_GUARD_MS        25U
+#define COMMAND_RX_PERIOD_MS 400U
+#define FLIGHT_TX_PERIOD_MS  300U
+#define GPS_TX_PERIOD_MS    1000U
+#define CONTINUITY_PERIOD_MS 2000U
 
 /* USER CODE END PD */
 
@@ -306,6 +313,15 @@ int main(void)
   pyro_init();
   FSM_init();
   buzzer_init();
+
+  result = GPS_init(&huart5);
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("GPS UART init failed\r\n");
+    } else {
+      printf("GPS UART5 listening on JST connector\r\n");
+    }
+  #endif
   
 
   MX_IWDG_Init();
@@ -321,6 +337,8 @@ int main(void)
   static uint32_t last_flash = 0;
   static uint32_t last_cont  = 0;
   static uint32_t last_RX    = 0;
+  static uint32_t last_gps   = 0;
+  static uint32_t last_radio_end = 0;
   static uint32_t last_hb_ms = 0;
   
   /* NULL Placeholder for CAN heartbeat */
@@ -340,6 +358,7 @@ int main(void)
     /*Non blocking pyro*/
     pyro_service();
     indicators_service();
+    GPS_service();
     
     /* Predict Stage based on IMU  --------------------------------------------------------*/
     if (now - last_imu >= 10) {
@@ -393,28 +412,34 @@ int main(void)
 
     sensorData.flight_state = FSM_get_state();
     
-    /* Checks Continutity  --------------------------------------------------------*/
-    if (now - last_cont >= 2000 && FSM_get_state() <= STATE_PAD) {
-      last_cont = now;
-      lora_tx_continuity();
-
-    }
-
-    /* This is for arming and dearming  --------------------------------------------------------*/
-    if (FSM_get_state() <= STATE_PAD && now - last_RX >= 400) { 
-      
-      last_RX = now; 
-      
-      lora_rx_command();
-
-    }
-
-    /* Transmit Flight Telemetry --------------------------------------------------------*/
-    if(now - last_lora >= 300 && FSM_get_state() >= STATE_PAD) {
-      
-      last_lora = now;
-      lora_tx_telemetry(&sensorData);
-
+    /* Radio scheduler ------------------------------------------------------------
+     * Dispatch at most one operation per pass and leave a quiet guard after the
+     * previous operation. This prevents GPS, telemetry, continuity and command RX
+     * from starting back-to-back when several timers become due together. */
+    uint32_t radio_now = HAL_GetTick();
+    if (radio_now - last_radio_end >= RADIO_GUARD_MS) {
+      if (FSM_get_state() <= STATE_PAD && radio_now - last_RX >= COMMAND_RX_PERIOD_MS) {
+        last_RX = radio_now;
+        (void)lora_rx_command();
+        last_radio_end = HAL_GetTick();
+      } else if (FSM_get_state() >= STATE_PAD &&
+                 radio_now - last_lora >= FLIGHT_TX_PERIOD_MS) {
+        last_lora = radio_now;
+        (void)lora_tx_telemetry(&sensorData);
+        last_radio_end = HAL_GetTick();
+      } else if (radio_now - last_gps >= GPS_TX_PERIOD_MS) {
+        GPSFix fix;
+        last_gps = radio_now;
+        if (GPS_get_fix(&fix)) {
+          (void)lora_tx_gps(&fix, (uint8_t)FSM_get_state());
+          last_radio_end = HAL_GetTick();
+        }
+      } else if (FSM_get_state() <= STATE_PAD &&
+                 radio_now - last_cont >= CONTINUITY_PERIOD_MS) {
+        last_cont = radio_now;
+        (void)lora_tx_continuity();
+        last_radio_end = HAL_GetTick();
+      }
     }
 
     /* Log Telemetry  --------------------------------------------------------*/
@@ -830,7 +855,7 @@ static void MX_UART5_Init(void)
 
   /* USER CODE END UART5_Init 1 */
   huart5.Instance = UART5;
-  huart5.Init.BaudRate = 115200;
+  huart5.Init.BaudRate = 9600;
   huart5.Init.WordLength = UART_WORDLENGTH_8B;
   huart5.Init.StopBits = UART_STOPBITS_1;
   huart5.Init.Parity = UART_PARITY_NONE;
