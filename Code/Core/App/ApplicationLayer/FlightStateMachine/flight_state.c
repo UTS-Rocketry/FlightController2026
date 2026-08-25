@@ -70,9 +70,8 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uin
                 #endif
             }
 
-            //lock pyro
 
-            // change when accel = around < 2 gs
+            /* */
             if(imu_read) {
                 
                 if(sensorData->z_mg_IMU <= BURNOUT_ACCEL_THRESHOLD_MG) {
@@ -190,8 +189,25 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uin
                     ctx.main_fired = 1;
                     FSM_transition(STATE_PARAFOIL);
                 }
+
+                if (HAL_GetTick() - ctx.state_entry_time > DROUGE_NOT_DEPLOYED && 
+                ctx.main_fired != 1 && 
+                sensorData->kalman_velocity <= -40) {
+                    ctx.main_backup_count++;
+                }
+                else {
+                    ctx.main_backup_count  = 0;
+                }
+
+                if(ctx.main_backup_count > MAIN_ALT_CONFIRM_SAMPLES) {
+                    pyro_fire_main();
+                    ctx.main_fired = 1;
+                    FSM_transition(STATE_PARAFOIL);
+                }
+
+
             }
-          
+            
             if (HAL_GetTick() - ctx.state_entry_time > DROGUE_TIMEOUT_MS && ctx.main_fired != 1) {
                 /*pyro fire main*/
                 pyro_fire_main();

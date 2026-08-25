@@ -95,11 +95,11 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     
     # SIMS 
     
-    HIL_SIM
+    # HIL_SIM
     
     # J435
     # K1200
-      L820
+    # L820
     # L1400
     # L1365
     # M2050
@@ -107,7 +107,7 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     
     # MEMORY_DUMP
     # FLASH_ERASE_BUILD
-    DEBUG
+    # DEBUG
     
 )
 

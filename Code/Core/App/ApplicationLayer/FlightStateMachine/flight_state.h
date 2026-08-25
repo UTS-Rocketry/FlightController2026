@@ -30,6 +30,7 @@ typedef struct {
     uint8_t burnout_count;
     uint8_t apogee_count;        
     uint8_t main_alt_count;
+    uint8_t main_backup_count;
 
 } FSM_Context_t;
 
