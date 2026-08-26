@@ -802,16 +802,6 @@
 	)
 	(wire
 		(pts
-			(xy 90.17 100.33) (xy 134.62 100.33)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "1b4b065c-a1d8-42d4-b2d0-b92df2201e84")
-	)
-	(wire
-		(pts
 			(xy 132.08 97.79) (xy 134.62 97.79)
 		)
 		(stroke
@@ -819,16 +809,6 @@
 			(type default)
 		)
 		(uuid "288d38a1-7084-477f-89a4-a308def08572")
-	)
-	(wire
-		(pts
-			(xy 90.17 90.17) (xy 134.62 90.17)
-		)
-		(stroke
-			(width 0)
-			(type default)
-		)
-		(uuid "36bba083-d518-410d-a499-b8872567dcef")
 	)
 	(wire
 		(pts
@@ -852,6 +832,16 @@
 	)
 	(wire
 		(pts
+			(xy 90.17 100.33) (xy 134.62 100.33)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "8a744c0f-23b9-4a89-8018-4a991daefbe9")
+	)
+	(wire
+		(pts
 			(xy 132.08 92.71) (xy 134.62 92.71)
 		)
 		(stroke
@@ -859,6 +849,16 @@
 			(type default)
 		)
 		(uuid "d0d3b9aa-aa87-4c7c-9d24-7945ee598533")
+	)
+	(wire
+		(pts
+			(xy 90.17 90.17) (xy 134.62 90.17)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "f292fad8-d21d-4da5-bf96-91da811ee4d7")
 	)
 	(wire
 		(pts
@@ -894,7 +894,7 @@
 	)
 	(hierarchical_label "SDMISO"
 		(shape input)
-		(at 90.17 90.17 180)
+		(at 90.17 100.33 180)
 		(effects
 			(font
 				(size 1.27 1.27)
@@ -905,7 +905,7 @@
 	)
 	(hierarchical_label "SDMOSI"
 		(shape input)
-		(at 90.17 100.33 180)
+		(at 90.17 90.17 180)
 		(effects
 			(font
 				(size 1.27 1.27)
