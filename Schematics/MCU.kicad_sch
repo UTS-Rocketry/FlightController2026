@@ -7746,7 +7746,7 @@
 				)
 			)
 		)
-		(property "LCSC" "C149504"
+		(property "LCSC" "C17414"
 			(at 40.64 138.43 90)
 			(hide yes)
 			(show_name no)
@@ -9207,6 +9207,17 @@
 			)
 		)
 		(property "Description" "Cortex Debug Connector, standard ARM Cortex-M SWD and JTAG interface"
+			(at 238.76 52.07 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C22438120"
 			(at 238.76 52.07 0)
 			(hide yes)
 			(show_name no)
@@ -12909,6 +12920,17 @@
 			)
 		)
 		(property "Description" "Resistor"
+			(at 203.2 129.54 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "LCSC" "C17414"
 			(at 203.2 129.54 0)
 			(hide yes)
 			(show_name no)
