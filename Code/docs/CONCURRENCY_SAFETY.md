@@ -1,5 +1,9 @@
 # Concurrency, Memory-Safety & Atomicity — Refactor Notes
 
+> **Historical migration review:** the active firmware now uses the Zephyr task,
+> snapshot, message-queue, and UART ring-buffer model in
+> [ZEPHYR_RTOS.md](ZEPHYR_RTOS.md).
+
 > **What this is.** A working list of where the firmware shares state, where it can
 > block or hang, and where it is not memory-safe — plus the order I'd fix it in. It's
 > written to be actionable: each finding has a **location**, **why it matters**, and a

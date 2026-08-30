@@ -1,5 +1,10 @@
 # System Overview
 
+> **Historical document:** this describes the former CubeMX bare-metal
+> implementation. The active firmware now uses Zephyr threads and drivers in the
+> same `Core/` layout. See [ZEPHYR_RTOS.md](ZEPHYR_RTOS.md) for the current build,
+> execution model, priorities, periods, and buffering design.
+
 > **Purpose of this document.** Give you a complete, accurate mental model of the
 > flight computer so you can explain it confidently — including the parts a
 > software/controls interviewer will probe: real-time execution, the control &

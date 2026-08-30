@@ -1,108 +1,203 @@
-#include "pyro.h"
-#include "flight_state.h"
-#include "main.h"
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_def.h"
-#include "stm32f4xx_hal_gpio.h"
+#include <errno.h>
+#include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
 
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/adc.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/util.h>
 
-extern ADC_HandleTypeDef hadc1;
-extern ADC_HandleTypeDef hadc2;
+#include "flight_state.h"
+#include "odin_app.h"
+#include "pyro.h"
 
-static uint32_t drogue_fire_start = 0;
-static uint32_t main_fire_start = 0;
-static uint32_t aux_fire_start = 0;
+LOG_MODULE_REGISTER(odin_pyro, LOG_LEVEL_INF);
 
+#define ODIN_IO_NODE DT_NODELABEL(odin_io)
 
+static const struct gpio_dt_spec drogue_output =
+	GPIO_DT_SPEC_GET(ODIN_IO_NODE, drogue_pyro_gpios);
+static const struct gpio_dt_spec main_output =
+	GPIO_DT_SPEC_GET(ODIN_IO_NODE, main_pyro_gpios);
+static const struct gpio_dt_spec aux_output =
+	GPIO_DT_SPEC_GET(ODIN_IO_NODE, aux_pyro_gpios);
+static const struct gpio_dt_spec buzzer_output =
+	GPIO_DT_SPEC_GET(ODIN_IO_NODE, buzzer_gpios);
 
-void pyro_init(void) {
-    
-    HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(PyroIgnite_GPIO_Port,   PyroIgnite_Pin,   GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(AuxIgnite_GPIO_Port,    AuxIgnite_Pin,    GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(BuzzerControl_GPIO_Port, BuzzerControl_Pin, GPIO_PIN_RESET);
+static const struct adc_dt_spec drogue_continuity =
+	ADC_DT_SPEC_GET_BY_NAME(ODIN_IO_NODE, drogue_continuity);
+static const struct adc_dt_spec main_continuity =
+	ADC_DT_SPEC_GET_BY_NAME(ODIN_IO_NODE, main_continuity);
 
+K_MUTEX_DEFINE(continuity_lock);
 
+static void drogue_off(struct k_work *work);
+static void main_off(struct k_work *work);
+K_WORK_DELAYABLE_DEFINE(drogue_off_work, drogue_off);
+K_WORK_DELAYABLE_DEFINE(main_off_work, main_off);
+
+static void drogue_off(struct k_work *work)
+{
+	ARG_UNUSED(work);
+	(void)gpio_pin_set_dt(&drogue_output, 0);
 }
 
-
-
-uint8_t pyro_check_drogue(void) {
-    HAL_StatusTypeDef st;
-
-    HAL_ADC_Start(&hadc1);
-    st = HAL_ADC_PollForConversion(&hadc1, 10);  // 10mss timeout
-    uint32_t val = HAL_ADC_GetValue(&hadc1);
-    HAL_ADC_Stop(&hadc1);
-    #ifdef DEBUG
-        printf("drogue ADC=%lu thresh=%d\r\n", val, (int)PYRO_CONTINUITY_THRESHOLD);
-    #endif
-
-    return (st == HAL_OK && val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
-}          
-uint8_t pyro_check_main(void) {
-    HAL_StatusTypeDef st;
-
-    HAL_ADC_Start(&hadc2);
-    st = HAL_ADC_PollForConversion(&hadc2, 10);  // 10ms timeout
-    uint32_t val = HAL_ADC_GetValue(&hadc2);
-    HAL_ADC_Stop(&hadc2);
-    #ifdef DEBUG
-        printf("Main ADC=%lu thresh=%d\r\n", val, (int)PYRO_CONTINUITY_THRESHOLD);
-    #endif
-    return (st == HAL_OK && val > PYRO_CONTINUITY_THRESHOLD) ? 1 : 0;
+static void main_off(struct k_work *work)
+{
+	ARG_UNUSED(work);
+	(void)gpio_pin_set_dt(&main_output, 0);
 }
 
-void pyro_fire_drogue(void) {
-
-    if (FSM_get_state() != STATE_APOGEE) return;
-    HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_SET);
-    drogue_fire_start = HAL_GetTick();
-   
-}     
-void pyro_fire_main(void) {
-    
-    FlightState_t s = FSM_get_state();
-    if (s != STATE_APOGEE && s != STATE_DROGUE) return;
-    HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_SET);
-    main_fire_start = HAL_GetTick();
-   
+void odin_pyro_all_safe(void)
+{
+	(void)gpio_pin_set_dt(&drogue_output, 0);
+	(void)gpio_pin_set_dt(&main_output, 0);
+	(void)gpio_pin_set_dt(&aux_output, 0);
+	(void)gpio_pin_set_dt(&buzzer_output, 0);
 }
 
-void pyro_fire_drogue_ground(void) {
-    if (FSM_get_state() != STATE_PAD) return;   // armed-on-pad only
-    HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_SET);
-    drogue_fire_start = HAL_GetTick();
+int odin_pyro_init(void)
+{
+	const struct gpio_dt_spec *outputs[] = {
+		&drogue_output, &main_output, &aux_output, &buzzer_output,
+	};
+
+	for (size_t i = 0U; i < ARRAY_SIZE(outputs); ++i) {
+		if (!gpio_is_ready_dt(outputs[i])) {
+			return -ENODEV;
+		}
+		int ret = gpio_pin_configure_dt(outputs[i], GPIO_OUTPUT_INACTIVE);
+		if (ret != 0) {
+			return ret;
+		}
+	}
+
+	if (!adc_is_ready_dt(&drogue_continuity) ||
+	    !adc_is_ready_dt(&main_continuity)) {
+		return -ENODEV;
+	}
+	int ret = adc_channel_setup_dt(&drogue_continuity);
+	if (ret == 0) {
+		ret = adc_channel_setup_dt(&main_continuity);
+	}
+	odin_pyro_all_safe();
+	return ret;
 }
 
-void pyro_fire_main_ground(void) {
-    if (FSM_get_state() != STATE_PAD) return;
-    HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_SET);
-    main_fire_start = HAL_GetTick();
+static uint8_t continuity_read(const struct adc_dt_spec *channel)
+{
+	int16_t raw = 0;
+	struct adc_sequence sequence = {
+		.buffer = &raw,
+		.buffer_size = sizeof(raw),
+	};
+
+	if (adc_sequence_init_dt(channel, &sequence) != 0) {
+		return 0U;
+	}
+
+	k_mutex_lock(&continuity_lock, K_FOREVER);
+	int ret = adc_read_dt(channel, &sequence);
+	k_mutex_unlock(&continuity_lock);
+	return (ret == 0 && raw > PYRO_CONTINUITY_THRESHOLD) ? 1U : 0U;
 }
 
-/*
-void pyro_fire_aux(void) {
-    HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_SET);
-    aux_fire_start = HAL_GetTick();
+uint8_t pyro_check_drogue(void)
+{
+	return continuity_read(&drogue_continuity);
 }
-*/
 
-void pyro_service(void) {
-    uint32_t now = HAL_GetTick();
-    if (drogue_fire_start && now - drogue_fire_start >= PYRO_FIRE_DURATION_MS) {
-        HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
-        drogue_fire_start = 0;
-    }
-    if (main_fire_start && now - main_fire_start >= PYRO_FIRE_DURATION_MS) {
-        HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_RESET);
-        main_fire_start = 0;
-    }
-    
-    /*if (aux_fire_start && now - aux_fire_start >= PYRO_FIRE_DURATION_MS) {
-        HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_RESET);
-        aux_fire_start = 0;
-    }*/
+uint8_t pyro_check_main(void)
+{
+	return continuity_read(&main_continuity);
+}
+
+static void fire_drogue(void)
+{
+	(void)gpio_pin_set_dt(&drogue_output, 1);
+	(void)k_work_reschedule(&drogue_off_work,
+				K_MSEC(PYRO_FIRE_DURATION_MS));
+}
+
+static void fire_main(void)
+{
+	(void)gpio_pin_set_dt(&main_output, 1);
+	(void)k_work_reschedule(&main_off_work,
+				K_MSEC(PYRO_FIRE_DURATION_MS));
+}
+
+void pyro_fire_drogue(void)
+{
+	if (FSM_get_state() == STATE_APOGEE) {
+		fire_drogue();
+	}
+}
+
+void pyro_fire_main(void)
+{
+	FlightState_t state = FSM_get_state();
+
+	if (state == STATE_APOGEE || state == STATE_DROGUE) {
+		fire_main();
+	}
+}
+
+void pyro_fire_drogue_ground(void)
+{
+	if (FSM_get_state() == STATE_PAD) {
+		fire_drogue();
+	}
+}
+
+void pyro_fire_main_ground(void)
+{
+	if (FSM_get_state() == STATE_PAD) {
+		fire_main();
+	}
+}
+
+static bool still_on_pad(void)
+{
+	FlightSensorData sample;
+
+	return odin_snapshot_get(&sample) && sample.flight_state == STATE_PAD;
+}
+
+void odin_indicator_thread(void *unused1, void *unused2, void *unused3)
+{
+	ARG_UNUSED(unused1);
+	ARG_UNUSED(unused2);
+	ARG_UNUSED(unused3);
+
+	odin_wait_for_start();
+	uint32_t next_check = k_uptime_get_32();
+
+	for (;;) {
+		uint32_t now = k_uptime_get_32();
+		if (!still_on_pad()) {
+			(void)gpio_pin_set_dt(&buzzer_output, 0);
+			next_check = now + 1000U;
+			k_msleep(100);
+			continue;
+		}
+
+		if ((int32_t)(now - next_check) < 0) {
+			k_sleep(K_TIMEOUT_ABS_MS(next_check));
+			continue;
+		}
+		next_check += 1000U;
+		if ((int32_t)(now - next_check) >= 0) {
+			next_check = now + 1000U;
+		}
+
+		uint8_t beep_count = pyro_check_drogue() + pyro_check_main();
+		for (uint8_t i = 0U; i < beep_count && still_on_pad(); ++i) {
+			(void)gpio_pin_set_dt(&buzzer_output, 1);
+			k_msleep(150);
+			(void)gpio_pin_set_dt(&buzzer_output, 0);
+			k_msleep(150);
+		}
+	}
 }

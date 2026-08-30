@@ -1,5 +1,8 @@
 # Outputs — Telemetry, Logging & Indicators
 
+> **Historical output-layer notes:** radio, logging, and indicators now execute
+> in Zephyr threads/work items described in [ZEPHYR_RTOS.md](ZEPHYR_RTOS.md).
+
 `Core/App/Outputs/`
 
 Everything that leaves the board or surfaces state to a human: the LoRa downlink, the

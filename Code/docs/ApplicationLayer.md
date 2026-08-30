@@ -1,5 +1,8 @@
 # ApplicationLayer — Flight Logic & Fusion
 
+> **Historical superloop notes:** the estimator and FSM remain active, but they
+> are now scheduled by Zephyr as described in [ZEPHYR_RTOS.md](ZEPHYR_RTOS.md).
+
 `Core/App/ApplicationLayer/`
 
 The "brains" of the flight computer. This layer turns raw driver reads into a fused state

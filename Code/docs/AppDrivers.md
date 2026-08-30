@@ -1,5 +1,8 @@
 # AppDrivers — Hardware Driver Layer
 
+> **Historical HAL design notes:** active hardware access now uses Zephyr drivers;
+> see [ZEPHYR_RTOS.md](ZEPHYR_RTOS.md) and the current files under `Core/`.
+
 `Core/App/AppDrivers/`
 
 The lowest layer of our own code: one module per physical peripheral. Each driver owns a

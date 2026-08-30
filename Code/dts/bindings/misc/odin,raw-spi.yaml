@@ -1,0 +1,5 @@
+description: ODIN application-managed raw SPI peripheral
+
+compatible: "odin,raw-spi"
+
+include: spi-device.yaml

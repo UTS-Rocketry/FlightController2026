@@ -1,0 +1,34 @@
+description: ODIN flight computer discrete and analogue IO
+
+compatible: "odin,flight-io"
+
+include: base.yaml
+
+properties:
+  drogue-pyro-gpios:
+    type: phandle-array
+    required: true
+  main-pyro-gpios:
+    type: phandle-array
+    required: true
+  aux-pyro-gpios:
+    type: phandle-array
+    required: true
+  buzzer-gpios:
+    type: phandle-array
+    required: true
+  lora-reset-gpios:
+    type: phandle-array
+    required: true
+  lora-dio0-gpios:
+    type: phandle-array
+    required: true
+  gps-reset-gpios:
+    type: phandle-array
+    required: true
+  io-channels:
+    type: phandle-array
+    required: true
+  io-channel-names:
+    type: string-array
+    required: true

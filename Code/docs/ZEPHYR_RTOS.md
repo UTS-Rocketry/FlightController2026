@@ -1,0 +1,72 @@
+# ODIN Zephyr RTOS application
+
+This repository is the Zephyr RTOS firmware for the ODIN STM32F405RG flight
+computer. The active application code lives in `Core/`, preserving the existing
+subsystem layout, task periods, and radio dispatch order. The firmware targets
+the Zephyr 4.2.0 API baseline.
+
+## Build
+
+Use a Zephyr workspace that contains the upstream
+`weact_stm32f405_core` board (the target has the same STM32F405RG SoC). The
+ODIN overlay disables the carrier-board peripherals and replaces every pin,
+clock, bus, and chip-select setting with the values from `Code.ioc`.
+
+```sh
+west build -b weact_stm32f405_core . -d build/zephyr
+west flash -d build/zephyr
+```
+
+The application expects the standard Zephyr modules, including `hal_stm32`, and
+the Zephyr SDK Picolibc used by the estimator's math functions. Application code
+does not allocate from the heap at runtime.
+
+## Scheduling model
+
+| Work | Period | Zephyr context |
+|---|---:|---|
+| IMU + high-g read and Kalman predict | 10 ms / 100 Hz | priority-1 flight thread |
+| BMP388 read and Kalman correction | 40 ms / 25 Hz | priority-1 flight thread |
+| FSM update | after each fresh sensor result | priority-1 flight thread |
+| Flash log snapshot | 40 ms / 25 Hz | priority-7 logger via 64-record message queue |
+| Command RX | 400 ms | priority-6 serialized radio thread |
+| Flight telemetry TX | 300 ms | priority-6 serialized radio thread |
+| GPS TX | 1000 ms | priority-6 serialized radio thread |
+| Continuity TX | 2000 ms | priority-6 serialized radio thread |
+| Radio guard | 25 ms | enforced between all radio operations |
+| CAN heartbeat | 500 ms while IDLE/PAD | priority-5 CAN thread |
+| Pyro pulse | 500 ms | delayable work deasserts the output |
+
+The IMU, barometer, Kalman filter, and FSM deliberately remain in one thread.
+They form one ordered control/estimation pipeline and making each stage a
+separate thread would add races and latency without improving deadlines. Slow
+SPI2 radio and SPI3 flash work runs in lower-priority threads on separate buses.
+
+Periodic threads use absolute uptime deadlines. A late iteration skips missed
+releases instead of running a burst of stale samples, so deadlines do not drift.
+The watchdog is fed only while the flight-thread heartbeat is recent.
+
+## Buffering decision
+
+There is no general-purpose ring buffer between the sensors and the FSM. The FSM
+and telemetry need the newest coherent `FlightSensorData` snapshot; replaying old
+samples would be actively harmful.
+
+There are two bounded buffers where producer/consumer decoupling is necessary:
+
+- Flash logging uses a 64-item `k_msgq`. A Zephyr message queue is internally a
+  fixed-record ring buffer. At 25 Hz it absorbs 2.56 seconds of flash latency. If
+  it fills, the oldest log sample is discarded and `odin_log_drop_count` is
+  incremented; the 100 Hz flight thread never blocks on storage.
+- GPS UART RX uses a 256-byte `ring_buf`, because an interrupt produces a byte
+  stream independently of the NMEA parser.
+
+Increase the flash queue only after measuring worst-case write/erase latency.
+Pre-erasing 150 sectors at boot should normally keep the queue nearly empty.
+
+## Before hardware use
+
+This is flight-critical firmware. Before enabling igniters, verify the generated
+devicetree, inspect all three pyro pins with a logic analyser, run sensor/radio
+fault-injection tests, measure 100/25 Hz jitter, confirm watchdog reset behavior,
+and conduct hardware-in-the-loop state-machine tests with inert loads.

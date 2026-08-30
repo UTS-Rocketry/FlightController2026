@@ -1,131 +1,44 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.20.0)
 
-#
-# This file is generated only once,
-# and is not re-generated if converter is called multiple times.
-#
-# User is free to modify the file as much as necessary
-#
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-# Setup compiler settings
-set(CMAKE_C_STANDARD 11)
-set(CMAKE_C_STANDARD_REQUIRED ON)
-set(CMAKE_C_EXTENSIONS ON)
+# The application carries small bindings for the ODIN board peripherals.
+list(APPEND DTS_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 
+find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
+project(odin_flight_zephyr C)
 
-# Define the build type
-if(NOT CMAKE_BUILD_TYPE)
-    set(CMAKE_BUILD_TYPE "Debug")
-endif()
-
-# Set the project name
-set(CMAKE_PROJECT_NAME Code)
-
-# Enable compile command to ease indexing with e.g. clangd
-set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
-
-# Core project settings
-project(${CMAKE_PROJECT_NAME})
-message("Build type: " ${CMAKE_BUILD_TYPE})
-
-# Enable CMake support for ASM and C languages
-enable_language(C ASM)
-
-# Create an executable object type
-add_executable(${CMAKE_PROJECT_NAME})
-
-# Add STM32CubeMX generated sources
-add_subdirectory(cmake/stm32cubemx)
-
-# Link directories setup
-target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined library search paths
-)
-
-# Add sources to executable
-target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
-    Core/App/AppDrivers/Sensors/BMP388.c
-    Core/App/AppDrivers/Sensors/h3lis331dl_hal.c
-    Core/App/AppDrivers/Sensors/h3lis331dl_reg.c
-    Core/App/AppDrivers/Sensors/lsm6dsox_hal.c
-    Core/App/AppDrivers/Sensors/lsm6dsox_reg.c
-    Core/App/AppDrivers/CAN/CAN.c
-    Core/App/AppDrivers/GPS/GPS.c
-    Core/App/AppDrivers/LoRa/LoRa.c
-    Core/App/AppDrivers/Memory/W25Q128.c
-    Core/App/AppDrivers/Memory/fatfs_sd.c
-    Core/App/AppDrivers/USB/USBC.c
+target_sources(app PRIVATE
+    Core/Src/main.c
     Core/App/ApplicationLayer/ApplicationHALS/flight_sensors.c
-    Core/App/ApplicationLayer/ApplicationHALS/Lora_App.c
-    Core/App/Outputs/LED&buzzer/indicators.c
-    Core/App/Outputs/Telemetry/telemetry.c
-    Core/App/ApplicationLayer/ApplicationHALS/crc16.c
-    Core/App/ApplicationLayer/ApplicationHALS/W25Q128_HAL.c
     Core/App/ApplicationLayer/ApplicationHALS/pyro.c
+    Core/App/AppDrivers/GPS/GPS.c
+    Core/App/ApplicationLayer/ApplicationHALS/Lora_App.c
+    Core/App/ApplicationLayer/ApplicationHALS/W25Q128_HAL.c
+    Core/App/AppDrivers/CAN/CAN.c
     Core/App/ApplicationLayer/ApplicationHALS/kalman.c
-    Core/App/ApplicationLayer/FlightStateMachine/flight_state.c
+    Core/App/ApplicationLayer/ApplicationHALS/crc16.c
     Core/App/ApplicationLayer/ApplicationHALS/packets.c
-    Core/App/ApplicationLayer/Watchdog_log/watchdog.c
-    
+    Core/App/ApplicationLayer/FlightStateMachine/flight_state.c
+    Core/App/AppDrivers/Sensors/lsm6dsox_reg.c
+    Core/App/AppDrivers/Sensors/h3lis331dl_reg.c
 )
 
-# Add include paths
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined include paths
+# Put the compatibility headers first. Hardware access is implemented through
+# Zephyr; these narrow HAL types keep portable estimator/FSM code reusable.
+target_include_directories(app BEFORE PRIVATE
+    Core/Inc
+    Core/App/ApplicationLayer/ApplicationHALS
+    Core/App/ApplicationLayer/FlightStateMachine
     Core/App/AppDrivers/Sensors
-    Core/App/AppDrivers/CAN
     Core/App/AppDrivers/GPS
-    Core/App/AppDrivers/LoRa
-    Core/App/AppDrivers/Memory
-    Core/App/AppDrivers/USB
-    Core/App/ApplicationLayer/ApplicationHALS/
-    Core/App/Outputs/LED&buzzer
-    Core/App/Outputs/Telemetry
-    Core/App/ApplicationLayer/FlightStateMachine/
-    Core/App/ApplicationLayer/Watchdog_log
-
-
+    Core/App/AppDrivers/CAN
 )
 
-# Add project symbols (macros)
-target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined symbols
-    # DEBUG_TIMING
-    
-    # SIMS 
-    
-    HIL_SIM
-    
-    # J435
-    # K1200
-      L820
-    # L1400
-    # L1365
-    # M2050
-
-    
-    # MEMORY_DUMP
-    # FLASH_ERASE_BUILD
-    DEBUG
-    
-)
-
-# Remove wrong libob.a library dependency when using cpp files
-list(REMOVE_ITEM CMAKE_C_IMPLICIT_LINK_LIBRARIES ob)
-
-# Add linked libraries
-target_link_libraries(${CMAKE_PROJECT_NAME}
-    stm32cubemx
-
-    # Add user defined libraries
-)
-
-add_custom_target(flash
-    COMMAND st-flash write ${CMAKE_PROJECT_NAME}.elf 0x08000000
-    DEPENDS ${CMAKE_PROJECT_NAME}
-)
-
-target_link_options(${CMAKE_PROJECT_NAME} PRIVATE
-    -u _printf_float
+target_compile_options(app PRIVATE
+    -Wall
+    -Wextra
+    -Wshadow
+    -Wformat=2
+    -Wundef
 )

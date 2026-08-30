@@ -4,10 +4,9 @@ Avionics flight software for **ODIN**, an STM32F405-based rocket flight computer
 This folder is the human-readable map of the firmware: what each module does, how
 the system fits together, and where the code needs hardening before flight.
 
-> **Scope.** These docs cover the *application* code under `Core/App/` plus a
-> high-level view of `Core/Src/`. Vendor / auto-generated code (CubeMX init,
-> ST sensor register drivers `*_reg.c`, the FatFs middleware) is intentionally
-> **not** documented here — it is upstream code we did not author.
+> **Scope.** The active firmware is a Zephyr application whose source remains
+> under `Core/`. Legacy CubeMX and HAL files are retained as hardware-reference
+> material but are not part of the root Zephyr build.
 
 ---
 
@@ -15,8 +14,9 @@ the system fits together, and where the code needs hardening before flight.
 
 | Document | What it covers | Read it when… |
 |---|---|---|
-| **[SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md)** | End-to-end architecture, execution model, data flow, the flight state machine, sensor fusion, the actuator/control story, comms, and interview talking points. | You want the big picture, or you're prepping to explain this system out loud. |
-| **[CONCURRENCY_SAFETY.md](CONCURRENCY_SAFETY.md)** | Every place the code shares state across execution contexts, the memory-safety and atomicity bugs found, and a prioritized refactor plan. | You're about to make the firmware concurrent, or you want to fix the known landmines. |
+| **[ZEPHYR_RTOS.md](ZEPHYR_RTOS.md)** | Current build, task priorities, exact periods, buffering, and hardware validation checklist. | Start here for the active firmware. |
+| **[SYSTEM_OVERVIEW.md](SYSTEM_OVERVIEW.md)** | Historical pre-RTOS architecture and the flight-control concepts retained by the port. | You need background on the original implementation. |
+| **[CONCURRENCY_SAFETY.md](CONCURRENCY_SAFETY.md)** | Historical concurrency review that informed the Zephyr task design. | You are auditing shared state or the migration rationale. |
 | **[FSM_DISPATCH_TABLE.md](FSM_DISPATCH_TABLE.md)** | Design guidance (no code) for replacing the FSM `switch` with a function-pointer dispatch table — shape, gotchas, migration plan. | You're refactoring the flight state machine. |
 | **[AppDrivers.md](AppDrivers.md)** | Hardware driver layer: sensors (baro, IMU, high-g accel), LoRa radio, flash, CAN, GPS/USB stubs. | You're touching a peripheral or adding a new one. |
 | **[ApplicationLayer.md](ApplicationLayer.md)** | The "brains": sensor aggregation, Kalman filter, flight state machine, pyro/recovery logic, packet (de)serialization, and CAN tasks. (The airbrake stub was removed — control runs on KESTREL.) | You're working on flight logic, fusion, or control. |
@@ -27,21 +27,17 @@ the system fits together, and where the code needs hardening before flight.
 ## 30-second architecture summary
 
 ```
-            ┌──────────────────────────────────────────────┐
-            │            main.c  —  bare-metal superloop      │
-            │   (no RTOS; tasks time-sliced by HAL_GetTick)   │
-            └──────────────────────────────────────────────┘
-                     │            │            │
-        ┌────────────▼──┐  ┌──────▼──────┐  ┌──▼────────────┐
-        │  Application  │  │   Outputs   │  │  AppDrivers    │
-        │    Layer      │  │             │  │                │
-        │ sensors/KF/   │  │ telemetry/  │  │ baro,IMU,accel │
-        │ FSM/pyro/     │  │ flash log/  │  │ LoRa,flash,CAN │
-        │ CAN tasks     │  │ LED+buzzer  │  │                │
-        └───────────────┘  └─────────────┘  └────────────────┘
+              Core/Src/main.c — Zephyr initialization
+                              │
+              priority-1 flight/estimation thread
+                    │                    │
+          latest coherent snapshot    25 Hz log queue
+                    │                    │
+       GPS / CAN / radio / indicator   flash writer
+                  worker threads         thread
 ```
 
-- **MCU:** STM32F405 @ 144 MHz, Cortex-M4F, no dynamic memory, no OS.
+- **MCU:** STM32F405 @ 72 MHz, Cortex-M4F, Zephyr RTOS, no runtime heap.
 - **Sensing:** BMP388 barometer, LSM6DSOX IMU (accel+gyro), H3LIS331DL high-g accel — all on **SPI1**.
 - **Fusion:** 3-state Kalman filter (altitude / velocity / accel-bias).
 - **Decisions:** 8-state flight state machine drives pyro deployment.
@@ -61,5 +57,5 @@ the system fits together, and where the code needs hardening before flight.
 
 ---
 
-*Generated from a read-through of the `dev` branch. File/line references are
-accurate as of that read; re-verify after large refactors.*
+*Historical documents can contain pre-Zephyr paths and should be checked against
+the active source and `ZEPHYR_RTOS.md`.*

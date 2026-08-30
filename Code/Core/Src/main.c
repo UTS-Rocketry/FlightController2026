@@ -1,1035 +1,316 @@
-/* USER CODE BEGIN Header */
-/**
-  ******************************************************************************
-  * @file           : main.c
-  * @brief          : Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * Copyright (c) 2026 STMicroelectronics.
-  * All rights reserved.
-  *
-  * This software is licensed under terms that can be found in the LICENSE file
-  * in the root directory of this software component.
-  * If no LICENSE file comes with this software, it is provided AS-IS.
-  *
-  ******************************************************************************
-  */
-/* USER CODE END Header */
-/* Includes ------------------------------------------------------------------*/
-#include "main.h"
-#include "fatfs.h"
-
-/* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
-
-#include "BMP388.h"
+#include <errno.h>
+#include <stdbool.h>
 #include <stdint.h>
-#include <stdio.h>
-#include "lsm6dsox_reg.h"
-#include "h3lis331dl_reg.h"
-#include "stm32f4xx_hal.h"
-#include "stm32f4xx_hal_def.h"
-#include "flight_sensors.h"
-#include "indicators.h"
-#include "telemetry.h"
-#include "Lora_App.h"
-#include "pyro.h"
+
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/watchdog.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/atomic.h>
+#include <zephyr/sys/util.h>
+
 #include "flight_state.h"
 #include "kalman.h"
-#include "watchdog.h"
-#include "CAN.h"
-#include "GPS.h"
+#include "odin_app.h"
+#include "pyro.h"
 
-/* USER CODE END Includes */
+LOG_MODULE_REGISTER(odin_main, LOG_LEVEL_INF);
 
-/* Private typedef -----------------------------------------------------------*/
-/* USER CODE BEGIN PTD */
+K_EVENT_DEFINE(odin_events);
+K_MSGQ_DEFINE(odin_log_queue, sizeof(FlightSensorData), 64, 4);
+K_MSGQ_DEFINE(odin_command_queue, sizeof(OdinCommand), 8, 1);
+K_MUTEX_DEFINE(snapshot_lock);
 
-/* USER CODE END PTD */
+atomic_t odin_sensor_heartbeat_ms;
+atomic_t odin_log_drop_count;
 
-/* Private define ------------------------------------------------------------*/
-/* USER CODE BEGIN PD */
+static FlightSensorData latest_sample;
+static bool latest_sample_valid;
 
-#define RADIO_GUARD_MS        25U
-#define COMMAND_RX_PERIOD_MS 400U
-#define FLIGHT_TX_PERIOD_MS  300U
-#define GPS_TX_PERIOD_MS    1000U
-#define CONTINUITY_PERIOD_MS 2000U
+#define WDT_NODE DT_NODELABEL(iwdg)
+BUILD_ASSERT(DT_NODE_HAS_STATUS(WDT_NODE, okay), "iwdg must be enabled");
+static const struct device *const watchdog = DEVICE_DT_GET(WDT_NODE);
+static int watchdog_channel = -1;
 
-/* USER CODE END PD */
+static void flight_thread(void *, void *, void *);
 
-/* Private macro -------------------------------------------------------------*/
-/* USER CODE BEGIN PM */
+void odin_wait_for_start(void)
+{
+	(void)k_event_wait(&odin_events, ODIN_EVENT_START, false, K_FOREVER);
+}
 
-/* USER CODE END PM */
+void odin_snapshot_publish(const FlightSensorData *sample)
+{
+	k_mutex_lock(&snapshot_lock, K_FOREVER);
+	latest_sample = *sample;
+	latest_sample_valid = true;
+	k_mutex_unlock(&snapshot_lock);
+}
 
-/* Private variables ---------------------------------------------------------*/
-ADC_HandleTypeDef hadc1;
-ADC_HandleTypeDef hadc2;
+bool odin_snapshot_get(FlightSensorData *sample)
+{
+	bool valid;
 
-IWDG_HandleTypeDef hiwdg;
+	if (sample == NULL) {
+		return false;
+	}
 
-SPI_HandleTypeDef hspi1;
-SPI_HandleTypeDef hspi2;
-SPI_HandleTypeDef hspi3;
+	k_mutex_lock(&snapshot_lock, K_FOREVER);
+	valid = latest_sample_valid;
+	if (valid) {
+		*sample = latest_sample;
+	}
+	k_mutex_unlock(&snapshot_lock);
+	return valid;
+}
 
-UART_HandleTypeDef huart4;
-UART_HandleTypeDef huart5;
+void odin_log_enqueue(const FlightSensorData *sample)
+{
+	FlightSensorData discarded;
 
-PCD_HandleTypeDef hpcd_USB_OTG_FS;
+	if (k_msgq_put(&odin_log_queue, sample, K_NO_WAIT) == 0) {
+		return;
+	}
 
-/* USER CODE BEGIN PV */
+	/* Never delay the flight thread. Keep the most recent 2.56 seconds. */
+	(void)k_msgq_get(&odin_log_queue, &discarded, K_NO_WAIT);
+	if (k_msgq_put(&odin_log_queue, sample, K_NO_WAIT) != 0) {
+		LOG_WRN("log queue remained full");
+	}
+	atomic_inc(&odin_log_drop_count);
+}
 
-FlightSensorData sensorData;
+void odin_command_submit(uint8_t id, uint8_t channel)
+{
+	OdinCommand command = {.id = id, .channel = channel};
 
-uint8_t imu_sensor_read = 0;
-uint8_t baro_sensor_read = 0;
+	if (k_msgq_put(&odin_command_queue, &command, K_NO_WAIT) != 0) {
+		LOG_WRN("command queue full; command %u dropped", id);
+	}
+}
 
-/* USER CODE END PV */
+static uint32_t advance_period(uint32_t deadline, uint32_t period,
+			       uint32_t now)
+{
+	do {
+		deadline += period;
+	} while ((int32_t)(now - deadline) >= 0);
+	return deadline;
+}
 
-/* Private function prototypes -----------------------------------------------*/
-void SystemClock_Config(void);
-static void MX_GPIO_Init(void);
-static void MX_ADC1_Init(void);
-static void MX_ADC2_Init(void);
-//static void MX_CAN2_Init(void);
-static void MX_SPI1_Init(void);
-static void MX_SPI2_Init(void);
-static void MX_USB_OTG_FS_PCD_Init(void);
-static void MX_UART4_Init(void);
-static void MX_UART5_Init(void);
-static void MX_SPI3_Init(void);
-static void MX_IWDG_Init(void);
-/* USER CODE BEGIN PFP */
+static void process_commands(void)
+{
+	OdinCommand command;
 
-/* USER CODE END PFP */
+	while (k_msgq_get(&odin_command_queue, &command, K_NO_WAIT) == 0) {
+		switch (command.id) {
+		case ODIN_COMMAND_ARM:
+			FSM_arm();
+			break;
+		case ODIN_COMMAND_DISARM:
+			FSM_disarm();
+			break;
+		case ODIN_COMMAND_FIRE:
+			if (FSM_get_state() != STATE_PAD) {
+				break;
+			}
+			if (command.channel == 1U) {
+				pyro_fire_drogue_ground();
+			} else if (command.channel == 2U) {
+				pyro_fire_main_ground();
+			}
+			FSM_disarm();
+			break;
+		default:
+			LOG_WRN("unknown command %u", command.id);
+			break;
+		}
+	}
+}
 
-/* Private user code ---------------------------------------------------------*/
-/* USER CODE BEGIN 0 */
+static void flight_thread(void *unused1, void *unused2, void *unused3)
+{
+	ARG_UNUSED(unused1);
+	ARG_UNUSED(unused2);
+	ARG_UNUSED(unused3);
 
-/* This is a debug printf that exposes uart through the gps header pins*/
-#ifdef DEBUG
-  int _write(int file, char *ptr, int len) {
-      HAL_UART_Transmit(&huart4, (uint8_t*)ptr, len, HAL_MAX_DELAY);
-      return len;
-  }
-#endif
+	FlightSensorData sample = {0};
+	uint32_t now;
+	uint32_t last_imu;
+	uint32_t next_imu;
+	uint32_t next_baro;
+	uint32_t next_log;
 
-/* USER CODE END 0 */
+	odin_wait_for_start();
+	now = k_uptime_get_32();
+	last_imu = now - ODIN_IMU_PERIOD_MS;
+	next_imu = now;
+	next_baro = now;
+	next_log = now;
 
-/**
-  * @brief  The application entry point.
-  * @retval int
-  */
+	for (;;) {
+		now = k_uptime_get_32();
+		process_commands();
+
+		bool imu_fresh = false;
+		bool baro_fresh = false;
+
+		if ((int32_t)(now - next_imu) >= 0) {
+			float dt = (float)(now - last_imu) / 1000.0f;
+			last_imu = now;
+			next_imu = advance_period(next_imu, ODIN_IMU_PERIOD_MS, now);
+
+			if (odin_sensors_read_imu(&sample) == 0) {
+				kalman_predict(sample.z_mg_IMU, dt);
+				imu_fresh = true;
+			}
+		}
+
+		now = k_uptime_get_32();
+		if ((int32_t)(now - next_baro) >= 0) {
+			next_baro = advance_period(next_baro, ODIN_BARO_PERIOD_MS, now);
+			if (odin_sensors_read_baro(&sample) == 0) {
+				kalman_update(sample.altitude);
+				baro_fresh = true;
+			}
+		}
+
+		sample.kalman_altitude = kalman_get_altitude();
+		sample.kalman_velocity = kalman_get_velocity();
+
+		if (imu_fresh || baro_fresh) {
+			(void)FSM_update(&sample, imu_fresh, baro_fresh);
+		}
+		sample.flight_state = (uint8_t)FSM_get_state();
+		odin_snapshot_publish(&sample);
+
+		now = k_uptime_get_32();
+		if ((int32_t)(now - next_log) >= 0) {
+			next_log = advance_period(next_log, ODIN_LOG_PERIOD_MS, now);
+			if (FSM_get_state() >= STATE_PAD) {
+				odin_log_enqueue(&sample);
+			}
+		}
+
+		atomic_set(&odin_sensor_heartbeat_ms, (atomic_val_t)now);
+		k_sleep(K_TIMEOUT_ABS_MS(next_imu));
+	}
+}
+
+int odin_watchdog_init(void)
+{
+	if (!device_is_ready(watchdog)) {
+		return -ENODEV;
+	}
+
+	const struct wdt_timeout_cfg timeout = {
+		.window = {.min = 0U, .max = 2050U},
+		.callback = NULL,
+		.flags = WDT_FLAG_RESET_SOC,
+	};
+
+	watchdog_channel = wdt_install_timeout(watchdog, &timeout);
+	if (watchdog_channel < 0) {
+		return watchdog_channel;
+	}
+
+	int ret = wdt_setup(watchdog, WDT_OPT_PAUSE_HALTED_BY_DBG);
+
+	if (ret == -ENOTSUP) {
+		/* Some STM32 watchdog instances cannot pause while the debugger halts. */
+		ret = wdt_setup(watchdog, 0U);
+	}
+
+	return ret;
+}
+
+void odin_watchdog_thread(void *unused1, void *unused2, void *unused3)
+{
+	ARG_UNUSED(unused1);
+	ARG_UNUSED(unused2);
+	ARG_UNUSED(unused3);
+
+	odin_wait_for_start();
+	for (;;) {
+		uint32_t now = k_uptime_get_32();
+		uint32_t heartbeat = (uint32_t)atomic_get(&odin_sensor_heartbeat_ms);
+
+		if (watchdog_channel >= 0 && (now - heartbeat) <= 250U) {
+			(void)wdt_feed(watchdog, watchdog_channel);
+		}
+		k_msleep(500);
+	}
+}
+
 int main(void)
 {
+	int ret;
+	bool sensors_ok = false;
 
-  /* USER CODE BEGIN 1 */
-  
-  /* result is used to check status of any HAL functions and return error codes */
-  HAL_StatusTypeDef result;
+	LOG_INF("ODIN Zephyr RTOS starting");
 
-  /* USER CODE END 1 */
+	ret = odin_pyro_init();
+	if (ret != 0) {
+		LOG_ERR("pyro IO init failed: %d", ret);
+		return ret;
+	}
 
-  /* MCU Configuration--------------------------------------------------------*/
+	ret = odin_sensors_init();
+	if (ret != 0) {
+		LOG_ERR("flight sensor init failed: %d", ret);
+	} else {
+		sensors_ok = true;
+	}
 
-  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+	ret = odin_storage_init();
+	if (ret != 0) {
+		LOG_ERR("flash logging disabled: %d", ret);
+	}
+	ret = odin_radio_init();
+	if (ret != 0) {
+		LOG_ERR("radio disabled: %d", ret);
+	}
+	ret = odin_gps_init();
+	if (ret != 0) {
+		LOG_ERR("GPS disabled: %d", ret);
+	}
+	ret = odin_can_init();
+	if (ret != 0) {
+		LOG_ERR("CAN disabled: %d", ret);
+	}
 
-  /* USER CODE BEGIN Init */
+	kalman_init();
+	FSM_init();
+	atomic_set(&odin_sensor_heartbeat_ms, (atomic_val_t)k_uptime_get_32());
 
-  /* USER CODE END Init */
+	ret = odin_watchdog_init();
+	if (ret != 0) {
+		LOG_ERR("watchdog init failed: %d", ret);
+	}
 
-  /* Configure the system clock */
-  SystemClock_Config();
+	if (!sensors_ok) {
+		odin_pyro_all_safe();
+		LOG_ERR("critical sensors unavailable; scheduler not released");
+		return -ENODEV;
+	}
 
-  /* USER CODE BEGIN SysInit */
-
-  /* USER CODE END SysInit */
-
-  /* Initialize all configured peripherals */
-  MX_GPIO_Init();
-  MX_ADC1_Init();
-  MX_ADC2_Init();
-  
-  //Uses written can init
-  //MX_CAN2_Init();
-  
-  MX_SPI1_Init();
-  MX_SPI2_Init();
-  MX_USB_OTG_FS_PCD_Init();
-  MX_UART4_Init();
-  MX_UART5_Init();
-  MX_SPI3_Init();
-
-  //Fats is not init becasue sd card doesnt work
-  // MX_FATFS_Init();
-
-  // Init this later
-  // MX_IWDG_Init();
-  /* USER CODE BEGIN 2 */
-
-
-  /*THIS IS FOR SD card but it is wired wrong*/
-  /* FRESULT fr = f_mount(&USERFatFS, USERPath, 1);
-  printf("f_mount: %d\r\n", (int)fr); */
-  
-  
- result = flight_sensors_init();
- 
- #ifdef DEBUG
-
-  if (result != HAL_OK) {
-    printf("Flight sensors Init Failed\r\n");
-  } else {
-    printf("Flight sensors  Init Successfull\r\n");
-  }
-
- #endif
- 
- #ifdef BARO_NOISE_TEST
-  // after flight_sensors_init(), loop and just print raw altitude
-  while (1) {
-      flight_sensors_update_baro(&sensorData);
-      printf("%.4f\r\n", sensorData.altitude);   // one value per line
-      HAL_Delay(40);   // match your baro rate
-  }
- #endif
-
- 
-
-/* LORA init --------------------------------------------------------*/
-
- result = lora_App_Init();
- #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("Lora Init Failed\r\n");
-    } else {
-      printf("Lora Init Successfull\r\n");
-    }
-  #endif
-
-/* FLash init --------------------------------------------------------*/
-  result = flash_memory_init();
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash memory failed init\r\n");
-    } else { 
-      printf("Flash memory OK");
-    }
-  #endif
-
-  result = flash_sanity_check();
-  
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash memory failed sanity check\r\n");
-    } else { 
-      printf("Flash memory OK\r\n");
-    }
-  #endif
-
-  #ifdef MEMORY_DUMP
-
-    result = flash_recover_write_pointer();
-    #ifdef DEBUG
-      if (result != HAL_OK) {
-        printf("flash recovery failed\r\n");
-      }
-    #endif
-
-    result = flash_dump_serial();
-
-    #ifdef DEBUG
-      if (result != HAL_OK) {
-        printf("flash memory dump failed\r\n");
-      } else { 
-        printf("Flash memory OK printed reflash and power on\r\n");
-      }
-    #endif
-
-    while(1) {};
-
-    
-
-  #endif
-
-  #ifdef FLASH_ERASE_BUILD
-    
-    result = flash_full_chip_erase();
-      #ifdef DEBUG
-        if (result != HAL_OK) {
-          printf("Chip erase failed\r\n");
-        } else {
-          printf("Chip erase complete — safe to power off\r\n");
-        }
-      #endif
-      if (result == HAL_OK) {
-        buzzer_Set(100, 100, 5, 800);   // 5 quick beeps, repeating — success pattern
-      } else {
-        buzzer_Set(600, 600, 0, 0);     // long continuous beep — failure pattern
-      }
-      while (1) {
-        buzzer_Service();
-      }
-
-  #endif /* FLASH_ERASE_BUILD */
-
-  result = flash_recover_write_pointer(); 
-
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash memory failed find start address\r\n");
-    } else { 
-      printf("Flash memory OK\r\n");
-    }
-  #endif
-
-  result = flash_prepare_log_region(150);   // <-- add here, e.g. ~6 min of logging headroom
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash pre-erase failed\r\n");
-    } else {
-      printf("Flash pre-erase OK\r\n");
-    }
-  #endif
-
-
-/* CAN init --------------------------------------------------------*/    
-  result = Can_init();
-
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("CAN init failed\r\n");
-    } else { 
-      printf("CAN OK\r\n");
-    }
-  #endif
-
-
-/* APP inits init --------------------------------------------------------*/
-  kalman_init();
-  pyro_init();
-  FSM_init();
-  buzzer_init();
-
-  result = GPS_init(&huart5);
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("GPS UART init failed\r\n");
-    } else {
-      printf("GPS UART5 listening on JST connector\r\n");
-    }
-  #endif
-  
-
-  MX_IWDG_Init();
-  reset_cause_check();
-
-  #ifdef DEBUG_TIMING
-    uint32_t last = HAL_GetTick();
-  #endif
-
-  static uint32_t last_imu   = 0;
-  static uint32_t last_baro  = 0;
-  static uint32_t last_lora  = 0;
-  static uint32_t last_flash = 0;
-  static uint32_t last_cont  = 0;
-  static uint32_t last_RX    = 0;
-  static uint32_t last_gps   = 0;
-  static uint32_t last_radio_end = 0;
-  static uint32_t last_hb_ms = 0;
-  
-  /* NULL Placeholder for CAN heartbeat */
-  uint8_t dummy = 0;
-  /* USER CODE END 2 */
-
-  /* Infinite loop */
-
-  /* USER CODE BEGIN WHILE */
-  while (1) { 
-
-    /* Watch dog woof woof*/
-    HAL_IWDG_Refresh(&hiwdg);
-    /*This is to get timing loop*/
-    uint32_t now = HAL_GetTick();
-    
-    /*Non blocking pyro*/
-    pyro_service();
-    indicators_service();
-    GPS_service();
-    
-    /* Predict Stage based on IMU  --------------------------------------------------------*/
-    if (now - last_imu >= 10) {
-      float dt = (now - last_imu) / 1000.0f;
-      last_imu = now;
-      HAL_StatusTypeDef imu_result = flight_sensors_update_IMU_accel(&sensorData);
-      
-      #ifdef DEBUG
-          if (imu_result != HAL_OK) printf("sensor update failed\r\n");
-      #endif
-      
-      (void)imu_result;
-      kalman_predict(sensorData.z_mg_IMU, dt);
-      sensorData.kalman_altitude = kalman_get_altitude();
-      sensorData.kalman_velocity = kalman_get_velocity();
-      imu_sensor_read = 1;
-    }
-    
-    /* Correction Stage based on Barometer  --------------------------------------------------------*/
-    if (now - last_baro >= 40) {
-      
-      last_baro = now;
-      HAL_StatusTypeDef baro_result = flight_sensors_update_baro(&sensorData);
-      #ifdef DEBUG
-          if (baro_result != HAL_OK) printf("Baro sensor update failed\r\n");
-      #endif
-      
-      (void) baro_result;
-      kalman_update(sensorData.altitude);
-      sensorData.kalman_altitude = kalman_get_altitude();
-      sensorData.kalman_velocity = kalman_get_velocity();
-      baro_sensor_read = 1;
-      
-      #ifdef DEBUG
-        if(FSM_get_state() >= STATE_BOOST) {
-          printf("st=%d alt=%.1f vel=%.1f acc=%.0f\r\n",
-              FSM_get_state(),
-              sensorData.kalman_altitude,
-              sensorData.kalman_velocity,
-              sensorData.z_mg_IMU);
-        }
-      #endif
-    }
-
-    /* Predict Stage based on IMU  --------------------------------------------------------*/
-    if(imu_sensor_read || baro_sensor_read) {
-      FSM_update(&sensorData, imu_sensor_read, baro_sensor_read);
-      imu_sensor_read = 0; 
-      baro_sensor_read = 0;
-    }
-
-    sensorData.flight_state = FSM_get_state();
-    
-    /* Radio scheduler ------------------------------------------------------------
-     * Dispatch at most one operation per pass and leave a quiet guard after the
-     * previous operation. This prevents GPS, telemetry, continuity and command RX
-     * from starting back-to-back when several timers become due together. */
-    uint32_t radio_now = HAL_GetTick();
-    if (radio_now - last_radio_end >= RADIO_GUARD_MS) {
-      if (FSM_get_state() <= STATE_PAD && radio_now - last_RX >= COMMAND_RX_PERIOD_MS) {
-        last_RX = radio_now;
-        (void)lora_rx_command();
-        last_radio_end = HAL_GetTick();
-      } else if (FSM_get_state() >= STATE_PAD &&
-                 radio_now - last_lora >= FLIGHT_TX_PERIOD_MS) {
-        last_lora = radio_now;
-        (void)lora_tx_telemetry(&sensorData);
-        last_radio_end = HAL_GetTick();
-      } else if (radio_now - last_gps >= GPS_TX_PERIOD_MS) {
-        GPSFix fix;
-        last_gps = radio_now;
-        if (GPS_get_fix(&fix)) {
-          (void)lora_tx_gps(&fix, (uint8_t)FSM_get_state());
-          last_radio_end = HAL_GetTick();
-        }
-      } else if (FSM_get_state() <= STATE_PAD &&
-                 radio_now - last_cont >= CONTINUITY_PERIOD_MS) {
-        last_cont = radio_now;
-        (void)lora_tx_continuity();
-        last_radio_end = HAL_GetTick();
-      }
-    }
-
-    /* Log Telemetry  --------------------------------------------------------*/
-    if (now - last_flash >= 40 && FSM_get_state() >= STATE_PAD) {
-        last_flash = now;
-        flash_log_telemetry(&sensorData);
-    }
-    
-    /* HeartBeat for Can --------------------------------------------------------*/
-    if (now - last_hb_ms >= 500 && FSM_get_state() <= STATE_PAD) {
-      last_hb_ms = now;
-      HAL_StatusTypeDef can_result = can_transmit(ODIN, HEARTBEAT_MSG, &dummy, 0);
-
-      #ifdef DEBUG
-        if (can_result != HAL_OK) {
-          printf("CAN TX failed: %d\r\n", can_result);
-        }
-      #endif
-    }
-    
-    /* Debug timing --------------------------------------------------------*/
-    #ifdef DEBUG_TIMING
-      serial_print(&sensorData);
-      uint32_t dt = now - last;
-      last = now;
-      printf("Sensor loop dt: %lums\r\n", dt);
-
-    #endif
-    
-     
-    /* USER CODE END WHILE */
-
-    /* USER CODE BEGIN 3 */
-  }
-  /* USER CODE END 3 */
+	(void)k_event_set(&odin_events, ODIN_EVENT_START);
+	LOG_INF("scheduler released: IMU 100 Hz, baro/log 25 Hz");
+	return 0;
 }
 
-/**
-  * @brief System Clock Configuration
-  * @retval None
-  */
-void SystemClock_Config(void)
-{
-  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
-  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
-
-  /** Configure the main internal regulator output voltage
-  */
-  __HAL_RCC_PWR_CLK_ENABLE();
-  __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
-
-  /** Initializes the RCC Oscillators according to the specified parameters
-  * in the RCC_OscInitTypeDef structure.
-  */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
-  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
-  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-  RCC_OscInitStruct.PLL.PLLM = 4;
-  RCC_OscInitStruct.PLL.PLLN = 72;
-  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-  RCC_OscInitStruct.PLL.PLLQ = 3;
-  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Initializes the CPU, AHB and APB buses clocks
-  */
-  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
-                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
-
-  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-}
-
-/**
-  * @brief ADC1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_ADC1_Init(void)
-{
-
-  /* USER CODE BEGIN ADC1_Init 0 */
-
-  /* USER CODE END ADC1_Init 0 */
-
-  ADC_ChannelConfTypeDef sConfig = {0};
-
-  /* USER CODE BEGIN ADC1_Init 1 */
-
-  /* USER CODE END ADC1_Init 1 */
-
-  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-  */
-  hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-  hadc1.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc1.Init.ScanConvMode = DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
-  hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
-  hadc1.Init.DMAContinuousRequests = DISABLE;
-  hadc1.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  if (HAL_ADC_Init(&hadc1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_15;
-  sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN ADC1_Init 2 */
-
-  /* USER CODE END ADC1_Init 2 */
-
-}
-
-/**
-  * @brief ADC2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_ADC2_Init(void)
-{
-
-  /* USER CODE BEGIN ADC2_Init 0 */
-
-  /* USER CODE END ADC2_Init 0 */
-
-  ADC_ChannelConfTypeDef sConfig = {0};
-
-  /* USER CODE BEGIN ADC2_Init 1 */
-
-  /* USER CODE END ADC2_Init 1 */
-
-  /** Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
-  */
-  hadc2.Instance = ADC2;
-  hadc2.Init.ClockPrescaler = ADC_CLOCK_SYNC_PCLK_DIV2;
-  hadc2.Init.Resolution = ADC_RESOLUTION_12B;
-  hadc2.Init.ScanConvMode = DISABLE;
-  hadc2.Init.ContinuousConvMode = DISABLE;
-  hadc2.Init.DiscontinuousConvMode = DISABLE;
-  hadc2.Init.ExternalTrigConvEdge = ADC_EXTERNALTRIGCONVEDGE_NONE;
-  hadc2.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc2.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc2.Init.NbrOfConversion = 1;
-  hadc2.Init.DMAContinuousRequests = DISABLE;
-  hadc2.Init.EOCSelection = ADC_EOC_SINGLE_CONV;
-  if (HAL_ADC_Init(&hadc2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure for the selected ADC regular channel its corresponding rank in the sequencer and its sample time.
-  */
-  sConfig.Channel = ADC_CHANNEL_1;
-  sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
-  if (HAL_ADC_ConfigChannel(&hadc2, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN ADC2_Init 2 */
-
-  /* USER CODE END ADC2_Init 2 */
-
-}
-
-/**
-  * @brief CAN2 Initialization Function
-  * @param None
-  * @retval None
-  */
-// static void MX_CAN2_Init(void)
-// {
-
-//   /* USER CODE BEGIN CAN2_Init 0 */
-
-//   /* USER CODE END CAN2_Init 0 */
-
-//   /* USER CODE BEGIN CAN2_Init 1 */
-
-//   /* USER CODE END CAN2_Init 1 */
-//   hcan2.Instance = CAN2;
-//   hcan2.Init.Prescaler = 6;
-//   hcan2.Init.Mode = CAN_MODE_NORMAL;
-//   hcan2.Init.SyncJumpWidth = CAN_SJW_1TQ;
-//   hcan2.Init.TimeSeg1 = CAN_BS1_9TQ;
-//   hcan2.Init.TimeSeg2 = CAN_BS2_2TQ;
-//   hcan2.Init.TimeTriggeredMode = DISABLE;
-//   hcan2.Init.AutoBusOff = DISABLE;
-//   hcan2.Init.AutoWakeUp = DISABLE;
-//   hcan2.Init.AutoRetransmission = DISABLE;
-//   hcan2.Init.ReceiveFifoLocked = DISABLE;
-//   hcan2.Init.TransmitFifoPriority = DISABLE;
-//   if (HAL_CAN_Init(&hcan2) != HAL_OK)
-//   {
-//     Error_Handler();
-//   }
-//   /* USER CODE BEGIN CAN2_Init 2 */
-
-//   /* USER CODE END CAN2_Init 2 */
-
-// }
-
-/**
-  * @brief IWDG Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_IWDG_Init(void)
-{
-
-  /* USER CODE BEGIN IWDG_Init 0 */
-
-  /* USER CODE END IWDG_Init 0 */
-
-  /* USER CODE BEGIN IWDG_Init 1 */
-
-  /* USER CODE END IWDG_Init 1 */
-  hiwdg.Instance = IWDG;
-  hiwdg.Init.Prescaler = IWDG_PRESCALER_32;
-  hiwdg.Init.Reload = 2047;
-  if (HAL_IWDG_Init(&hiwdg) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN IWDG_Init 2 */
-
-  /* USER CODE END IWDG_Init 2 */
-
-}
-
-/**
-  * @brief SPI1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI1_Init(void)
-{
-
-  /* USER CODE BEGIN SPI1_Init 0 */
-
-  /* USER CODE END SPI1_Init 0 */
-
-  /* USER CODE BEGIN SPI1_Init 1 */
-
-  /* USER CODE END SPI1_Init 1 */
-  /* SPI1 parameter configuration*/
-  hspi1.Instance = SPI1;
-  hspi1.Init.Mode = SPI_MODE_MASTER;
-  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi1.Init.CLKPolarity = SPI_POLARITY_HIGH;
-  hspi1.Init.CLKPhase = SPI_PHASE_2EDGE;
-  hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
-  hspi1.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi1.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI1_Init 2 */
-
-  /* USER CODE END SPI1_Init 2 */
-
-}
-
-/**
-  * @brief SPI2 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI2_Init(void)
-{
-
-  /* USER CODE BEGIN SPI2_Init 0 */
-
-  /* USER CODE END SPI2_Init 0 */
-
-  /* USER CODE BEGIN SPI2_Init 1 */
-
-  /* USER CODE END SPI2_Init 1 */
-  /* SPI2 parameter configuration*/
-  hspi2.Instance = SPI2;
-  hspi2.Init.Mode = SPI_MODE_MASTER;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
-  hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi2.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi2) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI2_Init 2 */
-
-  /* USER CODE END SPI2_Init 2 */
-
-}
-
-/**
-  * @brief SPI3 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_SPI3_Init(void)
-{
-
-  /* USER CODE BEGIN SPI3_Init 0 */
-
-  /* USER CODE END SPI3_Init 0 */
-
-  /* USER CODE BEGIN SPI3_Init 1 */
-
-  /* USER CODE END SPI3_Init 1 */
-  /* SPI3 parameter configuration*/
-  hspi3.Instance = SPI3;
-  hspi3.Init.Mode = SPI_MODE_MASTER;
-  hspi3.Init.Direction = SPI_DIRECTION_2LINES;
-  hspi3.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi3.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi3.Init.CLKPhase = SPI_PHASE_1EDGE;
-  hspi3.Init.NSS = SPI_NSS_SOFT;
-  hspi3.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_8;
-  hspi3.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi3.Init.TIMode = SPI_TIMODE_DISABLE;
-  hspi3.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
-  hspi3.Init.CRCPolynomial = 10;
-  if (HAL_SPI_Init(&hspi3) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN SPI3_Init 2 */
-
-  /* USER CODE END SPI3_Init 2 */
-
-}
-
-/**
-  * @brief UART4 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_UART4_Init(void)
-{
-
-  /* USER CODE BEGIN UART4_Init 0 */
-
-  /* USER CODE END UART4_Init 0 */
-
-  /* USER CODE BEGIN UART4_Init 1 */
-
-  /* USER CODE END UART4_Init 1 */
-  huart4.Instance = UART4;
-  huart4.Init.BaudRate = 115200;
-  huart4.Init.WordLength = UART_WORDLENGTH_8B;
-  huart4.Init.StopBits = UART_STOPBITS_1;
-  huart4.Init.Parity = UART_PARITY_NONE;
-  huart4.Init.Mode = UART_MODE_TX_RX;
-  huart4.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart4.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart4) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN UART4_Init 2 */
-
-  /* USER CODE END UART4_Init 2 */
-
-}
-
-/**
-  * @brief UART5 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_UART5_Init(void)
-{
-
-  /* USER CODE BEGIN UART5_Init 0 */
-
-  /* USER CODE END UART5_Init 0 */
-
-  /* USER CODE BEGIN UART5_Init 1 */
-
-  /* USER CODE END UART5_Init 1 */
-  huart5.Instance = UART5;
-  huart5.Init.BaudRate = 9600;
-  huart5.Init.WordLength = UART_WORDLENGTH_8B;
-  huart5.Init.StopBits = UART_STOPBITS_1;
-  huart5.Init.Parity = UART_PARITY_NONE;
-  huart5.Init.Mode = UART_MODE_TX_RX;
-  huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart5.Init.OverSampling = UART_OVERSAMPLING_16;
-  if (HAL_UART_Init(&huart5) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN UART5_Init 2 */
-
-  /* USER CODE END UART5_Init 2 */
-
-}
-
-/**
-  * @brief USB_OTG_FS Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_USB_OTG_FS_PCD_Init(void)
-{
-
-  /* USER CODE BEGIN USB_OTG_FS_Init 0 */
-
-  /* USER CODE END USB_OTG_FS_Init 0 */
-
-  /* USER CODE BEGIN USB_OTG_FS_Init 1 */
-
-  /* USER CODE END USB_OTG_FS_Init 1 */
-  hpcd_USB_OTG_FS.Instance = USB_OTG_FS;
-  hpcd_USB_OTG_FS.Init.dev_endpoints = 4;
-  hpcd_USB_OTG_FS.Init.speed = PCD_SPEED_FULL;
-  hpcd_USB_OTG_FS.Init.dma_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.phy_itface = PCD_PHY_EMBEDDED;
-  hpcd_USB_OTG_FS.Init.Sof_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.low_power_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.lpm_enable = DISABLE;
-  hpcd_USB_OTG_FS.Init.vbus_sensing_enable = ENABLE;
-  hpcd_USB_OTG_FS.Init.use_dedicated_ep1 = DISABLE;
-  if (HAL_PCD_Init(&hpcd_USB_OTG_FS) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN USB_OTG_FS_Init 2 */
-
-  /* USER CODE END USB_OTG_FS_Init 2 */
-
-}
-
-/**
-  * @brief GPIO Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_GPIO_Init(void)
-{
-  GPIO_InitTypeDef GPIO_InitStruct = {0};
-  /* USER CODE BEGIN MX_GPIO_Init_1 */
-
-  /* USER CODE END MX_GPIO_Init_1 */
-
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOH_CLK_ENABLE();
-  __HAL_RCC_GPIOC_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
-  __HAL_RCC_GPIOD_CLK_ENABLE();
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, CSFlashmMemory_Pin|CS_SD_Card_Pin|CSBarometer_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, AuxIgnite_Pin|GPS1ResetPin_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, BuzzerControl_Pin|DrogueIgnite_Pin|GPS2ResetPin_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LoRaNssPin_Pin|CSAccelerometer_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LoRaResetPin_Pin|PyroIgnite_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(CS_IMU_GPIO_Port, CS_IMU_Pin, GPIO_PIN_SET);
-
-  /*Configure GPIO pins : CSFlashmMemory_Pin CS_SD_Card_Pin BuzzerControl_Pin DrogueIgnite_Pin
-                           CSBarometer_Pin GPS2ResetPin_Pin */
-  GPIO_InitStruct.Pin = CSFlashmMemory_Pin|CS_SD_Card_Pin|BuzzerControl_Pin|DrogueIgnite_Pin
-                          |CSBarometer_Pin|GPS2ResetPin_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : RGBLEDControl_Pin */
-  GPIO_InitStruct.Pin = RGBLEDControl_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  GPIO_InitStruct.Alternate = GPIO_AF1_TIM2;
-  HAL_GPIO_Init(RGBLEDControl_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : AuxIgnite_Pin GPS1ResetPin_Pin CS_IMU_Pin */
-  GPIO_InitStruct.Pin = AuxIgnite_Pin|GPS1ResetPin_Pin|CS_IMU_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LoRaNssPin_Pin LoRaResetPin_Pin CSAccelerometer_Pin PyroIgnite_Pin */
-  GPIO_InitStruct.Pin = LoRaNssPin_Pin|LoRaResetPin_Pin|CSAccelerometer_Pin|PyroIgnite_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LoRaDIO1_Pin LoRaDIO2_Pin */
-  GPIO_InitStruct.Pin = LoRaDIO1_Pin|LoRaDIO2_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : LoRaDIO0_Pin */
-  GPIO_InitStruct.Pin = LoRaDIO0_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(LoRaDIO0_GPIO_Port, &GPIO_InitStruct);
-
-  /* EXTI interrupt init*/
-  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
-  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
-
-  /* USER CODE BEGIN MX_GPIO_Init_2 */
-
-  /* USER CODE END MX_GPIO_Init_2 */
-}
-
-/* USER CODE BEGIN 4 */
-
-/* USER CODE END 4 */
-
-/**
-  * @brief  This function is executed in case of error occurrence.
-  * @retval None
-  */
-void Error_Handler(void)
-{
-  /* USER CODE BEGIN Error_Handler_Debug */
-  /* User can add his own implementation to report the HAL error return state */
-  HAL_GPIO_WritePin(DrogueIgnite_GPIO_Port, DrogueIgnite_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(PyroIgnite_GPIO_Port, PyroIgnite_Pin, GPIO_PIN_RESET);
-  HAL_GPIO_WritePin(AuxIgnite_GPIO_Port, AuxIgnite_Pin, GPIO_PIN_RESET);
-  __disable_irq();
-  while (1)
-  {
-  }
-  /* USER CODE END Error_Handler_Debug */
-}
-#ifdef USE_FULL_ASSERT
-/**
-  * @brief  Reports the name of the source file and the source line number
-  *         where the assert_param error has occurred.
-  * @param  file: pointer to the source file name
-  * @param  line: assert_param error line source number
-  * @retval None
-  */
-void assert_failed(uint8_t *file, uint32_t line)
-{
-  /* USER CODE BEGIN 6 */
-  /* User can add his own implementation to report the file name and line number,
-     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
-  /* USER CODE END 6 */
-}
-#endif /* USE_FULL_ASSERT */
+K_THREAD_DEFINE(odin_flight, 3072, flight_thread, NULL, NULL, NULL,
+		1, 0, 0);
+K_THREAD_DEFINE(odin_watchdog, 768, odin_watchdog_thread, NULL, NULL, NULL,
+		2, 0, 0);
+K_THREAD_DEFINE(odin_gps, 2048, odin_gps_thread, NULL, NULL, NULL,
+		4, 0, 0);
+K_THREAD_DEFINE(odin_can, 1024, odin_can_thread, NULL, NULL, NULL,
+		5, 0, 0);
+K_THREAD_DEFINE(odin_radio, 2560, odin_radio_thread, NULL, NULL, NULL,
+		6, 0, 0);
+K_THREAD_DEFINE(odin_storage, 2048, odin_storage_thread, NULL, NULL, NULL,
+		7, 0, 0);
+K_THREAD_DEFINE(odin_indicator, 1024, odin_indicator_thread, NULL, NULL, NULL,
+		8, 0, 0);

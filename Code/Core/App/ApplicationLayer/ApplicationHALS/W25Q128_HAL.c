@@ -1,200 +1,160 @@
+#include <errno.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <string.h>
+
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/flash.h>
+#include <zephyr/kernel.h>
+#include <zephyr/logging/log.h>
+#include <zephyr/sys/util.h>
+
 #include "W25Q128_HAL.h"
-#include "main.h"
-#include "stm32f4xx_hal.h"
+#include "odin_app.h"
+#include "packets.h"
 
-#define FLASH_LOG_START_ADDR    0x000000
-#define FLASH_RECORD_SIZE       64         /*matches serializer output */ 
-#define FLASH_MAX_RECORDS       (W25Q128_TOTAL_SIZE / FLASH_RECORD_SIZE)
-#define FLASH_SYNC_WORD 0xAA
+LOG_MODULE_REGISTER(odin_storage, LOG_LEVEL_INF);
 
+#define FLASH_NODE DT_NODELABEL(odin_flash)
+#define FLASH_LOG_START 0U
+#define FLASH_RECORD_SIZE 64U
+#define FLASH_SECTOR_SIZE 4096U
+#define FLASH_TOTAL_SIZE (16U * 1024U * 1024U)
+#define FLASH_MAX_RECORDS (FLASH_TOTAL_SIZE / FLASH_RECORD_SIZE)
+#define FLASH_PREERASE_SECTORS 150U
+#define FLASH_SYNC_WORD 0xAAU
 
-static uint32_t flash_write_addr = FLASH_LOG_START_ADDR;
-static uint32_t flash_record_count = 0;
+static const struct device *const flash_device = DEVICE_DT_GET(FLASH_NODE);
+static bool storage_enabled;
+static uint32_t write_address;
+static uint32_t record_count;
+static uint32_t prepared_start;
+static uint32_t prepared_end;
 
-static W25Q128_Handle_t flash;
-extern SPI_HandleTypeDef hspi3;
-
-HAL_StatusTypeDef flash_memory_init() {
-
-    HAL_StatusTypeDef result;
-
-    flash.hspi = &hspi3;
-    flash.cs_port = CSFlashmMemory_GPIO_Port;
-    flash.cs_pin = CSFlashmMemory_Pin;
-
-    result = W25Q128_Init(&flash);
-    if(result != HAL_OK) {
-
-        #ifdef DEBUG
-            printf("FLash memory init failed\r\n");
-        #endif
-        return HAL_ERROR;
-    }
-
-    return result;
-
-
-}
-
-HAL_StatusTypeDef flash_sanity_check() {
-    
-    HAL_StatusTypeDef result;
-
-    uint8_t m, t, c;
-    result = W25Q128_ReadJEDECID(&flash, &m, &t, &c);
-
-    if(result != HAL_OK) {
-
-        #ifdef DEBUG
-            printf("FLash JEDECID failed\r\n");
-        #endif
-
-        return HAL_ERROR;
-    }
-
-    // Should print EF 40 18
-    #ifdef DEBUG
-        printf("JEDEC: %02X %02X %02X\r\n", m, t, c);
-    #endif
-    return result;
-
-    
-}
-
-HAL_StatusTypeDef flash_log_packet(uint8_t *buff, uint16_t len)
+static bool record_is_written(uint32_t index)
 {
-    if (flash_record_count >= FLASH_MAX_RECORDS) {
-        #ifdef DEBUG
-            printf("Flash full\r\n");
-        #endif
+	uint8_t sync = 0xFFU;
+	off_t address = (off_t)(FLASH_LOG_START + index * FLASH_RECORD_SIZE);
 
-        return HAL_ERROR;
-    }
-
-    if ((flash_write_addr % W25Q128_SECTOR_SIZE) == 0) {
-        HAL_StatusTypeDef ret = W25Q128_SectorErase(&flash, flash_write_addr);
-        if (ret != HAL_OK) {
-            #ifdef DEBUG
-                printf("Sector erase failed at 0x%06lX\r\n", flash_write_addr);
-            #endif
-            return ret;
-        }
-    }
-
-    HAL_StatusTypeDef ret = W25Q128_PageProgram(&flash, flash_write_addr, buff, len);
-    if (ret != HAL_OK) {
-        #ifdef DEBUG
-            printf("Flash write failed at 0x%06lX\r\n", flash_write_addr);
-        #endif
-        return ret;
-    }
-
-    flash_write_addr += FLASH_RECORD_SIZE;
-    flash_record_count++;
-
-    return HAL_OK;
+	return flash_read(flash_device, address, &sync, sizeof(sync)) == 0 &&
+	       sync == FLASH_SYNC_WORD;
 }
 
-HAL_StatusTypeDef flash_read_record(uint32_t index, uint8_t *buff, uint16_t len)
+static int recover_write_pointer(void)
 {
-    if (index >= flash_record_count) return HAL_ERROR;
-    
-    uint32_t addr = FLASH_LOG_START_ADDR + (index * FLASH_RECORD_SIZE);
-    return W25Q128_ReadData(&flash, addr, buff, len);
+	uint32_t low = 0U;
+	uint32_t high = FLASH_MAX_RECORDS;
+
+	while (low < high) {
+		uint32_t middle = low + (high - low) / 2U;
+		if (record_is_written(middle)) {
+			low = middle + 1U;
+		} else {
+			high = middle;
+		}
+	}
+	record_count = low;
+	write_address = FLASH_LOG_START + low * FLASH_RECORD_SIZE;
+	return 0;
 }
 
-uint32_t flash_get_record_count(void)
+static int prepare_log_region(uint32_t sectors)
 {
-    return flash_record_count;
+	uint32_t address;
+
+	if ((write_address % FLASH_SECTOR_SIZE) == 0U) {
+		address = write_address;
+	} else {
+		address = ROUND_UP(write_address, FLASH_SECTOR_SIZE);
+	}
+	prepared_start = address;
+	prepared_end = address;
+
+	for (uint32_t i = 0U; i < sectors && address < FLASH_TOTAL_SIZE; ++i) {
+		int ret = flash_erase(flash_device, (off_t)address, FLASH_SECTOR_SIZE);
+		if (ret != 0) {
+			return ret;
+		}
+		address += FLASH_SECTOR_SIZE;
+		prepared_end = address;
+	}
+	return 0;
 }
 
-
-static uint8_t flash_record_is_written(uint32_t index)
+int odin_storage_init(void)
 {
-    uint8_t sync_byte;
-    uint32_t addr = FLASH_LOG_START_ADDR + (index * FLASH_RECORD_SIZE);
+	if (!device_is_ready(flash_device)) {
+		return -ENODEV;
+	}
 
-    if (W25Q128_ReadData(&flash, addr, &sync_byte, 1) != HAL_OK) {
-        return 0; // read failure — treat conservatively as blank
-    }
-    return (sync_byte == FLASH_SYNC_WORD);
+	int ret = recover_write_pointer();
+	if (ret == 0) {
+		ret = prepare_log_region(FLASH_PREERASE_SECTORS);
+	}
+	if (ret != 0) {
+		return ret;
+	}
+
+	storage_enabled = true;
+	LOG_INF("flash ready at record %u; %u sectors prepared",
+		record_count, FLASH_PREERASE_SECTORS);
+	return 0;
 }
 
-HAL_StatusTypeDef flash_recover_write_pointer(void)
+static int write_record(const uint8_t record[FLASH_RECORD_SIZE])
 {
-    uint32_t lo = 0;
-    uint32_t hi = FLASH_MAX_RECORDS; // exclusive; assumes append-only, no gaps
+	if (record_count >= FLASH_MAX_RECORDS) {
+		return -ENOSPC;
+	}
 
-    while (lo < hi) {
-        uint32_t mid = lo + (hi - lo) / 2;
-        if (flash_record_is_written(mid)) {
-            lo = mid + 1;
-        } else {
-            hi = mid;
-        }
-    }
+	if ((write_address % FLASH_SECTOR_SIZE) == 0U &&
+	    !(write_address >= prepared_start && write_address < prepared_end)) {
+		int ret = flash_erase(flash_device, (off_t)write_address,
+				      FLASH_SECTOR_SIZE);
+		if (ret != 0) {
+			return ret;
+		}
+	}
 
-    flash_record_count = lo;
-    flash_write_addr = FLASH_LOG_START_ADDR + (lo * FLASH_RECORD_SIZE);
-
-#ifdef DEBUG
-    printf("Flash recovery: resuming at record %lu (addr 0x%06lX)\r\n",
-           flash_record_count, flash_write_addr);
-#endif
-
-    return HAL_OK;
+	int ret = flash_write(flash_device, (off_t)write_address, record,
+			      FLASH_RECORD_SIZE);
+	if (ret == 0) {
+		write_address += FLASH_RECORD_SIZE;
+		record_count++;
+	}
+	return ret;
 }
 
-HAL_StatusTypeDef flash_prepare_log_region(uint32_t num_sectors)
+void odin_storage_thread(void *unused1, void *unused2, void *unused3)
 {
-    uint32_t erase_addr;
+	ARG_UNUSED(unused1);
+	ARG_UNUSED(unused2);
+	ARG_UNUSED(unused3);
 
-    if (flash_write_addr % W25Q128_SECTOR_SIZE == 0) {
-        erase_addr = flash_write_addr; // pointer sits exactly at an untouched sector
-    } else {
-        erase_addr = flash_write_addr
-                    - (flash_write_addr % W25Q128_SECTOR_SIZE)
-                    + W25Q128_SECTOR_SIZE; // skip the partially-written sector
-    }
+	odin_wait_for_start();
+	uint8_t sequence = 0U;
 
-    uint32_t chip_end = FLASH_LOG_START_ADDR + (FLASH_MAX_RECORDS * FLASH_RECORD_SIZE);
+	for (;;) {
+		FlightSensorData sample;
+		(void)k_msgq_get(&odin_log_queue, &sample, K_FOREVER);
+		if (!storage_enabled) {
+			continue;
+		}
 
-    for (uint32_t i = 0; i < num_sectors && erase_addr < chip_end; i++) {
-        HAL_StatusTypeDef ret = W25Q128_SectorErase(&flash, erase_addr);
-        if (ret != HAL_OK) {
-#ifdef DEBUG
-            printf("Pre-erase failed at 0x%06lX\r\n", erase_addr);
-#endif
-            return ret;
-        }
-        erase_addr += W25Q128_SECTOR_SIZE;
-    }
+		uint8_t record[FLASH_RECORD_SIZE] = {0};
+		TelemetryPacket packet = {0};
+		packet.header.sync_word = FLASH_SYNC_WORD;
+		packet.header.packet_type = telemetry_packet;
+		packet.header.sequence_number = sequence++;
+		packet.sensordata = sample;
+		packet.flight_State = sample.flight_state;
+		telemetry_serializer(&packet, record);
 
-    return HAL_OK;
+		int ret = write_record(record);
+		if (ret != 0) {
+			LOG_ERR("flash log failed at 0x%06x: %d", write_address, ret);
+			storage_enabled = false;
+		}
+	}
 }
-
-#ifdef FLASH_ERASE_BUILD
-  HAL_StatusTypeDef flash_full_chip_erase(void)
-  {
-      uint32_t chip_end = W25Q128_TOTAL_SIZE;
-
-      for (uint32_t addr = 0; addr < chip_end; addr += W25Q128_SECTOR_SIZE) {
-          HAL_StatusTypeDef ret = W25Q128_SectorErase(&flash, addr);
-          if (ret != HAL_OK) {
-  #ifdef DEBUG
-              printf("Chip erase failed at 0x%06lX\r\n", addr);
-  #endif
-              return ret;
-          }
-      }
-
-      flash_write_addr = FLASH_LOG_START_ADDR;
-      flash_record_count = 0;
-
-  #ifdef DEBUG
-      printf("Flash chip erase complete\r\n");
-  #endif
-      return HAL_OK;
-  }
-
-#endif /* FLASH_ERASE_BUILD */

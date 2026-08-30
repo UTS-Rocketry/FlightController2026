@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
-cmake --build build \
-  && arm-none-eabi-objcopy -O binary build/Code.elf build/Code.bin \
-  && st-flash write build/Code.bin 0x08000000   
+set -euo pipefail
+
+west build -b weact_stm32f405_core . -d build/zephyr
+west flash -d build/zephyr
