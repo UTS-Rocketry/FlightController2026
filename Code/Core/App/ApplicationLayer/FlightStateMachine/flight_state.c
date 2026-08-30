@@ -143,25 +143,26 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uin
                 #endif
                 
 
-                /* ADD LORA TRANSMISSION */
-                /* If apogee is less than Main deployment alt */
-                if (ctx.apogee_alt < MAIN_DEPLOY_ALT_M) {
-                    
-                    pyro_fire_drogue();
-                    ctx.drogue_fired = 1;
-                    
-                    pyro_fire_main();
-                    ctx.main_fired = 1;
-                    FSM_transition(STATE_PARAFOIL);
-                    break;
-
-                } 
-                
                 pyro_fire_drogue();
                 ctx.drogue_fired = 1;
-                FSM_transition(STATE_DROGUE);
+
+                if (ctx.apogee_alt < MAIN_DEPLOY_ALT_M) {
+                    ctx.main_pending = 1;
+                } else {
+                    FSM_transition(STATE_DROGUE);
+                }
 
             }
+
+            if (ctx.main_pending && !ctx.main_fired && 
+                (HAL_GetTick() - ctx.state_entry_time) >= UNDERSHOOT_TIME_DELAY) {
+                    
+                pyro_fire_main();
+                ctx.main_fired = 1;
+                ctx.main_pending = 0;
+                FSM_transition(STATE_PARAFOIL);
+
+            } 
             //APPOGEE DETECTED FIRE PYRO
             break;
 

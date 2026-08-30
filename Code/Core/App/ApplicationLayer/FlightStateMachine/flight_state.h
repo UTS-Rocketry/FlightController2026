@@ -31,6 +31,8 @@ typedef struct {
     uint8_t apogee_count;        
     uint8_t main_alt_count;
 
+    uint8_t main_pending;
+
 } FSM_Context_t;
 
 HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uint8_t baro_read);

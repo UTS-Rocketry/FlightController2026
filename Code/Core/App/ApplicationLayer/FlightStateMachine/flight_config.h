@@ -13,6 +13,8 @@
 #define APOGEE_VELOCITY_THRESHOLD       -0.5f     /* m/s, negative = descending */
 #define APOGEE_CONFIRM_SAMPLES          5
 
+#define UNDERSHOOT_TIME_DELAY           10000
+
 /* ── Deployment altitudes ──────────────────────────── */
 #define MAIN_DEPLOY_ALT_M               100.0f    /* AGL meters */
 #define MAIN_ALT_CONFIRM_SAMPLES        5
