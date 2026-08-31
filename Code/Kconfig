@@ -17,7 +17,14 @@ config ODIN_HIL_SIM
 choice ODIN_SIM_PROFILE
 	prompt "Motor profile"
 	depends on ODIN_HIL_SIM
-	default ODIN_SIM_PROFILE_L820
+	default ODIN_SIM_PROFILE_2000M
+
+config ODIN_SIM_PROFILE_2000M
+	bool "2,000 m full-flight profile"
+	help
+	  Scale the L1365 altitude and net vertical acceleration consistently so
+	  the simulated trajectory reaches exactly 2,000 m AGL before descending
+	  to the ground.
 
 config ODIN_SIM_PROFILE_M2050
 	bool "M2050"
@@ -38,6 +45,15 @@ config ODIN_SIM_PROFILE_J435
 	bool "J435"
 
 endchoice
+
+config ODIN_SIM_AUTO_START
+	bool "Automatically arm and start the simulation"
+	depends on ODIN_HIL_SIM
+	default n
+	help
+	  Arm the flight-state machine immediately before releasing the scheduler.
+	  This option is simulation-only; ODIN_HIL_SIM also compiles out physical
+	  pyrotechnic activation and holds every pyro output inactive.
 
 config ODIN_SIM_CONTINUITY_PRESENT
 	bool "Report both igniter continuity channels as present"

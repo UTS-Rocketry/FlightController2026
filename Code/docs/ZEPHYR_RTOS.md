@@ -35,8 +35,10 @@ work code is not compiled into that build. Both outputs are configured inactive
 at startup. Simulated continuity defaults to present so the normal ground-
 station arming workflow can be exercised without continuity hardware.
 
-`sim.conf` selects the L820 profile by default. To use another existing profile,
-replace its `CONFIG_ODIN_SIM_PROFILE_L820=y` line with exactly one of:
+`sim.conf` selects an automatically-started 2,000 m full-flight profile by
+default. It scales the L1365 altitude and net acceleration consistently, reaches
+2,000 m AGL, and descends to the ground. To use another existing profile,
+replace its `CONFIG_ODIN_SIM_PROFILE_2000M=y` line with exactly one of:
 
 ```text
 CONFIG_ODIN_SIM_PROFILE_M2050=y
@@ -59,11 +61,14 @@ west build -b weact_stm32f405_core . -d build/zephyr-sim --pristine -- \
     -DEXTRA_CONF_FILE=sim.conf
 ```
 
-After boot, send the usual ARM command from the ground station. The profile then
-advances at 10 ms per sample (100 Hz), while its altitude is consumed by the
-normal 40 ms barometer/Kalman release (25 Hz). It pauses while the FSM is IDLE
-and holds the final sample after the profile ends. The telemetry packet format
-is unchanged, so the ground-station decoder needs no simulation-specific code.
+The default configuration automatically arms immediately before releasing the
+scheduler. Set `CONFIG_ODIN_SIM_AUTO_START=n` to restore the normal ground-
+station ARM workflow. The profile advances at 10 ms per sample (100 Hz), while
+its altitude is consumed by the normal 40 ms barometer/Kalman release (25 Hz).
+UART4 reports simulation time, FSM state, raw altitude, estimated altitude, and
+vertical velocity once per second. The final sample is held after landing. The
+telemetry packet format is unchanged, so the ground-station decoder needs no
+simulation-specific code.
 
 `./release.sh` still creates the normal hardware-sensor flight image in the
 separate `build/zephyr` directory. `./sim.sh` always uses

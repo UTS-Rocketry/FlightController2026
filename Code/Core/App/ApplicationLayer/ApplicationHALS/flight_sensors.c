@@ -473,7 +473,10 @@ int odin_sensors_read_imu(FlightSensorData *data)
 	data->z_mg = 0.0f;
 	data->x_mg_IMU = 0.0f;
 	data->y_mg_IMU = 0.0f;
-	data->z_mg_IMU = sim_accel_mg[sim_index];
+	/* Scale acceleration about the stationary 1 g baseline so it remains
+	 * consistent with the scaled altitude trajectory. */
+	data->z_mg_IMU = 1000.0f + ODIN_SIM_PROFILE_SCALE *
+		(sim_accel_mg[sim_index] - 1000.0f);
 	data->x_gy = 0.0f;
 	data->y_gy = 0.0f;
 	data->z_gy = 0.0f;
@@ -491,7 +494,7 @@ int odin_sensors_read_baro(FlightSensorData *data)
 		return -EINVAL;
 	}
 
-	data->altitude = sim_alt[sim_index];
+	data->altitude = sim_alt[sim_index] * ODIN_SIM_PROFILE_SCALE;
 	data->pressure = 0.0f;
 	data->temperature = 0.0f;
 	return 0;

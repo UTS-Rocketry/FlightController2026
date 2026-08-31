@@ -128,6 +128,7 @@
 &adc1 {
 	pinctrl-0 = <&adc1_in15_pc5>;
 	pinctrl-names = "default";
+	st,adc-prescaler = <2>;
 	status = "okay";
 
 	#address-cells = <1>;
@@ -144,6 +145,7 @@
 &adc2 {
 	pinctrl-0 = <&adc2_in1_pa1>;
 	pinctrl-names = "default";
+	st,adc-prescaler = <2>;
 	status = "okay";
 
 	#address-cells = <1>;

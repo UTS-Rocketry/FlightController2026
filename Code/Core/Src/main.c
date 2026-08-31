@@ -35,6 +35,34 @@ static int watchdog_channel = -1;
 
 static void flight_thread(void *, void *, void *);
 
+#if defined(CONFIG_ODIN_HIL_SIM)
+#define ODIN_SIM_REPORT_PERIOD_MS 1000U
+
+static const char *sim_state_name(FlightState_t state)
+{
+	switch (state) {
+	case STATE_IDLE:
+		return "IDLE";
+	case STATE_PAD:
+		return "PAD";
+	case STATE_BOOST:
+		return "BOOST";
+	case STATE_COAST:
+		return "COAST";
+	case STATE_APOGEE:
+		return "APOGEE";
+	case STATE_DROGUE:
+		return "DROGUE";
+	case STATE_PARAFOIL:
+		return "PARAFOIL";
+	case STATE_LAND:
+		return "LAND";
+	default:
+		return "UNKNOWN";
+	}
+}
+#endif
+
 void odin_wait_for_start(void)
 {
 	(void)k_event_wait(&odin_events, ODIN_EVENT_START, false, K_FOREVER);
@@ -141,6 +169,11 @@ static void flight_thread(void *unused1, void *unused2, void *unused3)
 	uint32_t next_imu;
 	uint32_t next_baro;
 	uint32_t next_log;
+#if defined(CONFIG_ODIN_HIL_SIM)
+	uint32_t sim_start;
+	uint32_t next_sim_report;
+	int sim_previous_state = -1;
+#endif
 
 	odin_wait_for_start();
 	now = k_uptime_get_32();
@@ -148,6 +181,10 @@ static void flight_thread(void *unused1, void *unused2, void *unused3)
 	next_imu = now;
 	next_baro = now;
 	next_log = now;
+#if defined(CONFIG_ODIN_HIL_SIM)
+	sim_start = now;
+	next_sim_report = now;
+#endif
 
 	for (;;) {
 		now = k_uptime_get_32();
@@ -184,6 +221,27 @@ static void flight_thread(void *unused1, void *unused2, void *unused3)
 		}
 		sample.flight_state = (uint8_t)FSM_get_state();
 		odin_snapshot_publish(&sample);
+
+#if defined(CONFIG_ODIN_HIL_SIM)
+		FlightState_t sim_state = FSM_get_state();
+
+		if ((int)sim_state != sim_previous_state) {
+			LOG_INF("SIM state -> %s at %d m", sim_state_name(sim_state),
+				(int)sample.altitude);
+			sim_previous_state = (int)sim_state;
+		}
+
+		now = k_uptime_get_32();
+		if ((int32_t)(now - next_sim_report) >= 0) {
+			next_sim_report = advance_period(next_sim_report,
+				ODIN_SIM_REPORT_PERIOD_MS, now);
+			LOG_INF("SIM t=%u s state=%s alt=%d m est=%d m vel=%d m/s",
+				(unsigned int)((now - sim_start) / 1000U),
+				sim_state_name(sim_state), (int)sample.altitude,
+				(int)sample.kalman_altitude,
+				(int)sample.kalman_velocity);
+		}
+#endif
 
 		now = k_uptime_get_32();
 		if ((int32_t)(now - next_log) >= 0) {
@@ -297,6 +355,11 @@ int main(void)
 		LOG_ERR("critical sensors unavailable; scheduler not released");
 		return -ENODEV;
 	}
+
+#if defined(CONFIG_ODIN_SIM_AUTO_START)
+	FSM_arm();
+	LOG_WRN("HIL auto-start armed; profile begins with scheduler release");
+#endif
 
 	(void)k_event_set(&odin_events, ODIN_EVENT_START);
 	LOG_INF("scheduler released: IMU 100 Hz, baro/log 25 Hz");
