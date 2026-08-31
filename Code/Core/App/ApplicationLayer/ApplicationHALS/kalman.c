@@ -1,6 +1,7 @@
 #include "kalman.h"
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 
 static KalmanFilter_t kf;
 
@@ -20,7 +21,7 @@ void kalman_init(void) {
     kf.R_altitude = 2.5f; /* static noise var measured at 0.70 (std 0.835m); inflated */
 }
 
-void kalman_predict(float accel_z_mg, float dt) {
+void kalman_predict(float accel_z_mg, float dt, bool freeze_bias) {
     
     // Sanity check inputs — reject garbage on first call
     if (isnan(accel_z_mg) || isinf(accel_z_mg)) return;
@@ -68,22 +69,46 @@ void kalman_predict(float accel_z_mg, float dt) {
     kf.P[7] = fp21 - fp22*dt;
     kf.P[8] = fp22;
 
-    // Step 3: Add process noise
-    kf.P[0] += kf.Q_altitude;
-    kf.P[4] += kf.Q_velocity;
-    kf.P[8] += kf.Q_bias;
+    // Step 3: Add process noise, scaled relative to the 10ms nominal tick
+    // this Q was tuned for. A stalled loop (larger dt) now correctly
+    // injects proportionally more uncertainty instead of a flat amount.
+    float dt_scale = dt / 0.01f;
+    kf.P[0] += kf.Q_altitude * dt_scale;
+    kf.P[4] += kf.Q_velocity * dt_scale;
+    // If bias correction is frozen (update() will force K2=0), its
+    // covariance must stop growing too. Left unbounded, P[8] grows for
+    // the rest of the flight with nothing to correct it, and leaks into
+    // velocity covariance through the fp10/fp11/fp12 cross-coupling above
+    // — confirmed on real flight data to eventually destabilize P4
+    // (velocity variance goes negative). Halting K2 alone is not enough.
+    if (!freeze_bias) {
+        kf.P[8] += kf.Q_bias * dt_scale;
+    }
 }
 
-void kalman_update(float baro_altitude) {
+void kalman_update(float baro_altitude, bool freeze_bias) {
     if (isnan(baro_altitude) || isinf(baro_altitude)) return;
 
     float y     = baro_altitude - kf.altitude;
     float S     = kf.P[0] + kf.R_altitude;
+
+    // Innovation gate: reject a barometer sample that disagrees with the
+    // prediction by more than 5 standard deviations. Protects against a
+    // single bad/glitched reading (e.g. static-port disturbance during
+    // coning) yanking the whole state. Tune sigma once validated offline.
+    float innovation_std = sqrtf(S);
+    if (fabsf(y) > 5.0f * innovation_std) {
+        return;
+    }
+
     float S_inv = 1.0f / S;
 
     float K0 = kf.P[0] * S_inv;
     float K1 = kf.P[3] * S_inv;
-    float K2 = kf.P[6] * S_inv;
+    // Bias correction is frozen once armed/at boost, so barometer lag and
+    // sensor disagreement can't be silently absorbed into the bias term
+    // for the rest of the flight (see kalman.md notes / review).
+    float K2 = freeze_bias ? 0.0f : kf.P[6] * S_inv;
 
     kf.altitude   += K0 * y;
     kf.velocity   += K1 * y;
@@ -101,6 +126,18 @@ void kalman_update(float baro_altitude) {
     kf.P[6] = p[6] - K2*p[0];
     kf.P[7] = p[7] - K2*p[1];
     kf.P[8] = p[8] - K2*p[2];
+
+    // Force exact symmetry (P[1]==P[3], P[2]==P[6], P[5]==P[7]). A
+    // covariance matrix is symmetric by construction; floating-point
+    // roundoff accumulates over enough iterations (thousands of records
+    // across a long flight + ground-sitting time) and can silently break
+    // that, eventually costing the matrix its positive-definiteness and
+    // diverging the whole filter. Confirmed on real flight data — this
+    // is the fix that actually resolved it, not just the freeze_bias
+    // changes above on their own. Cheap, standard, do this every update.
+    kf.P[1] = kf.P[3] = 0.5f * (kf.P[1] + kf.P[3]);
+    kf.P[2] = kf.P[6] = 0.5f * (kf.P[2] + kf.P[6]);
+    kf.P[5] = kf.P[7] = 0.5f * (kf.P[5] + kf.P[7]);
 }
 
 float kalman_get_altitude(void) { return kf.altitude; }

@@ -1,6 +1,7 @@
 #ifndef KALMAN_H
 #define KALMAN_H
 
+#include <stdbool.h>
 
 typedef struct{
 
@@ -19,8 +20,8 @@ typedef struct{
 }KalmanFilter_t;
 
 void kalman_init(void);
-void kalman_predict(float accel_z_mg, float dt);
-void kalman_update(float baro_altitude);
+void kalman_predict(float accel_z_mg, float dt, bool freeze_bias);
+void kalman_update(float baro_altitude, bool freeze_bias);
 float kalman_get_altitude(void);
 float kalman_get_velocity(void);
 

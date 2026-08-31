@@ -257,6 +257,8 @@ int main(void)
 
   #ifdef FLASH_ERASE_BUILD
     
+    buzzer_init();
+
     result = flash_full_chip_erase();
       #ifdef DEBUG
         if (result != HAL_OK) {
@@ -350,12 +352,15 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1) { 
 
-    /* Watch dog woof woof*/
+    /* Watch dog woof woof */
     HAL_IWDG_Refresh(&hiwdg);
-    /*This is to get timing loop*/
+
+    /* This is to get timing loop */
+
     uint32_t now = HAL_GetTick();
     
     /*Non blocking pyro*/
+
     pyro_service();
     indicators_service();
     GPS_service();
@@ -364,6 +369,7 @@ int main(void)
     if (now - last_imu >= 10) {
       float dt = (now - last_imu) / 1000.0f;
       last_imu = now;
+
       HAL_StatusTypeDef imu_result = flight_sensors_update_IMU_accel(&sensorData);
       
       #ifdef DEBUG
@@ -371,7 +377,7 @@ int main(void)
       #endif
       
       (void)imu_result;
-      kalman_predict(sensorData.z_mg_IMU, dt);
+      kalman_predict(sensorData.z_mg_IMU, dt, FSM_get_state() >= STATE_BOOST);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
       imu_sensor_read = 1;
@@ -387,7 +393,7 @@ int main(void)
       #endif
       
       (void) baro_result;
-      kalman_update(sensorData.altitude);
+      kalman_update(sensorData.altitude, FSM_get_state() >= STATE_BOOST);
       sensorData.kalman_altitude = kalman_get_altitude();
       sensorData.kalman_velocity = kalman_get_velocity();
       baro_sensor_read = 1;

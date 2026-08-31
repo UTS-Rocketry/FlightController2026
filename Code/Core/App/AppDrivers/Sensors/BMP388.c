@@ -70,7 +70,7 @@ HAL_StatusTypeDef BMP388_Init (BMP388Handle_TypeDef *bmp) {
 
         return HAL_ERROR;
     }
-    result = BMP388_SetIIRFilterCoeff(bmp, BMP3_IIR_FILTER_COEFF_3);
+    result = BMP388_SetIIRFilterCoeff(bmp, BMP3_IIR_FILTER_DISABLE);
 	if (result != HAL_OK) {
 
         return HAL_ERROR;
