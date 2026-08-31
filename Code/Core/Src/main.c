@@ -34,6 +34,7 @@
 #include "indicators.h"
 #include "telemetry.h"
 #include "Lora_App.h"
+#include "LoRa.h"
 #include "pyro.h"
 #include "flight_state.h"
 #include "kalman.h"
@@ -340,6 +341,7 @@ int main(void)
   static uint32_t last_gps   = 0;
   static uint32_t last_radio_end = 0;
   static uint32_t last_hb_ms = 0;
+  static uint8_t radio_was_busy = 0U;
   
   /* NULL Placeholder for CAN heartbeat */
   uint8_t dummy = 0;
@@ -359,6 +361,17 @@ int main(void)
     pyro_service();
     indicators_service();
     GPS_service();
+
+    /* DIO0 only records the edge in interrupt context. Do the SPI cleanup and
+     * RX FIFO read here so the ISR stays short and never blocks on SPI. */
+    (void)lora_service();
+    (void)lora_rx_command_service();
+
+    uint8_t radio_busy = lora_is_busy();
+    if ((radio_was_busy != 0U) && (radio_busy == 0U)) {
+      last_radio_end = HAL_GetTick();
+    }
+    radio_was_busy = radio_busy;
     
     /* Predict Stage based on IMU  --------------------------------------------------------*/
     if (now - last_imu >= 10) {
@@ -413,32 +426,36 @@ int main(void)
     sensorData.flight_state = FSM_get_state();
     
     /* Radio scheduler ------------------------------------------------------------
-     * Dispatch at most one operation per pass and leave a quiet guard after the
-     * previous operation. This prevents GPS, telemetry, continuity and command RX
-     * from starting back-to-back when several timers become due together. */
+     * Start at most one asynchronous operation while the radio is idle, then leave
+     * a quiet guard after its DIO0 completion or software timeout. */
     uint32_t radio_now = HAL_GetTick();
-    if (radio_now - last_radio_end >= RADIO_GUARD_MS) {
+    if ((radio_busy == 0U) &&
+        (radio_now - last_radio_end >= RADIO_GUARD_MS)) {
       if (FSM_get_state() <= STATE_PAD && radio_now - last_RX >= COMMAND_RX_PERIOD_MS) {
         last_RX = radio_now;
-        (void)lora_rx_command();
-        last_radio_end = HAL_GetTick();
+        if (lora_rx_command() == HAL_OK) {
+          radio_was_busy = 1U;
+        }
       } else if (FSM_get_state() >= STATE_PAD &&
                  radio_now - last_lora >= FLIGHT_TX_PERIOD_MS) {
         last_lora = radio_now;
-        (void)lora_tx_telemetry(&sensorData);
-        last_radio_end = HAL_GetTick();
+        if (lora_tx_telemetry(&sensorData) == HAL_OK) {
+          radio_was_busy = 1U;
+        }
       } else if (radio_now - last_gps >= GPS_TX_PERIOD_MS) {
         GPSFix fix;
         last_gps = radio_now;
         if (GPS_get_fix(&fix)) {
-          (void)lora_tx_gps(&fix, (uint8_t)FSM_get_state());
-          last_radio_end = HAL_GetTick();
+          if (lora_tx_gps(&fix, (uint8_t)FSM_get_state()) == HAL_OK) {
+            radio_was_busy = 1U;
+          }
         }
       } else if (FSM_get_state() <= STATE_PAD &&
                  radio_now - last_cont >= CONTINUITY_PERIOD_MS) {
         last_cont = radio_now;
-        (void)lora_tx_continuity();
-        last_radio_end = HAL_GetTick();
+        if (lora_tx_continuity() == HAL_OK) {
+          radio_was_busy = 1U;
+        }
       }
     }
 

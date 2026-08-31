@@ -37,7 +37,7 @@ console. Frames use the 58-byte format produced by
 | `lora_tx_telemetry(sensorData)` | Build a packet, serialize, transmit over LoRa (3.3 Hz, state ≥ PAD) | ✅ `buff[62]` now (M1 fixed) |
 | `lora_tx_gps(fix, state)` | Send the latest GPS fix/status at 1 Hz in a distinct 33-byte payload | Scheduled with all other radio traffic and a 25 ms guard |
 | `lora_tx_continuity()` | Broadcast pyro continuity (main/drogue) every 2 s pre-launch (state ≤ PAD) | 12-byte packet, fits `buff[12]` |
-| `lora_rx_command()` | Poll for an authenticated ground command at PAD; dispatch ARM/FIRE/DISARM | ⚠️ blocks ≤1 s + remote FIRE bypasses FSM flags ([N1](CONCURRENCY_SAFETY.md#-n1--lora_rx_command-blocks-the-loop-up-to-1-second)/[N2](CONCURRENCY_SAFETY.md#-n2--remote-cmd_fire-bypasses-the-fsm-deploy-flags-and-state-guard)) |
+| `lora_rx_command()` / `lora_rx_command_service()` | Start an interrupt-driven command RX window; later dispatch ARM/FIRE/DISARM after DIO0 | Non-blocking; remote FIRE still bypasses FSM fired-flags ([N2](CONCURRENCY_SAFETY.md#-n2--remote-cmd_fire-bypasses-the-fsm-deploy-flags-and-state-guard)) |
 | `flash_log_telemetry(sensorData)` | Build a packet, serialize, append a 64-byte record to flash (25 Hz, state ≥ PAD) | ✅ correct buffer sizing |
 | `flash_dump_serial()` | Read every flash record back and print decoded fields over UART | Post-flight analysis tool |
 
@@ -49,8 +49,9 @@ record). Both are gated to `state ≥ PAD` so the log isn't filled with idle pad
 > the 4-byte receiver header + 58-byte payload. The new `lora_tx_continuity` (12 B) and
 > `lora_rx_command` (13 B) buffers are also correctly sized. See
 > [CONCURRENCY_SAFETY M1](CONCURRENCY_SAFETY.md#-m1--stack-buffer-overflow-in-lora_tx_telemetry).
-> The remaining hazards in this path are **N1** (RX blocks ≤1 s) and **N2** (remote FIRE
-> bypasses the FSM flags).
+> **N1 is resolved:** command RX returns after configuring the radio and the FIFO is drained
+> after the DIO0 event. The remaining command-path hazard is **N2** (remote FIRE bypasses
+> the FSM fired-flags).
 
 **`flash_dump_serial` decoding** mirrors the serializer layout by hand
 (`memcpy` of each float at its byte offset). If you ever change the wire format, you must
@@ -100,7 +101,7 @@ Minimal today. Two notes:
 
 | Sink | Module | Rate | Format | Status |
 |---|---|---|---|---|
-| LoRa downlink | `telemetry.c` → `Lora_App` → `LoRa.c` | 3.3 Hz (≥ PAD) | 58-byte CRC16 frame | ✅ 🟡 (M1) |
+| LoRa downlink | `telemetry.c` → `Lora_App` → `LoRa.c` | 3.3 Hz (≥ PAD) | 58-byte CRC16 frame | ✅ |
 | GPS downlink | `GPS.c` → `telemetry.c` → `LoRa.c` | 1 Hz (all states, after first NMEA sentence) | 33-byte CRC16 frame | ✅ |
 | Flash log | `telemetry.c` → `W25Q128_HAL` → `W25Q128.c` | 25 Hz (≥ PAD) | 64-byte records | ✅ |
 | Console / replay | `serial_print`, `flash_dump_serial` | debug / on-demand | text | ✅ (keep behind DEBUG) |

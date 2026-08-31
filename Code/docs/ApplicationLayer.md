@@ -81,7 +81,7 @@ continuity checks. This is the **implemented actuation path** (Tier 1 in
 > control. The continuity checks (`pyro_check_*`) are defined but not yet called by the
 > FSM — wiring them into a pre-arm check is a good easy win.
 
-### Lora_App — radio config & DIO0 ISR ✅ 🟡
+### Lora_App — radio config & DIO0 ISR ✅
 **Files:** `ApplicationHALS/Lora_App.c` (.h).
 
 Bridges the SX1276 driver to the flight app. *(The packet **wire formats** and serializers
@@ -91,14 +91,12 @@ radio config, the DIO0 ISR, and `lora_App_Init`.)*
 | Symbol | Purpose |
 |---|---|
 | `lora_App_Init` | Fill the SX1276 handle + LoRa config (915 MHz / SF7 / 125 kHz / +17 dBm); call `lora_init` |
-| `HAL_GPIO_EXTI_Callback` | DIO0 ISR — sets `lora_tx_done_flag` |
+| `HAL_GPIO_EXTI_Callback` | DIO0 ISR — forwards the edge to `lora_dio0_irq_handler` |
 | `FlightStateLoRa` enum | LoRa-side flight-state codes (distinct from `FlightState_t`) |
 
-> Notes (still open): the DIO0 ISR sets `lora_tx_done_flag` but nobody reads it, and the
-> header declares a misspelled `HAL_GPIOEXTI_Callback` prototype that doesn't match the
-> `HAL_GPIO_EXTI_Callback` implementation
-> ([C3](CONCURRENCY_SAFETY.md#-c3--lora-tx-done-interrupt-is-set-up-but-never-consumed)).
-> `Lora_App.h` also still defines the duplicate `IDLE/ARMED/…` enum that collides with
+> DIO0 completion is now consumed by the driver service and the callback prototype matches
+> the HAL symbol ([C3](CONCURRENCY_SAFETY.md#-c3--lora-tx-done-interrupt-is-set-up-but-never-consumed)).
+> `Lora_App.h` still defines the duplicate `IDLE/ARMED/…` enum that collides with
 > `CAN.h` ([C8](CONCURRENCY_SAFETY.md#-c8--duplicate-enum-definitions-collide-across-headers)).
 
 ### W25Q128_HAL — flash logging policy ✅

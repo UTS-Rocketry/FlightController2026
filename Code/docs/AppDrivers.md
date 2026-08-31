@@ -85,7 +85,7 @@ IMU apply.
 
 ## LoRa/
 
-### SX1276 — 915 MHz LoRa radio ✅ 🟡
+### SX1276 — 915 MHz LoRa radio ✅
 **Files:** `LoRa/LoRa.c` (.h).
 **Bus/CS:** SPI2 / `LoRaNssPin`; reset on `LoRaResetPin`; **DIO0 → EXTI9_5** for TX/RX done.
 
@@ -95,16 +95,18 @@ SF7, 125 kHz, CR 4/5, +17 dBm PA_BOOST, CRC on, explicit header.
 | Function | Purpose |
 |---|---|
 | `lora_init` | Reset, set LoRa mode, program frequency/SF/BW/CR/power/CRC/sync/preamble |
-| `lora_TX` | Load FIFO, transmit, **busy-poll** `IRQ_TX_DONE` until done or timeout |
-| `lora_RX` / `lora_receive_cont` / `lora_receive_cont_poll` | Single & continuous receive |
+| `lora_TX` | Load FIFO and start an asynchronous transmit; DIO0 reports TX done |
+| `lora_RX` | Start asynchronous single receive; DIO0 reports RX done |
+| `lora_dio0_irq_handler` | Record the DIO0 edge without doing SPI work in interrupt context |
+| `lora_service` | Handle the pending IRQ, drain RX FIFO, clean up mode/flags, and enforce timeouts |
+| `lora_is_busy` / `lora_get_status` | Non-blocking operation state/status |
 | `lora_sleep` / `lora_standby` | Power-mode control |
 | `lora_packet_rssi` / `lora_packet_snr` / `lora_version` | Link diagnostics |
 
-**Notes:** `lora_TX` busy-polls the IRQ register
-([C2](CONCURRENCY_SAFETY.md#-c2--lora_tx-busy-polls-up-to-1-s)) even though the DIO0
-done-interrupt is wired up but unused
-([C3](CONCURRENCY_SAFETY.md#-c3--lora-tx-done-interrupt-is-set-up-but-never-consumed)).
-Receive is implemented but the flight build only transmits.
+**Notes:** TX and RX completion are driven by DIO0 → EXTI9_5. The ISR only sets a volatile
+event flag; `lora_service` performs register/FIFO SPI access in the superloop. Initial FIFO
+setup is still synchronous, but the CPU no longer spins on `REG_IRQ_FLAGS` during packet
+airtime or an RX window ([C2/C3](CONCURRENCY_SAFETY.md#-c2--lora_tx-busy-polls-up-to-1-s)).
 
 ---
 

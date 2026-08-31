@@ -27,10 +27,8 @@ typedef enum {
 
 } FlightStateLoRa;
 
-extern volatile uint8_t lora_tx_done_flag;
-
-void HAL_GPIOEXTI_Callback(uint16_t GPIO_PIN);
-HAL_StatusTypeDef lora_App_Init();
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+HAL_StatusTypeDef lora_App_Init(void);
 
 #ifdef __cplusplus
 }
