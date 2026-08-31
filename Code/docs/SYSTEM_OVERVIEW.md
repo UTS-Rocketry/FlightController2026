@@ -112,8 +112,9 @@ while (1) {
 | LoRa telemetry TX | 200 ms | 5 Hz | state ≥ PAD |
 | Flash logging | 40 ms | 25 Hz | state ≥ PAD |
 
-**Interrupts.** Only one application interrupt is wired: LoRa **DIO0 → EXTI9_5**, whose
-handler sets `lora_tx_done_flag` (`Lora_App.c`). SysTick runs the HAL tick (and
+**Interrupts.** LoRa **DIO0 → EXTI9_5** reports both TX-done and RX-done. Its callback sets
+a driver event flag; `lora_service()` consumes that event in the superloop, performs the
+SPI cleanup/RX FIFO read, and enforces operation timeouts. SysTick runs the HAL tick (and
 decrements two leftover SD-card timeout counters). Everything else is polled.
 
 **Why this matters (and why an interviewer will ask):** a superloop is simple,
@@ -321,10 +322,9 @@ are not yet implemented — `CANTasks/` stays on ODIN (it still broadcasts state
   `Lora_App.c`) — good practice for a wire format that a ground station must parse.
 
 > ✅ The earlier `lora_tx_telemetry` buffer overflow (**M1**) is now fixed (`buff[62]`). The
-> remaining radio issues are the **busy-poll that ignores the DIO0 done-interrupt**
-> (**C2**/**C3**) and the new **RX command path blocking ≤1 s** (**N1**). There's also an
-> authenticated uplink command path and a pre-launch continuity broadcast now (see
-> [Outputs.md](Outputs.md)).
+> TX and command RX are now asynchronous and completed through DIO0 (**C2/C3/N1 resolved**).
+> There is also an authenticated uplink command path and a pre-launch continuity broadcast
+> (see [Outputs.md](Outputs.md)).
 
 ### CAN vehicle bus (🧩)
 

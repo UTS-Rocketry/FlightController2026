@@ -12,6 +12,21 @@
 static LORA_CONFIG_TYPEDEF lora_1;
 static SX1276_HandleTypedef sx1;
 
+typedef enum {
+    LORA_OPERATION_IDLE = 0,
+    LORA_OPERATION_TX,
+    LORA_OPERATION_RX
+} LoraOperation;
+
+static LoraOperation lora_operation = LORA_OPERATION_IDLE;
+static volatile uint8_t lora_dio0_pending = 0U;
+static HAL_StatusTypeDef lora_last_status = HAL_OK;
+static uint32_t lora_operation_started_ms = 0U;
+static uint32_t lora_operation_timeout_ms = 0U;
+static uint8_t *lora_rx_buffer = NULL;
+static uint8_t *lora_rx_length = NULL;
+static uint8_t lora_rx_max_length = 0U;
+
 /*FUNCTION DEFS ***********************************************************************************/
 /*PRIVATE DEFS ***********************************************************************************/
 
@@ -29,7 +44,8 @@ static HAL_StatusTypeDef lora_set_modem_2 (uint8_t spreading_factor, uint8_t ena
 static HAL_StatusTypeDef lora_set_modem_3 (uint8_t spreading_factor, uint32_t bandwidth);
 static HAL_StatusTypeDef lora_set_syncword(uint8_t syncword);
 static HAL_StatusTypeDef lora_set_TX_power(uint8_t use_pa_boost, uint8_t tx_power);
-static HAL_StatusTypeDef lora_get_mode(uint8_t *buff);
+static uint8_t lora_take_dio0_event(void);
+static HAL_StatusTypeDef lora_finish_operation(HAL_StatusTypeDef status);
 
 /*FUNCTIONS **************************************************************************************/
 
@@ -47,6 +63,12 @@ HAL_StatusTypeDef lora_init(SX1276_HandleTypedef *sx1276, const LORA_CONFIG_TYPE
        be used for the entire program */
     sx1 = *sx1276;
     lora_1 = *lora_config;
+    lora_operation = LORA_OPERATION_IDLE;
+    (void)lora_take_dio0_event();
+    lora_last_status = HAL_OK;
+    lora_rx_buffer = NULL;
+    lora_rx_length = NULL;
+    lora_rx_max_length = 0U;
 
 
 
@@ -149,9 +171,9 @@ static HAL_StatusTypeDef platform_write(SX1276_HandleTypedef *sx1276, uint8_t re
   HAL_GPIO_WritePin(sx1276->nss_port, sx1276->nss_pin, GPIO_PIN_RESET);
   
   result = HAL_SPI_Transmit(sx1276->hspi, &reg, 1, 1000);
-  if(result != HAL_OK) return HAL_ERROR;
-  result = HAL_SPI_Transmit(sx1276->hspi, (uint8_t*) bufp, len, 1000);
-  if(result != HAL_OK) return HAL_ERROR;
+  if(result == HAL_OK) {
+    result = HAL_SPI_Transmit(sx1276->hspi, (uint8_t*) bufp, len, 1000);
+  }
   
   HAL_GPIO_WritePin(sx1276->nss_port, sx1276->nss_pin, GPIO_PIN_SET);
   
@@ -172,9 +194,9 @@ static HAL_StatusTypeDef platform_read(SX1276_HandleTypedef *sx1276, uint8_t reg
   HAL_GPIO_WritePin(sx1276->nss_port, sx1276->nss_pin, GPIO_PIN_RESET);
   
   result = HAL_SPI_Transmit(sx1276->hspi, &reg, 1, 1000);
-  if(result != HAL_OK) return HAL_ERROR;
-  result = HAL_SPI_Receive(sx1276->hspi, bufp, len, 1000);
-  if(result != HAL_OK) return HAL_ERROR;
+  if(result == HAL_OK) {
+    result = HAL_SPI_Receive(sx1276->hspi, bufp, len, 1000);
+  }
   
   HAL_GPIO_WritePin(sx1276->nss_port, sx1276->nss_pin, GPIO_PIN_SET);
   
@@ -196,9 +218,9 @@ static HAL_StatusTypeDef platform_write_FIFO(SX1276_HandleTypedef *sx1276, uint8
   HAL_GPIO_WritePin(sx1276->nss_port, sx1276->nss_pin, GPIO_PIN_RESET);
   
   result = HAL_SPI_Transmit(sx1276->hspi, &fifo_addr, 1, 1000);
-  if(result != HAL_OK) return HAL_ERROR;
-  result = HAL_SPI_Transmit(sx1276->hspi, bufp, len, 1000);
-  if(result != HAL_OK) return HAL_ERROR;
+  if(result == HAL_OK) {
+    result = HAL_SPI_Transmit(sx1276->hspi, bufp, len, 1000);
+  }
   
   HAL_GPIO_WritePin(sx1276->nss_port, sx1276->nss_pin, GPIO_PIN_SET);
   
@@ -395,74 +417,56 @@ static HAL_StatusTypeDef lora_set_TX_power(uint8_t use_pa_boost, uint8_t tx_powe
 
 }
 
-static HAL_StatusTypeDef lora_get_mode(uint8_t *buff) {
-
-    HAL_StatusTypeDef result;
-    uint8_t mode_result = 0;
-    
-    result = platform_read(&sx1, REG_OPMODE, buff, 1);
-    if(result != HAL_OK) return HAL_ERROR;
-
-    mode_result = *buff & 0x07;
-    *buff = mode_result;
-
-    return result;
-    
-}
-
 HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_ms) {
 
     HAL_StatusTypeDef result;
     uint8_t buffer;
-    
-    result = lora_get_mode(&buffer);
-    if(result != HAL_OK) return HAL_ERROR;
 
-    if (buffer != MODE_STAND_BY) return HAL_ERROR;
+    if ((data == NULL) || (length == 0U)) return HAL_ERROR;
+    if (lora_operation != LORA_OPERATION_IDLE) return HAL_BUSY;
+
+    /* Force a known start mode so a previous timeout cannot wedge the radio. */
+    result = lora_standby();
+    if(result != HAL_OK) return result;
 
     /* Set DIO 0 to tx done*/
     buffer = 0x40;
     result = platform_write(&sx1, REG_DIO_MAPPING_1, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
+
+    /* Clear stale flags before DIO0 is armed for this operation. */
+    buffer = 0xFF;
+    result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+    if(result != HAL_OK) return result;
 
     /* write poiter of tx base addres to ptr addr */
     result = platform_read(&sx1, REG_FIFO_TX_BASE_ADDR, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
     result = platform_write( &sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
 
     result = platform_write_FIFO(&sx1, (uint8_t*)data, length);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
 
     buffer = length;
     result = platform_write(&sx1, REG_PAYLOAD_LENGTH, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
+
+    (void)lora_take_dio0_event();
+    lora_operation_started_ms = HAL_GetTick();
+    lora_operation_timeout_ms = timeout_ms;
+    lora_last_status = HAL_BUSY;
+    lora_operation = LORA_OPERATION_TX;
 
     buffer = MODE_LONG_RANGE | MODE_TRANSMIT;
     result = platform_write(&sx1, REG_OPMODE, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
-
-
-    buffer = 0;
-    uint32_t start = HAL_GetTick();
-    
-    while(!(buffer & IRQ_TX_DONE_MASK)) {
-        result = platform_read(&sx1, REG_IRQ_FLAGS, &buffer, 1);
-        if(result != HAL_OK) return HAL_ERROR;
-
-        if ((HAL_GetTick() - start) >= timeout_ms) {
-            return HAL_TIMEOUT;
-        }
-
+    if(result != HAL_OK) {
+        lora_operation = LORA_OPERATION_IDLE;
+        lora_last_status = result;
+        return result;
     }
-    
-    buffer = IRQ_TX_DONE_MASK;
-    result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
 
-
-
-    return result;
+    return HAL_OK;
 
 
 }
@@ -472,77 +476,175 @@ HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint8_t max_length,
     HAL_StatusTypeDef result;
     uint8_t buffer;
 
-    result = lora_get_mode(&buffer);
-    if(result != HAL_OK) return HAL_ERROR;
-    if (buffer != MODE_STAND_BY) return HAL_ERROR;
+    if ((buff == NULL) || (rx_length == NULL) || (max_length == 0U)) return HAL_ERROR;
+    if (lora_operation != LORA_OPERATION_IDLE) return HAL_BUSY;
+
+    *rx_length = 0U;
+
+    /* Force a known start mode so TX and RX cannot inherit each other's mode. */
+    result = lora_standby();
+    if(result != HAL_OK) return result;
 
     /* Set DIO 0 to rx done*/
     buffer = 0x00;
     result = platform_write(&sx1, REG_DIO_MAPPING_1, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
 
     /* Clear IRQ flags */
     buffer = 0xFF;
     result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
 
     /* write poiter of rx base addres to ptr addr */
     result = platform_read(&sx1, REG_FIFO_RX_BASE_ADDR, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
     result = platform_write( &sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+    if(result != HAL_OK) return result;
+
+    (void)lora_take_dio0_event();
+    lora_rx_buffer = buff;
+    lora_rx_length = rx_length;
+    lora_rx_max_length = max_length;
+    lora_operation_started_ms = HAL_GetTick();
+    lora_operation_timeout_ms = timeout_ms;
+    lora_last_status = HAL_BUSY;
+    lora_operation = LORA_OPERATION_RX;
 
     buffer = MODE_LONG_RANGE | MODE_RX_SINGLE;
     result = platform_write(&sx1, REG_OPMODE, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
-
-
-    /* polling loop to check for RX DONE*/
-    buffer = 0;
-    uint32_t start = HAL_GetTick();
-    while(!(buffer & IRQ_RX_DONE_MASK)) {
-        result = platform_read(&sx1, REG_IRQ_FLAGS, &buffer, 1);
-        if(result != HAL_OK) return HAL_ERROR;
-
-
-        if ((HAL_GetTick() - start) >= timeout_ms) {
-            return HAL_TIMEOUT;
-        }
-
+    if(result != HAL_OK) {
+        lora_operation = LORA_OPERATION_IDLE;
+        lora_last_status = result;
+        lora_rx_buffer = NULL;
+        lora_rx_length = NULL;
+        lora_rx_max_length = 0U;
+        return result;
     }
 
-    /* check CRC */
-    if(buffer & IRQ_PAYLOAD_CRC_ERR_MASK) return HAL_ERROR;
+    return HAL_OK;
 
-    result = platform_read(&sx1, REG_RX_NB_BYTES, &buffer, 1);
-    #ifdef DEBUG
+
+}
+
+void lora_dio0_irq_handler(void) {
+    lora_dio0_pending = 1U;
+}
+
+static uint8_t lora_take_dio0_event(void) {
+    uint8_t pending;
+    uint32_t primask = __get_PRIMASK();
+
+    __disable_irq();
+    pending = lora_dio0_pending;
+    lora_dio0_pending = 0U;
+    if (primask == 0U) {
+        __enable_irq();
+    }
+
+    return pending;
+}
+
+static HAL_StatusTypeDef lora_finish_operation(HAL_StatusTypeDef status) {
+    uint8_t buffer = MODE_LONG_RANGE | MODE_STAND_BY;
+    HAL_StatusTypeDef cleanup_status;
+
+    cleanup_status = platform_write(&sx1, REG_OPMODE, &buffer, 1);
+    if ((cleanup_status != HAL_OK) && (status == HAL_OK)) {
+        status = cleanup_status;
+    }
+
+    buffer = 0xFF;
+    cleanup_status = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
+    if ((cleanup_status != HAL_OK) && (status == HAL_OK)) {
+        status = cleanup_status;
+    }
+
+    lora_operation = LORA_OPERATION_IDLE;
+    lora_last_status = status;
+    lora_rx_buffer = NULL;
+    lora_rx_length = NULL;
+    lora_rx_max_length = 0U;
+
+    return status;
+}
+
+HAL_StatusTypeDef lora_service(void) {
+    HAL_StatusTypeDef result;
+    uint8_t irq_flags;
+    uint8_t buffer;
+
+    if (lora_operation == LORA_OPERATION_IDLE) {
+        return lora_last_status;
+    }
+
+    if (lora_take_dio0_event() != 0U) {
+        result = platform_read(&sx1, REG_IRQ_FLAGS, &irq_flags, 1);
+        if (result != HAL_OK) {
+            return lora_finish_operation(result);
+        }
+
+        if (lora_operation == LORA_OPERATION_TX) {
+            if ((irq_flags & IRQ_TX_DONE_MASK) != 0U) {
+                return lora_finish_operation(HAL_OK);
+            }
+            return lora_finish_operation(HAL_ERROR);
+        }
+
+        if ((irq_flags & IRQ_RX_DONE_MASK) == 0U) {
+            return lora_finish_operation(HAL_ERROR);
+        }
+
+        if ((irq_flags & IRQ_PAYLOAD_CRC_ERR_MASK) != 0U) {
+            return lora_finish_operation(HAL_ERROR);
+        }
+
+        result = platform_read(&sx1, REG_RX_NB_BYTES, &buffer, 1);
+        if (result != HAL_OK) {
+            return lora_finish_operation(result);
+        }
+
+#ifdef DEBUG
         printf("RX_NB_BYTES = %d\r\n", buffer);
-    #endif
-    if(result != HAL_OK) return HAL_ERROR;
+#endif
 
-    if (buffer > max_length) return HAL_ERROR;
+        if (buffer > lora_rx_max_length) {
+            return lora_finish_operation(HAL_ERROR);
+        }
+        *lora_rx_length = buffer;
 
-    *rx_length = buffer;
+        result = platform_read(&sx1, REG_FIFO_RX_CURRENT_ADDR, &buffer, 1);
+        if (result != HAL_OK) {
+            return lora_finish_operation(result);
+        }
+        result = platform_write(&sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
+        if (result != HAL_OK) {
+            return lora_finish_operation(result);
+        }
 
-    /* write poiter of rx base addres to ptr addr */
-    result = platform_read(&sx1, REG_FIFO_RX_CURRENT_ADDR, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
-    result = platform_write( &sx1, REG_FIFO_ADDR_PTR, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+        result = platform_read(&sx1, REG_FIFO, lora_rx_buffer, *lora_rx_length);
+        if (result != HAL_OK) {
+            return lora_finish_operation(result);
+        }
 
+        return lora_finish_operation(HAL_OK);
+    }
 
-    result = platform_read(&sx1, REG_FIFO, buff, *rx_length);
-    if(result != HAL_OK) return HAL_ERROR;
+    if ((HAL_GetTick() - lora_operation_started_ms) >= lora_operation_timeout_ms) {
+        return lora_finish_operation(HAL_TIMEOUT);
+    }
 
+    return HAL_BUSY;
+}
 
-    buffer = IRQ_RX_DONE_MASK;
-    result = platform_write(&sx1, REG_IRQ_FLAGS, &buffer, 1);
-    if(result != HAL_OK) return HAL_ERROR;
+uint8_t lora_is_busy(void) {
+    return (lora_operation != LORA_OPERATION_IDLE) ? 1U : 0U;
+}
 
-
-    return result;
-
-
+HAL_StatusTypeDef lora_get_status(void) {
+    if (lora_operation != LORA_OPERATION_IDLE) {
+        return HAL_BUSY;
+    }
+    return lora_last_status;
 }
 
 HAL_StatusTypeDef lora_sleep() {
@@ -611,14 +713,16 @@ HAL_StatusTypeDef lora_version(uint8_t *lora_version) {
 HAL_StatusTypeDef lora_packet_snr(float *snr) {
 
     HAL_StatusTypeDef result;
-    /* Has to be signed as it can be neg */
-    int8_t buffer;
+    uint8_t buffer;
+
+    if (snr == NULL) return HAL_ERROR;
+
     result = platform_read(&sx1, REG_PKT_SNR_VALUE, &buffer, 1);
 
     if(result != HAL_OK) return HAL_ERROR;
-    if (snr == NULL) return HAL_ERROR;
 
-    *snr = (float)buffer / 4.0f;
+    /* The register is an 8-bit two's-complement value in 0.25 dB units. */
+    *snr = (float)(int8_t)buffer / 4.0f;
 
     return result;
 

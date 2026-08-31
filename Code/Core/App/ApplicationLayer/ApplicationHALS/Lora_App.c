@@ -7,17 +7,16 @@
 extern SPI_HandleTypeDef hspi2;
 static LORA_CONFIG_TYPEDEF lora_t;
 static SX1276_HandleTypedef sx_t;
-volatile uint8_t lora_tx_done_flag = 0;
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
     if (GPIO_Pin == LoRaDIO0_Pin) {
-        lora_tx_done_flag = 1;
+        lora_dio0_irq_handler();
     }
 }
 
 /* This function Stores all the LoRa radio functions if you change values here make sure the values
    at the ground station are the same or it wont work together */
-HAL_StatusTypeDef lora_App_Init() {
+HAL_StatusTypeDef lora_App_Init(void) {
 
     /* Use a struct to organize and set values so it is portable */
     sx_t.hspi = &hspi2;

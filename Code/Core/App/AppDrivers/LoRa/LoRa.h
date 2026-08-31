@@ -156,12 +156,23 @@ typedef struct {
 
 HAL_StatusTypeDef lora_init(SX1276_HandleTypedef *sx1262, 
                             const LORA_CONFIG_TYPEDEF *lora_config);
-/*Transmit*/                            
+/* Transmit. The payload is copied to the SX1276 FIFO before this function
+ * returns; completion is reported later by DIO0 and handled by lora_service(). */
 HAL_StatusTypeDef lora_TX(const uint8_t *data, uint8_t length, uint32_t timeout_ms);
 
-/*Recive*/
+/* Receive. buff and rx_length must remain valid until lora_is_busy() is false. */
 
 HAL_StatusTypeDef lora_RX(uint8_t *buff, uint8_t *rx_length, uint8_t max_length, uint32_t timeout_ms);
+
+/* Call from the DIO0 EXTI callback. No SPI access is performed in interrupt context. */
+void lora_dio0_irq_handler(void);
+
+/* Call once per superloop pass to finish interrupt-signalled operations and
+ * enforce their timeout without busy-waiting. */
+HAL_StatusTypeDef lora_service(void);
+
+uint8_t lora_is_busy(void);
+HAL_StatusTypeDef lora_get_status(void);
 
 void lora_receive_cont(void);
 

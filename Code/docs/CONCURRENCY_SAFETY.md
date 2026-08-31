@@ -24,6 +24,10 @@
 > (`lsm6dso_Calib`, `h3lis331dl_Calibration`) unbounded — **accepted** as a pre-flight
 > fail-stop (see C4). New
 > this pass: **N4** (LoRa TX/RX mode handling) and **NR1** (a BMP388 sensortime regression).
+>
+> **🔄 Current working tree:** **C2, C3, N1 and N4 are resolved.** TX and RX now start
+> asynchronously, DIO0 records TX/RX completion, and `lora_service()` handles register/FIFO
+> work in the superloop. Timeouts force standby and clear IRQ flags without a busy-wait.
 
 ---
 
@@ -48,18 +52,18 @@ problem and are now historical.)* 🎉
 | ID | Finding | Severity | Active now? |
 |----|---------|----------|-------------|
 | **P1** | ✅ Fixed (`b545bfd`) — `pyro_fire_drogue` now uses `drogue_fire_start`; drogue deasserts in `pyro_service` | 🟢 Resolved | — |
-| **C2** | `lora_TX` busy-polls (≤500 ms tx / ≤100 ms continuity) — still blocks the loop | 🟠 High | **Yes** |
+| **C2** | ✅ Fixed — `lora_TX` returns after FIFO setup; DIO0 completes TX asynchronously | 🟢 Resolved | — |
 | **R3** | No independent watchdog to recover from a hang | 🟠 High | **Yes** |
 | **C1** | ✅ Fixed — `pyro_fire_*` non-blocking via `pyro_service()` *(but see **P1** for the drogue path)* | 🟢 Resolved | — |
 | **C5** | ✅ Fixed — `platform_*` deassert CS + return non-zero on SPI error | 🟢 Resolved | — |
 | **M3** | ✅ Fixed — low-apogee fires drogue+main → `STATE_PARAFOIL` (no dead-end) | 🟢 Resolved | — |
 | **R4** | ✅ Improved — `Error_Handler` safes pyro GPIOs before `__disable_irq()` (still `while(1)`, no reset) | 🟢 Mostly | Minor |
 | **C4** | In-flight reads time out ✅. Calibration loops block at boot — **accepted** (pre-flight fail-stop) | 🟢 Accepted | Boot only |
-| **N1** | `lora_rx_command` RX poll 50 ms ✅ — still a blocking poll + `printf` | 🟢 Low | Yes (minor) |
+| **N1** | ✅ Fixed — command RX is started asynchronously and dispatched after DIO0 | 🟢 Resolved | — |
 | **N2** | Remote `CMD_FIRE` now hits `pyro_fire_*` state guards — but the command path **enables test-mode to bypass them** for ground pops; remote fire still doesn't set the FSM fired-flags | 🟡 Medium | By design |
-| **C3** | `lora_tx_done_flag` now cleared before TX but still never *read* (TX still polls); prototype still misspelled | 🟡 Medium | Yes (waste) |
+| **C3** | ✅ Fixed — DIO0 feeds the driver's consumed event flag; callback prototype corrected | 🟢 Resolved | — |
 | **C8** | Duplicate `IDLE/ARMED…` enums in `CAN.h` & `Lora_App.h` → won't compile together | 🟡 Medium | Latent |
-| **N4** | LoRa TX/RX error out unless already in STANDBY and don't restore it on timeout → rides on chip auto-timeout + loop timing | 🟡 Medium | Latent |
+| **N4** | ✅ Fixed — TX/RX force standby on entry and operation cleanup forces standby on completion/error/timeout | 🟢 Resolved | — |
 | **R1** | ✅ Largely fixed (`b545bfd`) — main-loop + FSM + RX `printf`s gated/removed. Remaining bare prints are debug-only callers / manual tools (`serial_print`, `flash_dump_serial`) + one "CMD valid" line | 🟢 Low | Minor |
 | **NR1** | BMP388 sensortime bytes parsed from the wrong registers (regression) | 🟢 Low | Yes (time unused) |
 | **C6** | Shared `sensorData` blackboard has no snapshot/atomicity | 🟡 Medium | Latent |
@@ -249,6 +253,10 @@ continuous control surface it is disqualifying.
 cleaner. Same treatment for the buzzer (state, not `HAL_Delay`).
 
 ### 🟠 C2 — `lora_TX` busy-polls up to 1 s
+> **✅ RESOLVED in the current code.** `lora_TX` loads the FIFO, starts TX and returns.
+> DIO0 raises a short ISR event and `lora_service()` finishes the operation from the
+> superloop. The original polling implementation is retained below for historical context.
+
 **Location:** `Core/App/AppDrivers/LoRa/LoRa.c:432-442` (called from
 `lora_tx_telemetry`, `telemetry.c:51`, with a 1000 ms timeout).
 
@@ -272,6 +280,11 @@ running while the radio transmits.
 ## Interrupts & synchronization
 
 ### 🟡 C3 — LoRa TX-done interrupt is set up but never consumed
+> **✅ RESOLVED in the current code.** `HAL_GPIO_EXTI_Callback` now calls
+> `lora_dio0_irq_handler()`. The driver atomically consumes the volatile event in
+> `lora_service()` and performs no SPI access in interrupt context. The callback prototype
+> spelling is also corrected.
+
 **Locations:** ISR `Core/App/ApplicationLayer/ApplicationHALS/Lora_App.c:11-15` sets
 `lora_tx_done_flag = 1`; the flag (declared `Lora_App.c:9`) is **never read** anywhere in
 the codebase, because `lora_TX` busy-polls instead (**C2**).
@@ -320,7 +333,7 @@ atomic," because each item becomes a race the instant a second context appears.
 | `FlightSensorData sensorData` | `main.c:93` (global) | main loop (sensor + KF updates) | FSM, telemetry, flash, KF |
 | `KalmanFilter_t kf` | `kalman.c:5` (file static) | `kalman_predict/update` | `kalman_get_*` |
 | `FSM_Context_t ctx` | `flight_state.c:9` (file static) | `FSM_update/transition` | `FSM_get_state` |
-| `lora_tx_done_flag` | `Lora_App.c:9` (volatile) | **EXTI ISR** | (nobody — see C3) |
+| `lora_dio0_pending` | `LoRa.c` (volatile, file static) | **EXTI ISR** | `lora_service()` |
 | `flash_write_addr`, `flash_record_count` | `W25Q128_HAL.c:9-10` | `flash_log_packet` | read path |
 | per-driver `static stmdev_ctx_t dev_ctx`, cal offsets | sensor HALs | init | reads |
 | `Timer1/Timer2` | `fatfs_sd.c:11` (volatile) | **SysTick ISR** (dec) | SD path (dead) |
@@ -442,6 +455,10 @@ From the new `lora_rx_command` / `lora_tx_continuity` code in `telemetry.c` and 
 `packets.c/.h` module.
 
 ### 🟠 N1 — `lora_rx_command` blocks the loop up to 1 second
+> **✅ RESOLVED in the current code.** `lora_rx_command()` now starts RX and returns;
+> DIO0 causes `lora_service()` to drain the FIFO and `lora_rx_command_service()` dispatches
+> a completed command. A tick deadline closes a no-packet window without spinning on SPI.
+
 **Location:** `Core/App/Outputs/Telemetry/telemetry.c:137-186`, called from `main.c:241`.
 
 At `STATE_PAD`, after each telemetry TX the loop calls `lora_rx_command()`, which does
@@ -498,6 +515,10 @@ that byte to `0x00` (`packets.c:150`) — aux continuity isn't actually transmit
 field order with the byte offsets the deserializer uses.
 
 ### 🟡 N4 — LoRa TX/RX are order-dependent on radio mode (no forced standby)
+> **✅ RESOLVED in the current code.** Both operations force standby before configuration,
+> and shared completion/error/timeout cleanup returns the SX1276 to standby and clears its
+> IRQ flags.
+
 **Location:** `Core/App/AppDrivers/LoRa/LoRa.c` — `lora_TX:406`, `lora_RX:462`, and the
 timeout/error early-returns in both.
 
@@ -600,8 +621,8 @@ Adopt when you have several independent rates (control + comms + logging + CAN):
 3. **R3** — turn on the IWDG watchdog as a safety net behind #1. 🟠
 4. **C1 + N2** — non-blocking pyro fire; route remote `CMD_FIRE` through the same guarded
    deploy helper (sets fired-flags, state-checked). 🟠
-5. **C2 + C3 + N4** — interrupt/DMA-driven LoRa TX *and* RX; consume `lora_tx_done_flag`;
-   force radio standby on entry/exit so TX and RX can't wedge each other. 🟠
+5. **C2 + C3 + N4** — ✅ done: DIO0-driven asynchronous LoRa TX/RX; standby and IRQ
+   cleanup on completion/error/timeout.
 6. **R1** — gate the remaining `printf` (error paths, FSM transitions, RX handler) behind `DEBUG`. 🟡
 7. **C8 + N3 + NR1** — unify the duplicate flight-state enums before CAN; pin down the command
    wire format; restore the BMP388 sensortime bytes. 🟡/🟢
