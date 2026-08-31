@@ -26,6 +26,7 @@ static const struct gpio_dt_spec aux_output =
 static const struct gpio_dt_spec buzzer_output =
 	GPIO_DT_SPEC_GET(ODIN_IO_NODE, buzzer_gpios);
 
+#if !defined(CONFIG_ODIN_HIL_SIM)
 static const struct adc_dt_spec drogue_continuity =
 	ADC_DT_SPEC_GET_BY_NAME(ODIN_IO_NODE, drogue_continuity);
 static const struct adc_dt_spec main_continuity =
@@ -49,6 +50,7 @@ static void main_off(struct k_work *work)
 	ARG_UNUSED(work);
 	(void)gpio_pin_set_dt(&main_output, 0);
 }
+#endif
 
 void odin_pyro_all_safe(void)
 {
@@ -74,6 +76,12 @@ int odin_pyro_init(void)
 		}
 	}
 
+	odin_pyro_all_safe();
+
+#if defined(CONFIG_ODIN_HIL_SIM)
+	LOG_WRN("HIL simulation: physical pyro outputs are locked inactive");
+	return 0;
+#else
 	if (!adc_is_ready_dt(&drogue_continuity) ||
 	    !adc_is_ready_dt(&main_continuity)) {
 		return -ENODEV;
@@ -82,10 +90,11 @@ int odin_pyro_init(void)
 	if (ret == 0) {
 		ret = adc_channel_setup_dt(&main_continuity);
 	}
-	odin_pyro_all_safe();
 	return ret;
+#endif
 }
 
+#if !defined(CONFIG_ODIN_HIL_SIM)
 static uint8_t continuity_read(const struct adc_dt_spec *channel)
 {
 	int16_t raw = 0;
@@ -103,29 +112,46 @@ static uint8_t continuity_read(const struct adc_dt_spec *channel)
 	k_mutex_unlock(&continuity_lock);
 	return (ret == 0 && raw > PYRO_CONTINUITY_THRESHOLD) ? 1U : 0U;
 }
+#endif
 
 uint8_t pyro_check_drogue(void)
 {
+#if defined(CONFIG_ODIN_HIL_SIM)
+	return IS_ENABLED(CONFIG_ODIN_SIM_CONTINUITY_PRESENT) ? 1U : 0U;
+#else
 	return continuity_read(&drogue_continuity);
+#endif
 }
 
 uint8_t pyro_check_main(void)
 {
+#if defined(CONFIG_ODIN_HIL_SIM)
+	return IS_ENABLED(CONFIG_ODIN_SIM_CONTINUITY_PRESENT) ? 1U : 0U;
+#else
 	return continuity_read(&main_continuity);
+#endif
 }
 
 static void fire_drogue(void)
 {
+#if defined(CONFIG_ODIN_HIL_SIM)
+	LOG_WRN("HIL simulation: drogue fire event; output remains inactive");
+#else
 	(void)gpio_pin_set_dt(&drogue_output, 1);
 	(void)k_work_reschedule(&drogue_off_work,
 				K_MSEC(PYRO_FIRE_DURATION_MS));
+#endif
 }
 
 static void fire_main(void)
 {
+#if defined(CONFIG_ODIN_HIL_SIM)
+	LOG_WRN("HIL simulation: main fire event; output remains inactive");
+#else
 	(void)gpio_pin_set_dt(&main_output, 1);
 	(void)k_work_reschedule(&main_off_work,
 				K_MSEC(PYRO_FIRE_DURATION_MS));
+#endif
 }
 
 void pyro_fire_drogue(void)

@@ -249,6 +249,9 @@ int main(void)
 	bool sensors_ok = false;
 
 	LOG_INF("ODIN Zephyr RTOS starting");
+#if defined(CONFIG_ODIN_HIL_SIM)
+	LOG_WRN("HIL SIMULATION BUILD: profile sensors active; pyro locked out");
+#endif
 
 	ret = odin_pyro_init();
 	if (ret != 0) {

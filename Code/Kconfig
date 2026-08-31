@@ -1,0 +1,51 @@
+mainmenu "ODIN Flight Computer"
+
+source "Kconfig.zephyr"
+
+menu "ODIN application"
+
+config ODIN_HIL_SIM
+	bool "Use a motor-profile hardware-in-the-loop simulation"
+	default n
+	help
+	  Replace the physical IMU, high-g accelerometer, and barometer readings
+	  with a compiled-in flight profile. The normal estimator, flight-state
+	  machine, radio, flash logger, GPS, CAN, watchdog, and RTOS scheduling
+	  continue to run on the flight computer. Pyrotechnic outputs are locked
+	  inactive whenever this option is enabled.
+
+choice ODIN_SIM_PROFILE
+	prompt "Motor profile"
+	depends on ODIN_HIL_SIM
+	default ODIN_SIM_PROFILE_L820
+
+config ODIN_SIM_PROFILE_M2050
+	bool "M2050"
+
+config ODIN_SIM_PROFILE_L1365
+	bool "L1365"
+
+config ODIN_SIM_PROFILE_L1400
+	bool "L1400"
+
+config ODIN_SIM_PROFILE_L820
+	bool "L820"
+
+config ODIN_SIM_PROFILE_K1200
+	bool "K1200"
+
+config ODIN_SIM_PROFILE_J435
+	bool "J435"
+
+endchoice
+
+config ODIN_SIM_CONTINUITY_PRESENT
+	bool "Report both igniter continuity channels as present"
+	depends on ODIN_HIL_SIM
+	default y
+	help
+	  Lets the normal ground-station arming workflow run without igniters or
+	  continuity resistors connected. This changes only reported continuity;
+	  the physical pyrotechnic outputs remain locked inactive.
+
+endmenu

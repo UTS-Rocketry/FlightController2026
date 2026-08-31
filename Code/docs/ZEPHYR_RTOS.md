@@ -21,6 +21,55 @@ The application expects the standard Zephyr modules, including `hal_stm32`, and
 the Zephyr SDK Picolibc used by the estimator's math functions. Application code
 does not allocate from the heap at runtime.
 
+## Run a motor-profile simulation
+
+The simulation is hardware-in-the-loop: it runs the real Zephyr application on
+the STM32, but `flight_sensors.c` supplies the selected altitude and vertical
+acceleration profile instead of reading the three physical sensors. The real
+Kalman filter, flight-state machine, task periods, LoRa telemetry, command RX,
+flash logging, GPS, CAN, and watchdog remain active.
+
+First disconnect all igniters. Simulation builds also enforce a compile-time
+pyro lockout: drogue/main fire events are logged, but the output-high and pulse
+work code is not compiled into that build. Both outputs are configured inactive
+at startup. Simulated continuity defaults to present so the normal ground-
+station arming workflow can be exercised without continuity hardware.
+
+`sim.conf` selects the L820 profile by default. To use another existing profile,
+replace its `CONFIG_ODIN_SIM_PROFILE_L820=y` line with exactly one of:
+
+```text
+CONFIG_ODIN_SIM_PROFILE_M2050=y
+CONFIG_ODIN_SIM_PROFILE_L1365=y
+CONFIG_ODIN_SIM_PROFILE_L1400=y
+CONFIG_ODIN_SIM_PROFILE_K1200=y
+CONFIG_ODIN_SIM_PROFILE_J435=y
+```
+
+Build and flash the simulation image with:
+
+```sh
+./sim.sh
+```
+
+Or build without flashing:
+
+```sh
+west build -b weact_stm32f405_core . -d build/zephyr-sim --pristine -- \
+    -DEXTRA_CONF_FILE=sim.conf
+```
+
+After boot, send the usual ARM command from the ground station. The profile then
+advances at 10 ms per sample (100 Hz), while its altitude is consumed by the
+normal 40 ms barometer/Kalman release (25 Hz). It pauses while the FSM is IDLE
+and holds the final sample after the profile ends. The telemetry packet format
+is unchanged, so the ground-station decoder needs no simulation-specific code.
+
+`./release.sh` still creates the normal hardware-sensor flight image in the
+separate `build/zephyr` directory. `./sim.sh` always uses
+`build/zephyr-sim`, preventing a cached simulation configuration from leaking
+into the normal build.
+
 ## Scheduling model
 
 | Work | Period | Zephyr context |

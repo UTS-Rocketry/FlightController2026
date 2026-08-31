@@ -1,5 +1,6 @@
 #include <errno.h>
 #include <math.h>
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -14,7 +15,14 @@
 #include "h3lis331dl_reg.h"
 #include "lsm6dsox_reg.h"
 
+#if defined(CONFIG_ODIN_HIL_SIM)
+#include "flight_state.h"
+#include "sim_profile.h"
+#endif
+
 LOG_MODULE_REGISTER(odin_sensors, LOG_LEVEL_INF);
+
+#if !defined(CONFIG_ODIN_HIL_SIM)
 
 #define SPI_MODE_3_OP (SPI_OP_MODE_MASTER | SPI_WORD_SET(8) | \
 		       SPI_TRANSFER_MSB | SPI_MODE_CPOL | SPI_MODE_CPHA)
@@ -432,6 +440,65 @@ static int bmp_init(void)
 	return (isfinite(ground_pressure) && ground_pressure > 1000.0f) ? 0 : -ERANGE;
 }
 
+#endif /* !CONFIG_ODIN_HIL_SIM */
+
+#if defined(CONFIG_ODIN_HIL_SIM)
+
+static uint32_t sim_index;
+static bool sim_complete_logged;
+
+int odin_sensors_init(void)
+{
+	sim_index = 0U;
+	sim_complete_logged = false;
+	LOG_WRN("HIL simulation profile %s: %u samples, %u ms period",
+		ODIN_SIM_PROFILE_NAME, (unsigned int)SIM_LEN,
+		(unsigned int)SIM_DT_MS);
+	return 0;
+}
+
+int odin_sensors_read_imu(FlightSensorData *data)
+{
+	if (data == NULL) {
+		return -EINVAL;
+	}
+
+	/* Match the old simulator: start advancing only after an ARM command. */
+	if (FSM_get_state() >= STATE_PAD && sim_index < (SIM_LEN - 1U)) {
+		sim_index++;
+	}
+
+	data->x_mg = 0.0f;
+	data->y_mg = 0.0f;
+	data->z_mg = 0.0f;
+	data->x_mg_IMU = 0.0f;
+	data->y_mg_IMU = 0.0f;
+	data->z_mg_IMU = sim_accel_mg[sim_index];
+	data->x_gy = 0.0f;
+	data->y_gy = 0.0f;
+	data->z_gy = 0.0f;
+
+	if (sim_index == (SIM_LEN - 1U) && !sim_complete_logged) {
+		LOG_INF("HIL simulation profile complete; holding final sample");
+		sim_complete_logged = true;
+	}
+	return 0;
+}
+
+int odin_sensors_read_baro(FlightSensorData *data)
+{
+	if (data == NULL) {
+		return -EINVAL;
+	}
+
+	data->altitude = sim_alt[sim_index];
+	data->pressure = 0.0f;
+	data->temperature = 0.0f;
+	return 0;
+}
+
+#else
+
 int odin_sensors_init(void)
 {
 	if (!spi_is_ready_dt(&imu_spi) || !spi_is_ready_dt(&baro_spi) ||
@@ -519,3 +586,5 @@ int odin_sensors_read_baro(FlightSensorData *data)
 	}
 	return ret;
 }
+
+#endif /* CONFIG_ODIN_HIL_SIM */
