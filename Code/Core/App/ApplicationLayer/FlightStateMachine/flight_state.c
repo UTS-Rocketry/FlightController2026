@@ -5,11 +5,13 @@
 #include "flight_config.h"
 #include <stdint.h>
 #include <math.h>
+#include <string.h>
 
 
 static FSM_Context_t ctx;
 
 static void FSM_transition(FlightState_t new_state);
+static uint8_t drogue_fail_check(FSM_Context_t *ctx, float current_alt, uint32_t now_ms);
 
 void FSM_init(void) {
     memset(&ctx, 0, sizeof(FSM_Context_t));
@@ -185,8 +187,18 @@ HAL_StatusTypeDef FSM_update(FlightSensorData *sensorData, uint8_t imu_read, uin
                 else {
                     ctx.main_alt_count = 0;
                 }
-
                 if(ctx.main_alt_count > MAIN_ALT_CONFIRM_SAMPLES) {
+                    pyro_fire_main();
+                    ctx.main_fired = 1;
+                    FSM_transition(STATE_PARAFOIL);
+                }
+
+                if (drogue_fail_check(&ctx, sensorData->altitude, HAL_GetTick()) && ctx.main_fired != 1) {
+                    ctx.main_backup_count++;
+                } else {
+                    ctx.main_backup_count = 0;
+                }
+                if (ctx.main_backup_count >= MAIN_BACKUP_CONFIRM_SAMPLES) {
                     pyro_fire_main();
                     ctx.main_fired = 1;
                     FSM_transition(STATE_PARAFOIL);
@@ -267,3 +279,23 @@ void FSM_disarm(void) {
         FSM_transition(STATE_IDLE);
     }
 }
+
+
+static uint8_t drogue_fail_check(FSM_Context_t *ctx, float current_alt, uint32_t now_ms) {
+    uint8_t oldest_idx = ctx->hist_index;   // about to be overwritten == oldest sample
+    uint8_t have_full_window = ctx->hist_filled;
+
+    // Store current sample, advance ring buffer
+    ctx->alt_history[ctx->hist_index]  = current_alt;
+    ctx->time_history[ctx->hist_index] = now_ms;
+    ctx->hist_index = (ctx->hist_index + 1) % DROGUE_FAIL_WINDOW_SAMPLES;
+    if (ctx->hist_index == 0) ctx->hist_filled = 1;
+
+    if (!have_full_window) return 0;   // not enough history yet, don't judge early
+
+    float dt = (now_ms - ctx->time_history[oldest_idx]) / 1000.0f;
+    if (dt <= 0.0f) return 0;
+
+    float descent_rate = (current_alt - ctx->alt_history[oldest_idx]) / dt;
+    return (descent_rate < DROGUE_FAIL_RATE_MPS) ? 1 : 0;
+}   

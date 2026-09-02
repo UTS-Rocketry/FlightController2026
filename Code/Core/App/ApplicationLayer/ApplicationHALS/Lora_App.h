@@ -14,19 +14,6 @@ extern "C" {
 
 
 
-typedef enum {
-
-    IDLE            = 0x00,
-    ARMED           = 0x01,
-    POWERED_ASCENT  = 0x02,
-    COASTING        = 0x03,
-    APOGEE          = 0x04,
-    DESCENT         = 0x05,
-    LANDED          = 0x06,
-    FAULT           = 0x07
-
-} FlightStateLoRa;
-
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 HAL_StatusTypeDef lora_App_Init(void);
 

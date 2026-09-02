@@ -2,6 +2,7 @@
 #define FLIGHT_STATE_H
 #include "flight_sensors.h"
 #include <stdint.h>
+#include "flight_config.h"
 
 
 typedef enum{
@@ -32,6 +33,14 @@ typedef struct {
     uint8_t main_alt_count;
 
     uint8_t main_pending;
+    uint8_t main_backup_count;
+
+    /* Drouge backup*/
+    float   alt_history[DROGUE_FAIL_WINDOW_SAMPLES];
+    uint32_t time_history[DROGUE_FAIL_WINDOW_SAMPLES];
+    uint8_t  hist_index;
+    uint8_t  hist_filled;   // becomes 1 once the buffer has wrapped once
+
 
 } FSM_Context_t;
 

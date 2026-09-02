@@ -61,7 +61,7 @@ HAL_StatusTypeDef lora_tx_telemetry(FlightSensorData *sensordata) {
     
     // Four leading zero bytes are the receiver-routing header used by this protocol.
     // The application payload starts after that header.
-    telemetry_serializer(&packet, buff + LORA_RECEIVER_HEADER_SIZE);
+    telemetry_serializer_lora(&packet, buff + LORA_RECEIVER_HEADER_SIZE);
 
     result = lora_TX(buff, sizeof(buff), 200);
 
@@ -111,12 +111,14 @@ HAL_StatusTypeDef flash_log_telemetry(FlightSensorData *sensorData) {
     packet.header.sequence_number = seq++;
     packet.sensordata = *sensorData;
     packet.flight_State = sensorData->flight_state;
+    packet.timestamp = HAL_GetTick();
 
-    telemetry_serializer(&packet, buff);
+    telemetry_serializer_memory(&packet, buff);
 
     return flash_log_packet(buff, 64);
 
 }
+
 #ifdef MEMORY_DUMP
 HAL_StatusTypeDef flash_dump_serial(void) {
     
@@ -147,6 +149,7 @@ HAL_StatusTypeDef flash_dump_serial(void) {
         float x_mg_IMU, y_mg_IMU, z_mg_IMU;
         float x_gy, y_gy, z_gy;
         float velocity;
+        uint32_t timestamp_ms;
 
         altitude    = read_be_float(&buff[3]);
         pressure    = read_be_float(&buff[7]);
@@ -162,17 +165,20 @@ HAL_StatusTypeDef flash_dump_serial(void) {
         z_gy        = read_be_float(&buff[47]);
         velocity    = read_be_float(&buff[51]);
         uint8_t state = buff[55];
+        timestamp_ms = ((uint32_t)buff[56] << 24) | ((uint32_t)buff[57] << 16) |
+                       ((uint32_t)buff[58] << 8)  |  (uint32_t)buff[59];
+ 
 
 
-        printf("[%lu] alt=%.2f pres=%.2f temp=%.2f velocity=%.2f | "
-               "hg=%.1f,%.1f,%.1f | "
-               "imu=%.1f,%.1f,%.1f | "
-               "gy=%.1f,%.1f,%.1f | state=%u\r\n",
-               i, altitude, pressure, temperature, velocity,
-               x_mg, y_mg, z_mg,
-               x_mg_IMU, y_mg_IMU, z_mg_IMU,
-               x_gy, y_gy, z_gy,
-               state);
+         printf("[%lu] t=%lums alt=%.2f pres=%.2f temp=%.2f velocity=%.2f | "
+                "hg=%.1f,%.1f,%.1f | "
+                "imu=%.1f,%.1f,%.1f | "
+                "gy=%.1f,%.1f,%.1f | state=%u\r\n",
+                i, timestamp_ms, altitude, pressure, temperature, velocity,
+                x_mg, y_mg, z_mg,
+                x_mg_IMU, y_mg_IMU, z_mg_IMU,
+                x_gy, y_gy, z_gy,
+                state);
     }
 
     return HAL_OK;
@@ -275,7 +281,9 @@ HAL_StatusTypeDef lora_rx_command_service(void) {
 HAL_StatusTypeDef lora_tx_continuity() {
     
     static uint8_t seq = 0;
+    /* Buffer needs to be inserted due to groundstation driver code  4 bytes */
     uint8_t buff[LORA_RECEIVER_HEADER_SIZE + CONTINUITY_PAYLOAD_SIZE] = {0};
+    
     HAL_StatusTypeDef result;
     ContinuityPacket packet;
 

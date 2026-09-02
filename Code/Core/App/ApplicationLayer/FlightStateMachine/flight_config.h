@@ -31,5 +31,10 @@
 #define SONIC_TIMOUT_MS                 3500
 
 
+/* ── Drogue-failure backup ─────────────────────────── */
+#define DROGUE_FAIL_WINDOW_SAMPLES      75         /* ~3s at 40ms baro tick */
+#define DROGUE_FAIL_RATE_MPS            -35.0f     /* m/s; between working-drogue (~-20..-25) and freefall */
+#define MAIN_BACKUP_CONFIRM_SAMPLES     5           /* own debounce, independent of MAIN_ALT_CONFIRM_SAMPLES */
+
 
 #endif

@@ -6,7 +6,7 @@
 #define FLASH_RECORD_SIZE       64         /*matches serializer output */ 
 #define FLASH_MAX_RECORDS       (W25Q128_TOTAL_SIZE / FLASH_RECORD_SIZE)
 #define FLASH_SYNC_WORD 0xAA
-
+static uint32_t flash_erased_through_addr = FLASH_LOG_START_ADDR;
 
 static uint32_t flash_write_addr = FLASH_LOG_START_ADDR;
 static uint32_t flash_record_count = 0;
@@ -30,6 +30,37 @@ HAL_StatusTypeDef flash_memory_init() {
         #endif
         return HAL_ERROR;
     }
+
+    result = flash_sanity_check();
+  
+    #ifdef DEBUG
+        if (result != HAL_OK) {
+        printf("flash memory failed sanity check\r\n");
+        } else { 
+        printf("Flash memory OK\r\n");
+        }
+    #endif
+
+    result = flash_recover_write_pointer(); 
+
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash memory failed find start address\r\n");
+    } else { 
+      printf("Flash memory OK\r\n");
+    }
+  #endif
+
+  result = flash_prepare_log_region(150);   // <-- add here, e.g. ~6 min of logging headroom
+  #ifdef DEBUG
+    if (result != HAL_OK) {
+      printf("flash pre-erase failed\r\n");
+    } else {
+      printf("Flash pre-erase OK\r\n");
+    }
+  #endif
+
+
 
     return result;
 
@@ -63,38 +94,23 @@ HAL_StatusTypeDef flash_sanity_check() {
 
 HAL_StatusTypeDef flash_log_packet(uint8_t *buff, uint16_t len)
 {
-    if (flash_record_count >= FLASH_MAX_RECORDS) {
-        #ifdef DEBUG
-            printf("Flash full\r\n");
-        #endif
+    if (flash_record_count >= FLASH_MAX_RECORDS) return HAL_ERROR;
+    if (len > FLASH_RECORD_SIZE) return HAL_ERROR;   // NEW — bounds check, freebie fix #4
 
-        return HAL_ERROR;
-    }
-
-    if ((flash_write_addr % W25Q128_SECTOR_SIZE) == 0) {
+    if ((flash_write_addr % W25Q128_SECTOR_SIZE) == 0 &&
+        flash_write_addr >= flash_erased_through_addr) {   // NEW — only erase if not pre-cleared
         HAL_StatusTypeDef ret = W25Q128_SectorErase(&flash, flash_write_addr);
-        if (ret != HAL_OK) {
-            #ifdef DEBUG
-                printf("Sector erase failed at 0x%06lX\r\n", flash_write_addr);
-            #endif
-            return ret;
-        }
+        if (ret != HAL_OK) return ret;
+        flash_erased_through_addr = flash_write_addr + W25Q128_SECTOR_SIZE;
     }
 
     HAL_StatusTypeDef ret = W25Q128_PageProgram(&flash, flash_write_addr, buff, len);
-    if (ret != HAL_OK) {
-        #ifdef DEBUG
-            printf("Flash write failed at 0x%06lX\r\n", flash_write_addr);
-        #endif
-        return ret;
-    }
+    if (ret != HAL_OK) return ret;
 
     flash_write_addr += FLASH_RECORD_SIZE;
     flash_record_count++;
-
     return HAL_OK;
 }
-
 HAL_StatusTypeDef flash_read_record(uint32_t index, uint8_t *buff, uint16_t len)
 {
     if (index >= flash_record_count) return HAL_ERROR;
@@ -115,7 +131,7 @@ static uint8_t flash_record_is_written(uint32_t index)
     uint32_t addr = FLASH_LOG_START_ADDR + (index * FLASH_RECORD_SIZE);
 
     if (W25Q128_ReadData(&flash, addr, &sync_byte, 1) != HAL_OK) {
-        return 0; // read failure — treat conservatively as blank
+        return 1; // read failure — assume written; costs a slot, never risks overwriting real data
     }
     return (sync_byte == FLASH_SYNC_WORD);
 }
@@ -147,29 +163,19 @@ HAL_StatusTypeDef flash_recover_write_pointer(void)
 
 HAL_StatusTypeDef flash_prepare_log_region(uint32_t num_sectors)
 {
-    uint32_t erase_addr;
-
-    if (flash_write_addr % W25Q128_SECTOR_SIZE == 0) {
-        erase_addr = flash_write_addr; // pointer sits exactly at an untouched sector
-    } else {
-        erase_addr = flash_write_addr
-                    - (flash_write_addr % W25Q128_SECTOR_SIZE)
-                    + W25Q128_SECTOR_SIZE; // skip the partially-written sector
-    }
+    uint32_t erase_addr = (flash_write_addr % W25Q128_SECTOR_SIZE == 0)
+        ? flash_write_addr
+        : flash_write_addr - (flash_write_addr % W25Q128_SECTOR_SIZE) + W25Q128_SECTOR_SIZE;
 
     uint32_t chip_end = FLASH_LOG_START_ADDR + (FLASH_MAX_RECORDS * FLASH_RECORD_SIZE);
 
     for (uint32_t i = 0; i < num_sectors && erase_addr < chip_end; i++) {
         HAL_StatusTypeDef ret = W25Q128_SectorErase(&flash, erase_addr);
-        if (ret != HAL_OK) {
-#ifdef DEBUG
-            printf("Pre-erase failed at 0x%06lX\r\n", erase_addr);
-#endif
-            return ret;
-        }
+        if (ret != HAL_OK) return ret;
         erase_addr += W25Q128_SECTOR_SIZE;
     }
 
+    flash_erased_through_addr = erase_addr;   // NEW — remember the known-clean boundary
     return HAL_OK;
 }
 

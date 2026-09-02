@@ -68,7 +68,7 @@ HAL_StatusTypeDef lsm6dso_init(lsm6dso_HandleTypedef *l6)
     return HAL_ERROR;
   }
 
-  /* Set XL Output Data Rate to 416 Hz */
+  /* Set XL Output Data Rate to 104 Hz */
   resultINT = lsm6dsox_xl_data_rate_set(&dev_ctx, LSM6DSOX_XL_ODR_104Hz);
   if (resultINT != 0) {
     return HAL_ERROR;
@@ -87,7 +87,7 @@ HAL_StatusTypeDef lsm6dso_init(lsm6dso_HandleTypedef *l6)
     return HAL_ERROR;
   }
 
-  /* Set GY output to 416 hz aswell */
+  /* Set GY output to 104 hz aswell */
   resultINT = lsm6dsox_gy_data_rate_set(&dev_ctx, LSM6DSOX_GY_ODR_104Hz);
   if (resultINT != 0) {
     return HAL_ERROR;

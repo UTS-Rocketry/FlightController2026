@@ -27,6 +27,7 @@ typedef struct{
     HeaderPacket header;
     FlightSensorData sensordata;
     uint8_t flight_State;
+    uint32_t timestamp;
     uint16_t crc;
 
 }TelemetryPacket;
@@ -75,7 +76,8 @@ typedef enum {
     CMD_DISARM = 0x03
 } CommandID;
 
-void telemetry_serializer(TelemetryPacket *packet, uint8_t *buff);
+void telemetry_serializer_lora(TelemetryPacket *packet, uint8_t *buff);
+void telemetry_serializer_memory(TelemetryPacket *packet, uint8_t *buff);
 void gps_serializer(const GPSPacket *packet, uint8_t *buff);
 void continuity_serializer(ContinuityPacket *packet, uint8_t *buff);
 uint8_t command_deserializer(uint8_t *buff, uint8_t *cmd_id, uint8_t *channel);

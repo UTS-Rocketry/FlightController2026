@@ -99,10 +99,10 @@ target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
     
     # J435
     # K1200
-      L820
+    # L820
     # L1400
     # L1365
-    # M2050
+    M2050
 
     
     # MEMORY_DUMP

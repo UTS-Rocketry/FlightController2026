@@ -241,6 +241,7 @@ HAL_StatusTypeDef flight_sensors_update_IMU_accel(FlightSensorData *sensordata) 
 }
 
 #else
+
 #include "sim_profile.h"
 #include "flight_state.h"
 static uint32_t sim_idx = 0;

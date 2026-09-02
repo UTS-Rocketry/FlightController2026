@@ -41,6 +41,7 @@
 #include "watchdog.h"
 #include "CAN.h"
 #include "GPS.h"
+#include "W25Q128_HAL.h"
 
 /* USER CODE END Includes */
 
@@ -221,16 +222,6 @@ int main(void)
     }
   #endif
 
-  result = flash_sanity_check();
-  
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash memory failed sanity check\r\n");
-    } else { 
-      printf("Flash memory OK\r\n");
-    }
-  #endif
-
   #ifdef MEMORY_DUMP
 
     result = flash_recover_write_pointer();
@@ -279,26 +270,6 @@ int main(void)
 
   #endif /* FLASH_ERASE_BUILD */
 
-  result = flash_recover_write_pointer(); 
-
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash memory failed find start address\r\n");
-    } else { 
-      printf("Flash memory OK\r\n");
-    }
-  #endif
-
-  result = flash_prepare_log_region(150);   // <-- add here, e.g. ~6 min of logging headroom
-  #ifdef DEBUG
-    if (result != HAL_OK) {
-      printf("flash pre-erase failed\r\n");
-    } else {
-      printf("Flash pre-erase OK\r\n");
-    }
-  #endif
-
-
 /* CAN init --------------------------------------------------------*/    
   result = Can_init();
 
@@ -344,6 +315,7 @@ int main(void)
   static uint32_t last_radio_end = 0;
   static uint32_t last_hb_ms = 0;
   static uint8_t radio_was_busy = 0U;
+  static uint32_t last_preerase = 0;
   
   /* NULL Placeholder for CAN heartbeat */
   uint8_t dummy = 0;
@@ -491,8 +463,12 @@ int main(void)
       printf("Sensor loop dt: %lums\r\n", dt);
 
     #endif
-    
-     
+
+    if (FSM_get_state() <= STATE_PAD && now - last_preerase >= 5000) {
+        last_preerase = now;
+        flash_prepare_log_region(5);   // top up 5 sectors (~20s of headroom) every 5s while idle
+    }
+        
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
